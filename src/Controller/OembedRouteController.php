@@ -9,7 +9,7 @@ use Drupal\Core\Session\AccountInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
- * Oembed route controlled.
+ * Oembed route controller.
  */
 class OembedRouteController {
 
