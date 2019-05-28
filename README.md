@@ -1,6 +1,6 @@
 # OpenEuropa oe_oembed
 
-The OpenEuropa oe_oembed provides ...`[One Paragraph of project description goes here]`
+The OpenEuropa oe_oembed module acts as a oEmbed provider for the media resources available on the site.
 
 ## Development setup
 
