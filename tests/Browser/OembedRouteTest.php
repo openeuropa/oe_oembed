@@ -10,9 +10,7 @@ use Drupal\Tests\BrowserTestBase;
 class OembedRouteTest extends BrowserTestBase {
 
   /**
-   * Modules to enable.
-   *
-   * @var array
+   * {@inheritdoc}
    */
   protected static $modules = [
     'oe_oembed',
@@ -22,7 +20,6 @@ class OembedRouteTest extends BrowserTestBase {
    * Tests that the oEmbed route returns the correct json.
    */
   public function testOembedRoute() {
-
     $this->drupalGet('oembed');
     $this->assertSession()->statusCodeEquals(200);
 

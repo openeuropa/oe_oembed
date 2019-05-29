@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Drupal\oe_oembed\Controller;
 
 use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Access\AccessResultInterface;
 use Drupal\Core\Session\AccountInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -17,9 +18,9 @@ class OembedRouteController {
    * Returns the oEmbed json object related to the request.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
-   *   The access result.
+   *   The JSON response.
    */
-  public function getOembedJson() {
+  public function getOembedJson(): JsonResponse {
     return new JsonResponse([
       'status' => 'OK',
     ]);
@@ -34,7 +35,7 @@ class OembedRouteController {
    * @return \Drupal\Core\Access\AccessResultInterface
    *   The access result.
    */
-  public function checkAccess(AccountInterface $account) {
+  public function checkAccess(AccountInterface $account): AccessResultInterface {
     return AccessResult::allowed();
   }
 
