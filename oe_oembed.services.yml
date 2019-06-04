@@ -1,4 +1,7 @@
 services:
+  oe_oembed.route_controller:
+    class: Drupal\oe_oembed\Controller\OembedRouteController
+    arguments: ['@oe_oembed.oembed_resolver']
   oe_oembed.oembed_resolver:
     class: Drupal\oe_oembed\Oembed\OembedResolver
     arguments: ['@entity.repository', '@renderer', '@entity_type.manager']
