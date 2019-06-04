@@ -12,6 +12,7 @@ use Drupal\file\FileInterface;
 use Drupal\image\ImageStyleInterface;
 use Drupal\media\MediaInterface;
 use Drupal\responsive_image\ResponsiveImageStyleInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Resolves incoming requests into a properly formated oEmbed json array.
@@ -66,11 +67,6 @@ class OembedResolver implements OembedResolverInterface {
    */
   public function resolve(Url $url) {
     $uri_parts = $this->parseUrl($url->getUri());
-
-    // If there is no path then we can't find anything to process.
-    if (!isset($uri_parts['path'])) {
-      throw new \Exception('Requested url has no path.');
-    }
 
     // Add required parameters to response.
     $result_json = [
@@ -338,7 +334,7 @@ class OembedResolver implements OembedResolverInterface {
     $global_url_parts = parse_url($base_url);
     $target_url_parts = parse_url($url);
     $url_parts = [
-      'path' => str_replace($global_url_parts['path'], '', $target_url_parts['path']),
+      'path' => trim(str_replace($global_url_parts['path'], '', $target_url_parts['path']), '/'),
     ];
     if (!empty($target_url_parts['query'])) {
       parse_str($target_url_parts['query'], $query_parameters);
