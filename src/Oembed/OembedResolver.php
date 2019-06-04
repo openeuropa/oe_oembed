@@ -64,7 +64,7 @@ class OembedResolver implements OembedResolverInterface {
    * @return array
    *   The json array.
    */
-  public function resolve(Url $url) {
+  public function resolve(Url $url): array {
     $uri_parts = $this->parseUrl($url->getUri());
 
     // If there is no path then we can't find anything to process.
@@ -96,7 +96,7 @@ class OembedResolver implements OembedResolverInterface {
    * @return \Drupal\media\MediaInterface|null
    *   The requested media entity or NULL if not found.
    */
-  protected function getMediaFromPath(string $path) {
+  protected function getMediaFromPath(string $path): ?MediaInterface {
     $path = trim($path, '/');
     $parameters = explode('/', $path);
     if (empty($parameters) || count($parameters) < 2) {
@@ -118,7 +118,7 @@ class OembedResolver implements OembedResolverInterface {
    * @return array
    *   A properly formatted json array.
    */
-  public function mediaToJson(MediaInterface $media, array $uri_parts) {
+  public function mediaToJson(MediaInterface $media, array $uri_parts): array {
     $source = $media->getSource();
     $source_field_value = $source->getSourceFieldValue($media);
     if (!$source_field_value) {
@@ -162,7 +162,7 @@ class OembedResolver implements OembedResolverInterface {
    * @return array
    *   A properly formatted json array.
    */
-  public function processRemoteVideoMedia(MediaInterface $media, array $uri_parts) {
+  public function processRemoteVideoMedia(MediaInterface $media, array $uri_parts): array {
     $view_mode = $uri_parts['view_mode'] ?? NULL;
 
     if (!$view_mode) {
@@ -200,7 +200,7 @@ class OembedResolver implements OembedResolverInterface {
    *
    * @SuppressWarnings(PHPMD.CyclomaticComplexity)
    */
-  public function processImageMedia(MediaInterface $media, array $uri_parts) {
+  public function processImageMedia(MediaInterface $media, array $uri_parts): array {
     $view_mode = $uri_parts['view_mode'] ?? NULL;
 
     $source = $media->getSource();
@@ -302,7 +302,7 @@ class OembedResolver implements OembedResolverInterface {
    * @return array
    *   A properly formatted json array.
    */
-  public function processFileMedia(MediaInterface $media, array $uri_parts) {
+  public function processFileMedia(MediaInterface $media, array $uri_parts): array {
     $source = $media->getSource();
     $source_field_value = $source->getSourceFieldValue($media);
     // For the moment we do not really render the File media. We simply return
@@ -333,7 +333,7 @@ class OembedResolver implements OembedResolverInterface {
    * @return array
    *   And array with the path and all the query values.
    */
-  protected function parseUrl(string $url) {
+  protected function parseUrl(string $url): array {
     global $base_url;
     $global_url_parts = parse_url($base_url);
     $target_url_parts = parse_url($url);
