@@ -12,7 +12,6 @@ use Drupal\file\FileInterface;
 use Drupal\image\ImageStyleInterface;
 use Drupal\media\MediaInterface;
 use Drupal\responsive_image\ResponsiveImageStyleInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Resolves incoming requests into a properly formated oEmbed json array.
@@ -84,7 +83,7 @@ class OembedResolver implements OembedResolverInterface {
   }
 
   /**
-   * Retrieves the entity associated to the received path.
+   * Retrieves the media associated to the received path.
    *
    * @param string $path
    *   The received path.
@@ -92,7 +91,7 @@ class OembedResolver implements OembedResolverInterface {
    * @return \Drupal\media\MediaInterface|null
    *   The requested media entity or NULL if not found.
    */
-  protected function getMediaFromPath(string $path) {
+  public function getMediaFromPath(string $path) {
     $path = trim($path, '/');
     $parameters = explode('/', $path);
     if (empty($parameters) || count($parameters) < 2) {
@@ -329,7 +328,7 @@ class OembedResolver implements OembedResolverInterface {
    * @return array
    *   And array with the path and all the query values.
    */
-  protected function parseUrl(string $url) {
+  public function parseUrl(string $url) {
     global $base_url;
     $global_url_parts = parse_url($base_url);
     $target_url_parts = parse_url($url);

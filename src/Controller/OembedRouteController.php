@@ -92,11 +92,11 @@ class OembedRouteController {
     if (empty($uri_parts['path'])) {
       throw new NotFoundHttpException('Requested url has no path.');
     }
-    $entity = $this->oembedResolver->getEntityFromPath($uri_parts['path']);
-    if (!$entity) {
-      throw new NotFoundHttpException('Requested entity not found.');
+    $media = $this->oembedResolver->getMediaFromPath($uri_parts['path']);
+    if (!$media) {
+      throw new NotFoundHttpException('Requested media not found.');
     }
-    return $entity->access('view', $account, TRUE);
+    return $media->access('view', $account, TRUE);
   }
 
 }
