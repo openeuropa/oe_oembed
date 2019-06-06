@@ -12,14 +12,14 @@ use Drupal\Core\Url;
 interface OembedResolverInterface {
 
   /**
-   * Resolve the request into a valid oEmbed json response.
+   * Resolve the request into a valid oEmbed result.
    *
    * @param \Drupal\Core\Url $url
    *   The requested url.
    *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse
-   *   The access result.
+   * @return OembedResolverResult
+   *   The resolved result.
    */
-  public function resolve(Url $url);
+  public function resolve(Url $url): OembedResolverResult;
 
 }
