@@ -446,6 +446,7 @@ class OembedResolver implements OembedResolverInterface {
       'size' => $file->getSize(),
       'mime' => $file->getMimeType(),
       'lang' => $media->language()->getId(),
+      'mid' => $media->id(),
       'cache' => $cache,
     ];
 
