@@ -432,10 +432,17 @@ class OembedResolver implements OembedResolverInterface {
 
     $cache->addCacheableDependency($file);
 
+    // We need to execute this in it's own render context because
+    // file_create_url() may call a toString() on a URL object causing early
+    // rendering.
+    $download_link = $this->renderer->executeInRenderContext(new RenderContext(), function () use ($file) {
+      return file_create_url($file->getFileUri());
+    });
+
     $json = [
       'type' => 'link',
       'name' => $media->getName(),
-      'download' => file_create_url($file->getFileUri()),
+      'download' => $download_link,
       'size' => $file->getSize(),
       'mime' => $file->getMimeType(),
       'lang' => $media->language()->getId(),
