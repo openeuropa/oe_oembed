@@ -99,11 +99,8 @@ class OembedResolver implements OembedResolverInterface {
   public static function uuidFromUrl(string $url): ?string {
     $regex = '/' . Uuid::VALID_PATTERN . '/';
     preg_match($regex, $url, $matches);
-    if (!$matches) {
-      return NULL;
-    }
 
-    return $matches[0];
+    return $matches ? $matches[0] : NULL;
   }
 
   /**
@@ -162,6 +159,7 @@ class OembedResolver implements OembedResolverInterface {
     }
 
     $media = $this->entityRepository->loadEntityByUuid('media', $uuid);
+
     return $media instanceof MediaInterface ? $media : NULL;
   }
 
@@ -170,13 +168,13 @@ class OembedResolver implements OembedResolverInterface {
    *
    * @param \Drupal\media\MediaInterface $media
    *   The media to be formatted into an oEmbed json.
-   * @param array $uri_parts
-   *   The URI parts.
+   * @param array $query_params
+   *   The query parameters.
    *
    * @return array
    *   A properly formatted json array.
    */
-  public function mediaToJson(MediaInterface $media, array $uri_parts): array {
+  public function mediaToJson(MediaInterface $media, array $query_params): array {
     $source = $media->getSource();
     $source_field_value = $source->getSourceFieldValue($media);
     if (!$source_field_value) {
@@ -185,8 +183,7 @@ class OembedResolver implements OembedResolverInterface {
       throw $exception;
     }
 
-    $view_mode = $uri_parts['view_mode'] ?? NULL;
-
+    $view_mode = $query_params['view_mode'] ?? NULL;
     if ($view_mode) {
       /** @var \Drupal\Core\Entity\Display\EntityViewDisplayInterface $view_display */
       $view_display = $this->entityTypeManager->getStorage('entity_view_display')->load('media.' . $media->bundle() . "." . $view_mode);
@@ -199,13 +196,13 @@ class OembedResolver implements OembedResolverInterface {
 
     switch ($source->getPluginId()) {
       case 'image':
-        return $this->processImageMedia($media, $uri_parts);
+        return $this->processImageMedia($media, $query_params);
 
       case 'oembed:video':
-        return $this->processRemoteVideoMedia($media, $uri_parts);
+        return $this->processRemoteVideoMedia($media, $query_params);
 
       case 'file':
-        return $this->processFileMedia($media, $uri_parts);
+        return $this->processFileMedia($media, $query_params);
     }
 
     // @todo create a plugin system that can provide data for other source
@@ -220,21 +217,17 @@ class OembedResolver implements OembedResolverInterface {
    *
    * @param \Drupal\media\MediaInterface $media
    *   The media to be formatted into an oEmbed json.
-   * @param array $uri_parts
-   *   The URI parts..
+   * @param array $query_params
+   *   The query parameters.
    *
    * @return array
    *   A properly formatted json array.
    */
-  public function processRemoteVideoMedia(MediaInterface $media, array $uri_parts): array {
-    $view_mode = $uri_parts['view_mode'] ?? NULL;
+  public function processRemoteVideoMedia(MediaInterface $media, array $query_params): array {
+    $view_mode = $query_params['view_mode'] ?? 'default';
     $cache = $this->getDefaultCacheDependency();
-
-    if (!$view_mode) {
-      $view_mode = 'default';
-    }
-
     $source = $media->getSource();
+
     /** @var \Drupal\media\MediaTypeInterface $media_type */
     $media_type = $this->entityTypeManager->getStorage('media_type')->load($media->bundle());
 
@@ -277,8 +270,8 @@ class OembedResolver implements OembedResolverInterface {
    *
    * @param \Drupal\media\MediaInterface $media
    *   The media to be processed.
-   * @param array $uri_parts
-   *   The URI parts.
+   * @param array $query_params
+   *   The query parameters.
    *
    * @return array
    *   An oEmbed json array.
@@ -286,8 +279,8 @@ class OembedResolver implements OembedResolverInterface {
    * @SuppressWarnings(PHPMD.CyclomaticComplexity)
    * @SuppressWarnings(PHPMD.NPathComplexity)
    */
-  public function processImageMedia(MediaInterface $media, array $uri_parts): array {
-    $view_mode = $uri_parts['view_mode'] ?? NULL;
+  public function processImageMedia(MediaInterface $media, array $query_params): array {
+    $view_mode = $query_params['view_mode'] ?? NULL;
     $cache = $this->getDefaultCacheDependency();
 
     $source = $media->getSource();
@@ -303,12 +296,19 @@ class OembedResolver implements OembedResolverInterface {
 
     $cache->addCacheableDependency($image);
 
+    // We need to execute this in it's own render context because
+    // file_create_url() may call a toString() on a URL object causing early
+    // rendering.
+    $original_image_url = $this->renderer->executeInRenderContext(new RenderContext(), function () use ($image) {
+      return file_create_url($image->getFileUri());
+    });
+
     // If no view mode is requested, we return information about the original
     // image.
     if (!$view_mode) {
       return [
         'type' => 'photo',
-        'url' => file_create_url($image->getFileUri()),
+        'url' => $original_image_url,
         'width' => $source->getMetadata($media, 'width'),
         'height' => $source->getMetadata($media, 'height'),
         'lang' => $media->language()->getId(),
@@ -335,7 +335,7 @@ class OembedResolver implements OembedResolverInterface {
       // If the image is rendered without an image style.
       return [
         'type' => 'photo',
-        'url' => file_create_url($image->getFileUri()),
+        'url' => $original_image_url,
         'width' => $source->getMetadata($media, 'width'),
         'height' => $source->getMetadata($media, 'height'),
         'lang' => $media->language()->getId(),
@@ -411,13 +411,13 @@ class OembedResolver implements OembedResolverInterface {
    *
    * @param \Drupal\media\MediaInterface $media
    *   The media to be formatted into an oEmbed json.
-   * @param array $uri_parts
-   *   The URI parts.
+   * @param array $query_params
+   *   The query parameters.
    *
    * @return array
    *   A properly formatted json array.
    */
-  public function processFileMedia(MediaInterface $media, array $uri_parts): array {
+  public function processFileMedia(MediaInterface $media, array $query_params): array {
     $cache = $this->getDefaultCacheDependency();
     $source = $media->getSource();
     $source_field_value = $source->getSourceFieldValue($media);
@@ -439,7 +439,7 @@ class OembedResolver implements OembedResolverInterface {
       return file_create_url($file->getFileUri());
     });
 
-    $json = [
+    return [
       'type' => 'link',
       'name' => $media->getName(),
       'download' => $download_link,
@@ -449,8 +449,6 @@ class OembedResolver implements OembedResolverInterface {
       'mid' => $media->id(),
       'cache' => $cache,
     ];
-
-    return $json;
   }
 
   /**

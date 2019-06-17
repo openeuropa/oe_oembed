@@ -93,6 +93,7 @@ class OembedRouteController implements ContainerInjectionInterface {
 
     $response = new CacheableJsonResponse($result->getData());
     $response->addCacheableDependency($result);
+
     return $response;
   }
 
@@ -127,6 +128,7 @@ class OembedRouteController implements ContainerInjectionInterface {
 
     $access = $media->access('view', $account, TRUE);
     $access->addCacheContexts(['url']);
+
     return $access;
   }
 

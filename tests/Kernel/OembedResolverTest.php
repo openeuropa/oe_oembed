@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Drupal\Tests\oe_oembed\Kernel;
 
+use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Url;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\oe_oembed\Oembed\OembedCacheableException;
@@ -81,13 +82,13 @@ class OembedResolverTest extends KernelTestBase {
       'version' => '1.0',
       'type' => 'photo',
       'lang' => 'en',
+      'width' => 200,
+      'height' => 89,
     ];
 
     // Original image.
     $url = Url::fromUri('https://example.com/media/' . $media->uuid());
     $result = $this->oembedResolver->resolve($url);
-    $expected['width'] = 200;
-    $expected['height'] = 89;
     $expected['url'] = 'http://example.com/sites/default/files/example_1.jpeg';
 
     $this->assertEquals($expected, $result->getData());
@@ -99,14 +100,14 @@ class OembedResolverTest extends KernelTestBase {
     $this->assertEquals($expected, $result->getData());
     $this->assertEquals($media->id(), $result->getMedia()->id());
 
-    // Using the full view mode which is configured with the Medium image
+    // Using the full view mode which is configured with the thumbnail image
     // style.
     $url = Url::fromUri('https://example.com/media/' . $media->uuid(), ['query' => ['view_mode' => 'full']]);
     $result = $this->oembedResolver->resolve($url);
     $data = $result->getData();
-    $this->assertContains('http://example.com/sites/default/files/styles/medium/public/example_1.jpeg', $data['url']);
-    $this->assertEquals(200, $data['width']);
-    $this->assertEquals(89, $data['height']);
+    $this->assertContains('http://example.com/sites/default/files/styles/thumbnail/public/example_1.jpeg', $data['url']);
+    $this->assertEquals(100, $data['width']);
+    $this->assertEquals(45, $data['height']);
     $this->assertEquals($media->id(), $result->getMedia()->id());
 
     // Using the responsive image style.
@@ -165,7 +166,9 @@ class OembedResolverTest extends KernelTestBase {
     $data = $result->getData();
     $crawler = new Crawler($data['html']);
     $iframe = $crawler->filter('iframe');
+
     $this->assertCount(1, $iframe);
+    $this->assertContains(UrlHelper::encodePath('https://www.youtube.com/watch?v=1-g73ty9v04'), $iframe->attr('src'));
     $this->assertEquals('video', $data['type']);
     $this->assertEquals('en', $data['lang']);
     $this->assertEquals(400, $iframe->attr('width'));

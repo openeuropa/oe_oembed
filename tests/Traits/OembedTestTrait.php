@@ -123,7 +123,7 @@ trait OembedTestTrait {
     $full = $default->createDuplicate();
     $full->set('mode', 'full');
     $content = $full->get('content');
-    $content[$source_field->getName()]['settings']['image_style'] = 'medium';
+    $content[$source_field->getName()]['settings']['image_style'] = 'thumbnail';
     $full->set('content', $content);
     $full->save();
 

@@ -51,6 +51,8 @@ class OembedServiceTest extends BrowserTestBase {
    */
   public function testOembedRoute(): void {
     $this->drupalGet('oembed');
+    // Without passing a Resource URL, we should not have access to the
+    // endpoint.
     $this->assertSession()->statusCodeEquals(403);
 
     $media = $this->entityTypeManager->getStorage('media')->loadByProperties(['bundle' => 'image']);
@@ -86,10 +88,10 @@ class OembedServiceTest extends BrowserTestBase {
     }
 
     // Delete some dependencies to ensure the caching works correctly.
-    $this->entityTypeManager->getStorage('image_style')->load('medium')->delete();
+    $this->entityTypeManager->getStorage('image_style')->load('thumbnail')->delete();
     $this->drupalGet(Url::fromRoute('oe_oembed.oembed', [], ['query' => ['url' => Url::fromUri('https://example.com/media/' . $media->uuid(), ['query' => ['view_mode' => 'full']])->toString()]]));
     $this->assertSession()->statusCodeEquals(404);
-    $this->assertSession()->responseContains('The image style the formatter is using does not exist.');
+    $this->assertSession()->responseContains('The media source field is not configured to show on this view mode.');
 
     $this->entityTypeManager->getStorage('responsive_image_style')->load('responsive_style')->delete();
     $this->drupalGet(Url::fromRoute('oe_oembed.oembed', [], ['query' => ['url' => Url::fromUri('https://example.com/media/' . $media->uuid(), ['query' => ['view_mode' => 'responsive']])->toString()]]));
@@ -122,22 +124,16 @@ class OembedServiceTest extends BrowserTestBase {
     $this->assertSession()->statusCodeEquals(404);
     $this->assertSession()->responseContains('The source image is missing.');
 
+    // Testing the video media.
     $media = $this->entityTypeManager->getStorage('media')->loadByProperties(['bundle' => 'remote_video']);
     $media = reset($media);
 
     // Valid with remote video media.
-    $tests = [
-      Url::fromUri('https://example.com/media/' . $media->uuid()),
-    ];
-
-    /** @var \Drupal\Core\Url $test */
-    foreach ($tests as $test) {
-      $response = $this->drupalGet(Url::fromRoute('oe_oembed.oembed', [], ['query' => ['url' => $test->toString()]]));
-      $this->assertSession()->statusCodeEquals(200);
-      $decoded = json_decode($response);
-      $this->assertEquals('1.0', $decoded->version);
-      $this->assertEquals('video', $decoded->type);
-    }
+    $response = $this->drupalGet(Url::fromRoute('oe_oembed.oembed', [], ['query' => ['url' => Url::fromUri('https://example.com/media/' . $media->uuid())->toString()]]));
+    $this->assertSession()->statusCodeEquals(200);
+    $decoded = json_decode($response);
+    $this->assertEquals('1.0', $decoded->version);
+    $this->assertEquals('video', $decoded->type);
 
     // Invalid with remote video media.
     $tests = [
@@ -151,23 +147,17 @@ class OembedServiceTest extends BrowserTestBase {
       $this->assertSession()->statusCodeEquals($code);
     }
 
+    // Testing the file media.
     $media = $this->entityTypeManager->getStorage('media')->loadByProperties(['bundle' => 'file']);
     $media = reset($media);
     $source = $media->getSource();
 
-    // Valid with file video media.
-    $tests = [
-      Url::fromUri('https://example.com/media/' . $media->uuid()),
-    ];
-
-    /** @var \Drupal\Core\Url $test */
-    foreach ($tests as $test) {
-      $response = $this->drupalGet(Url::fromRoute('oe_oembed.oembed', [], ['query' => ['url' => $test->toString()]]));
-      $this->assertSession()->statusCodeEquals(200);
-      $decoded = json_decode($response);
-      $this->assertEquals('1.0', $decoded->version);
-      $this->assertEquals('link', $decoded->type);
-    }
+    // Valid with file media.
+    $response = $this->drupalGet(Url::fromRoute('oe_oembed.oembed', [], ['query' => ['url' => Url::fromUri('https://example.com/media/' . $media->uuid())->toString()]]));
+    $this->assertSession()->statusCodeEquals(200);
+    $decoded = json_decode($response);
+    $this->assertEquals('1.0', $decoded->version);
+    $this->assertEquals('link', $decoded->type);
 
     // Invalid with remote video media.
     $tests = [
@@ -181,6 +171,7 @@ class OembedServiceTest extends BrowserTestBase {
       $this->assertSession()->statusCodeEquals($code);
     }
 
+    // Delete the file behind the media entity to ensure a 404 response.
     $source_field_value = $source->getSourceFieldValue($media);
     $file = $this->entityTypeManager->getStorage('file')->load($source_field_value);
     $file->delete();
