@@ -27,6 +27,7 @@ class OembedServiceTest extends BrowserTestBase {
     'media',
     'oe_oembed',
     'user',
+    'media_test_source',
   ];
 
   /**

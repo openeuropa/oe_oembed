@@ -42,9 +42,11 @@ class OembedResolverTest extends KernelTestBase {
     'responsive_image',
     'breakpoint',
     'media',
-    'oe_oembed',
     'user',
     'system',
+    'oe_oembed',
+    'oe_oembed_test',
+    'media_test_source',
   ];
 
   /**
@@ -193,6 +195,36 @@ class OembedResolverTest extends KernelTestBase {
     $this->assertEquals('en', $data['lang']);
     $this->assertEquals('http://example.com/sites/default/files/sample.pdf', $data['download']);
     $this->assertEquals($media->id(), $result->getMedia()->id());
+  }
+
+  /**
+   * Tests that the resolver result can be altered.
+   */
+  public function testAlterSubscriber(): void {
+    $media = $this->entityTypeManager->getStorage('media')->loadByProperties(['bundle' => 'image']);
+    $media = reset($media);
+
+    $url = Url::fromUri('https://example.com/media/' . $media->uuid(), ['query' => ['alter' => 'altered']]);
+    $result = $this->oembedResolver->resolve($url);
+    $this->assertEquals('altered', $result->getData()['alter']);
+  }
+
+  /**
+   * Tests that other modules can resolve sources not covered by the module.
+   */
+  public function testSourceSubscriber(): void {
+    $media = $this->entityTypeManager->getStorage('media')->loadByProperties(['bundle' => 'test']);
+    $media = reset($media);
+
+    $url = Url::fromUri('https://example.com/media/' . $media->uuid());
+    $result = $this->oembedResolver->resolve($url);
+    $expected = [
+      'version' => '1.0',
+      'type' => 'rich',
+      'html' => '<p>This is data resolved from a test source</p>',
+    ];
+
+    $this->assertEquals($expected, $result->getData());
   }
 
 }

@@ -14,7 +14,10 @@ use Drupal\Core\Url;
 use Drupal\file\FileInterface;
 use Drupal\image\ImageStyleInterface;
 use Drupal\media\MediaInterface;
+use Drupal\oe_oembed\Event\OembedResolverAlter;
+use Drupal\oe_oembed\Event\OembedResolverSource;
 use Drupal\responsive_image\ResponsiveImageStyleInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Resolves incoming requests into a properly formated oEmbed json array.
@@ -43,6 +46,13 @@ class OembedResolver implements OembedResolverInterface {
   protected $entityTypeManager;
 
   /**
+   * The event dispatcher.
+   *
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  protected $eventDispatcher;
+
+  /**
    * Constructs the oEmbed resolver.
    *
    * @param \Drupal\Core\Entity\EntityRepositoryInterface $entity_repository
@@ -51,11 +61,14 @@ class OembedResolver implements OembedResolverInterface {
    *   The entity repository.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity repository.
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
+   *   The event dispatcher.
    */
-  public function __construct(EntityRepositoryInterface $entity_repository, Renderer $renderer, EntityTypeManagerInterface $entity_type_manager) {
+  public function __construct(EntityRepositoryInterface $entity_repository, Renderer $renderer, EntityTypeManagerInterface $entity_type_manager, EventDispatcherInterface $event_dispatcher) {
     $this->entityRepository = $entity_repository;
     $this->renderer = $renderer;
     $this->entityTypeManager = $entity_type_manager;
+    $this->eventDispatcher = $event_dispatcher;
   }
 
   /**
@@ -196,20 +209,36 @@ class OembedResolver implements OembedResolverInterface {
 
     switch ($source->getPluginId()) {
       case 'image':
-        return $this->processImageMedia($media, $query_params);
+        $resolved = $this->processImageMedia($media, $query_params);
+        break;
 
       case 'oembed:video':
-        return $this->processRemoteVideoMedia($media, $query_params);
+        $resolved = $this->processRemoteVideoMedia($media, $query_params);
+        break;
 
       case 'file':
-        return $this->processFileMedia($media, $query_params);
+        $resolved = $this->processFileMedia($media, $query_params);
+        break;
+
+      default:
+        // If we are not resolving any of these core source types, allow other
+        // modules to try to resolve it.
+        $event = new OembedResolverSource($media, $query_params);
+        $this->eventDispatcher->dispatch(OembedResolverSource::OEMBED_RESOLVER_SOURCE, $event);
+        $resolved = $event->getData();
+        break;
     }
 
-    // @todo create a plugin system that can provide data for other source
-    // plugin types.
-    $exception = new OembedCacheableException('A non-supported media type has been requested.');
-    $exception->addCacheableDependency($this->getDefaultCacheDependency());
-    throw $exception;
+    if (!$resolved) {
+      $exception = new OembedCacheableException('A non-supported media type has been requested.');
+      $exception->addCacheableDependency($this->getDefaultCacheDependency());
+      throw $exception;
+    }
+
+    // Allow other modules to alter the resolved data if something was resolved.
+    $event = new OembedResolverAlter($media, $query_params, $resolved);
+    $this->eventDispatcher->dispatch(OembedResolverAlter::OEMBED_RESOLVER_ALTER, $event);
+    return $event->getData();
   }
 
   /**
