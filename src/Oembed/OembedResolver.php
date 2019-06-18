@@ -17,7 +17,7 @@ use Drupal\media\MediaInterface;
 use Drupal\responsive_image\ResponsiveImageStyleInterface;
 
 /**
- * Resolves incoming requests into a properly formated oEmbed json array.
+ * Resolves incoming requests into a properly formatted oEmbed json array.
  */
 class OembedResolver implements OembedResolverInterface {
 
@@ -316,7 +316,8 @@ class OembedResolver implements OembedResolverInterface {
       ];
     }
 
-    // Otherwise, we inspect the view mode for information about how the image.
+    // Otherwise, we inspect the view mode for information about how the image
+    // should be displayed.
     /** @var \Drupal\Core\Entity\Display\EntityViewDisplayInterface $view_display */
     $view_display = $this->entityTypeManager->getStorage('entity_view_display')->load('media.' . $media->bundle() . "." . $view_mode);
 

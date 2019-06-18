@@ -113,17 +113,17 @@ class OembedRouteController implements ContainerInjectionInterface {
     }
 
     if (!UrlHelper::isValid($url_string)) {
-      return AccessResult::forbidden('There oEmbed resource URL is invalid.')->addCacheContexts(['url']);
+      return AccessResult::forbidden('The oEmbed resource URL is invalid.')->addCacheContexts(['url']);
     }
 
     $uuid = OembedResolver::uuidFromUrl($url_string);
     if (!$uuid) {
-      return AccessResult::forbidden('There oEmbed resource URL does not contain a valid resource UUID.')->addCacheContexts(['url']);
+      return AccessResult::forbidden('The oEmbed resource URL does not contain a valid resource UUID.')->addCacheContexts(['url']);
     }
 
     $media = $this->entityRepository->loadEntityByUuid('media', $uuid);
     if (!$media) {
-      return AccessResult::forbidden('There oEmbed resource URL contains a missing media entity.')->addCacheContexts(['url']);
+      return AccessResult::forbidden('The requested oEmbed resource was not found.')->addCacheContexts(['url']);
     }
 
     $access = $media->access('view', $account, TRUE);
