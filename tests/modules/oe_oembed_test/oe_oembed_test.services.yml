@@ -1,0 +1,9 @@
+services:
+  oe_oembed_test.alter_subscriber:
+    class: Drupal\Tests\oe_oembed\modules\oe_oembed_test\src\EventSubscriber\OembedTestAlterSubscriber
+    tags:
+      - { name: event_subscriber }
+  oe_oembed_test.source_subscriber:
+    class: Drupal\Tests\oe_oembed\modules\oe_oembed_test\src\EventSubscriber\OembedTestSourceSubscriber
+    tags:
+      - { name: event_subscriber }
