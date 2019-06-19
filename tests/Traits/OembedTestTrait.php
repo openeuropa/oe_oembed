@@ -28,6 +28,7 @@ trait OembedTestTrait {
     $this->createMediaType('image', ['id' => 'image']);
     $this->createMediaType('oembed:video', ['id' => 'remote_video']);
     $this->createMediaType('file', ['id' => 'file']);
+    $this->createMediaType('test', ['id' => 'test']);
 
     /** @var \Drupal\media\MediaTypeInterface[] $media_types */
     $media_types = $this->container->get('entity_type.manager')->getStorage('media_type')->loadMultiple();
@@ -84,6 +85,16 @@ trait OembedTestTrait {
       'bundle' => $media_type->id(),
       'name' => $this->randomMachineName(),
       $source_field->getName() => [$file],
+    ]);
+    $media->save();
+
+    $media_type = $media_types['test'];
+    $media_source = $media_type->getSource();
+    $source_field = $media_source->getSourceFieldDefinition($media_type);
+    $media = Media::create([
+      'bundle' => $media_type->id(),
+      'name' => $this->randomMachineName(),
+      $source_field->getName() => 'Test',
     ]);
     $media->save();
   }
