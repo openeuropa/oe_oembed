@@ -15,6 +15,11 @@ class OembedTestSourceSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
+  protected $defaultTheme = 'stark';
+
+  /**
+   * {@inheritdoc}
+   */
   public static function getSubscribedEvents() {
     return [
       OembedResolverSource::OEMBED_RESOLVER_SOURCE => 'resolveSource',

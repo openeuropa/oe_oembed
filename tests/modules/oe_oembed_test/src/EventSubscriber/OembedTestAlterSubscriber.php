@@ -15,6 +15,11 @@ class OembedTestAlterSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
+  protected $defaultTheme = 'stark';
+
+  /**
+   * {@inheritdoc}
+   */
   public static function getSubscribedEvents() {
     return [
       OembedResolverAlter::OEMBED_RESOLVER_ALTER => 'alterResolver',
