@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\oe_oembed\Oembed;
+namespace Drupal\oe_oembed_server\Oembed;
 
 use Drupal\Component\Uuid\Uuid;
 use Drupal\Core\Cache\CacheableMetadata;
@@ -14,8 +14,8 @@ use Drupal\Core\Url;
 use Drupal\file\FileInterface;
 use Drupal\image\ImageStyleInterface;
 use Drupal\media\MediaInterface;
-use Drupal\oe_oembed\Event\OembedResolverAlter;
-use Drupal\oe_oembed\Event\OembedResolverSource;
+use Drupal\oe_oembed_server\Event\OembedResolverAlter;
+use Drupal\oe_oembed_server\Event\OembedResolverSource;
 use Drupal\responsive_image\ResponsiveImageStyleInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 

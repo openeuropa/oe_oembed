@@ -40,7 +40,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Drupal\\Tests\\oe_oembed\\": "./tests/"
+            "Drupal\\Tests\\oe_oembed\\": "./tests/src/"
         }
     },
     "extra": {

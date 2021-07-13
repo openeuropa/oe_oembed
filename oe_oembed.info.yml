@@ -1,9 +1,6 @@
 name: OpenEuropa oEmbed
-description: The OpenEuropa oEmbed component provides an API to expose Media items following the oEmbed format.
+description: The OpenEuropa oEmbed component provides an API to expose entity items following the oEmbed format.
 package: OpenEuropa
 
 type: module
 core: 8.x
-
-dependencies:
-  - drupal:media

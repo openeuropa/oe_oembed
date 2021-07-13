@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\Tests\oe_oembed\modules\oe_oembed_test\src\EventSubscriber;
+namespace Drupal\oe_oembed_server_test\EventSubscriber;
 
-use Drupal\oe_oembed\Event\OembedResolverAlter;
+use Drupal\oe_oembed_server\Event\OembedResolverAlter;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -24,7 +24,7 @@ class OembedTestAlterSubscriber implements EventSubscriberInterface {
   /**
    * Handles the alteration.
    *
-   * @param \Drupal\oe_oembed\Event\OembedResolverAlter $event
+   * @param \Drupal\oe_oembed_server\Event\OembedResolverAlter $event
    *   The event.
    */
   public function alterResolver(OembedResolverAlter $event): void {

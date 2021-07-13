@@ -1,0 +1,6 @@
+oe_oembed_server.oembed:
+  path: '/oembed'
+  defaults:
+    _controller: '\Drupal\oe_oembed_server\Controller\OembedRouteController::getOembedJson'
+  requirements:
+    _custom_access: '\Drupal\oe_oembed_server\Controller\OembedRouteController::checkAccess'

@@ -2,20 +2,20 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\oe_oembed\Event;
+namespace Drupal\oe_oembed_server\Event;
 
 use Drupal\media\MediaInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
- * Used for resolving other sources for the OembedResolver.
+ * Used for altering the return value of the OembedResolver.
  */
-class OembedResolverSource extends Event {
+class OembedResolverAlter extends Event {
 
   /**
    * The name of the event.
    */
-  const OEMBED_RESOLVER_SOURCE = 'oembed_resolver_source';
+  const OEMBED_RESOLVER_ALTER = 'oembed_resolver_alter';
 
   /**
    * The media entity being resolved.
@@ -45,10 +45,13 @@ class OembedResolverSource extends Event {
    *   The media entity being resolved.
    * @param array $query_params
    *   The query params in the resource URL.
+   * @param array $data
+   *   The resolved data to be altered.
    */
-  public function __construct(MediaInterface $media, array $query_params) {
+  public function __construct(MediaInterface $media, array $query_params, array $data) {
     $this->media = $media;
     $this->queryParams = $query_params;
+    $this->data = $data;
   }
 
   /**
