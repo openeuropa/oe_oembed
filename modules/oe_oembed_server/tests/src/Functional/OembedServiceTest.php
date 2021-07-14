@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\Tests\oe_oembed\Functional;
+namespace Drupal\Tests\oe_oembed_server\Functional;
 
 use Drupal\Core\Url;
 use Drupal\Tests\BrowserTestBase;
@@ -25,7 +25,7 @@ class OembedServiceTest extends BrowserTestBase {
     'responsive_image',
     'breakpoint',
     'media',
-    'oe_oembed',
+    'oe_oembed_server',
     'user',
     'media_test_source',
   ];
@@ -70,7 +70,7 @@ class OembedServiceTest extends BrowserTestBase {
 
     /** @var \Drupal\Core\Url $test */
     foreach ($tests as $test) {
-      $response = $this->drupalGet(Url::fromRoute('oe_oembed.oembed', [], ['query' => ['url' => $test->toString()]]));
+      $response = $this->drupalGet(Url::fromRoute('oe_oembed_server.oembed', [], ['query' => ['url' => $test->toString()]]));
       $this->assertSession()->statusCodeEquals(200);
       $decoded = json_decode($response);
       $this->assertEquals('1.0', $decoded->version);
@@ -84,23 +84,23 @@ class OembedServiceTest extends BrowserTestBase {
     ];
 
     foreach ($tests as $url => $code) {
-      $this->drupalGet(Url::fromRoute('oe_oembed.oembed', [], ['query' => ['url' => $url]]));
+      $this->drupalGet(Url::fromRoute('oe_oembed_server.oembed', [], ['query' => ['url' => $url]]));
       $this->assertSession()->statusCodeEquals($code);
     }
 
     // Delete some dependencies to ensure the caching works correctly.
     $this->entityTypeManager->getStorage('image_style')->load('thumbnail')->delete();
-    $this->drupalGet(Url::fromRoute('oe_oembed.oembed', [], ['query' => ['url' => Url::fromUri('https://example.com/media/' . $media->uuid(), ['query' => ['view_mode' => 'full']])->toString()]]));
+    $this->drupalGet(Url::fromRoute('oe_oembed_server.oembed', [], ['query' => ['url' => Url::fromUri('https://example.com/media/' . $media->uuid(), ['query' => ['view_mode' => 'full']])->toString()]]));
     $this->assertSession()->statusCodeEquals(404);
     $this->assertSession()->responseContains('The media source field is not configured to show on this view mode.');
 
     $this->entityTypeManager->getStorage('responsive_image_style')->load('responsive_style')->delete();
-    $this->drupalGet(Url::fromRoute('oe_oembed.oembed', [], ['query' => ['url' => Url::fromUri('https://example.com/media/' . $media->uuid(), ['query' => ['view_mode' => 'responsive']])->toString()]]));
+    $this->drupalGet(Url::fromRoute('oe_oembed_server.oembed', [], ['query' => ['url' => Url::fromUri('https://example.com/media/' . $media->uuid(), ['query' => ['view_mode' => 'responsive']])->toString()]]));
     $this->assertSession()->statusCodeEquals(404);
     $this->assertSession()->responseContains('The media source field is not configured to show on this view mode.');
 
     $this->entityTypeManager->getStorage('entity_view_display')->load('media.image.full')->delete();
-    $this->drupalGet(Url::fromRoute('oe_oembed.oembed', [], ['query' => ['url' => Url::fromUri('https://example.com/media/' . $media->uuid(), ['query' => ['view_mode' => 'full']])->toString()]]));
+    $this->drupalGet(Url::fromRoute('oe_oembed_server.oembed', [], ['query' => ['url' => Url::fromUri('https://example.com/media/' . $media->uuid(), ['query' => ['view_mode' => 'full']])->toString()]]));
     $this->assertSession()->statusCodeEquals(404);
     $this->assertSession()->responseContains('The requested entity view display does not exist.');
 
@@ -114,14 +114,14 @@ class OembedServiceTest extends BrowserTestBase {
     unset($content[$source_field->getName()]);
     $display->set('content', $content);
     $display->save();
-    $this->drupalGet(Url::fromRoute('oe_oembed.oembed', [], ['query' => ['url' => Url::fromUri('https://example.com/media/' . $media->uuid(), ['query' => ['view_mode' => 'responsive']])->toString()]]));
+    $this->drupalGet(Url::fromRoute('oe_oembed_server.oembed', [], ['query' => ['url' => Url::fromUri('https://example.com/media/' . $media->uuid(), ['query' => ['view_mode' => 'responsive']])->toString()]]));
     $this->assertSession()->statusCodeEquals(404);
     $this->assertSession()->responseContains('The media source field is not configured to show on this view mode.');
 
     $source_field_value = $source->getSourceFieldValue($media);
     $image = $this->entityTypeManager->getStorage('file')->load($source_field_value);
     $image->delete();
-    $this->drupalGet(Url::fromRoute('oe_oembed.oembed', [], ['query' => ['url' => Url::fromUri('https://example.com/media/' . $media->uuid())->toString()]]));
+    $this->drupalGet(Url::fromRoute('oe_oembed_server.oembed', [], ['query' => ['url' => Url::fromUri('https://example.com/media/' . $media->uuid())->toString()]]));
     $this->assertSession()->statusCodeEquals(404);
     $this->assertSession()->responseContains('The source image is missing.');
 
@@ -130,7 +130,7 @@ class OembedServiceTest extends BrowserTestBase {
     $media = reset($media);
 
     // Valid with remote video media.
-    $response = $this->drupalGet(Url::fromRoute('oe_oembed.oembed', [], ['query' => ['url' => Url::fromUri('https://example.com/media/' . $media->uuid())->toString()]]));
+    $response = $this->drupalGet(Url::fromRoute('oe_oembed_server.oembed', [], ['query' => ['url' => Url::fromUri('https://example.com/media/' . $media->uuid())->toString()]]));
     $this->assertSession()->statusCodeEquals(200);
     $decoded = json_decode($response);
     $this->assertEquals('1.0', $decoded->version);
@@ -144,7 +144,7 @@ class OembedServiceTest extends BrowserTestBase {
     ];
 
     foreach ($tests as $url => $code) {
-      $this->drupalGet(Url::fromRoute('oe_oembed.oembed', [], ['query' => ['url' => $url]]));
+      $this->drupalGet(Url::fromRoute('oe_oembed_server.oembed', [], ['query' => ['url' => $url]]));
       $this->assertSession()->statusCodeEquals($code);
     }
 
@@ -154,7 +154,7 @@ class OembedServiceTest extends BrowserTestBase {
     $source = $media->getSource();
 
     // Valid with file media.
-    $response = $this->drupalGet(Url::fromRoute('oe_oembed.oembed', [], ['query' => ['url' => Url::fromUri('https://example.com/media/' . $media->uuid())->toString()]]));
+    $response = $this->drupalGet(Url::fromRoute('oe_oembed_server.oembed', [], ['query' => ['url' => Url::fromUri('https://example.com/media/' . $media->uuid())->toString()]]));
     $this->assertSession()->statusCodeEquals(200);
     $decoded = json_decode($response);
     $this->assertEquals('1.0', $decoded->version);
@@ -168,7 +168,7 @@ class OembedServiceTest extends BrowserTestBase {
     ];
 
     foreach ($tests as $url => $code) {
-      $this->drupalGet(Url::fromRoute('oe_oembed.oembed', [], ['query' => ['url' => $url]]));
+      $this->drupalGet(Url::fromRoute('oe_oembed_server.oembed', [], ['query' => ['url' => $url]]));
       $this->assertSession()->statusCodeEquals($code);
     }
 
@@ -177,7 +177,7 @@ class OembedServiceTest extends BrowserTestBase {
     $file = $this->entityTypeManager->getStorage('file')->load($source_field_value);
     $file->delete();
 
-    $this->drupalGet(Url::fromRoute('oe_oembed.oembed', [], ['query' => ['url' => Url::fromUri('https://example.com/media/' . $media->uuid())->toString()]]));
+    $this->drupalGet(Url::fromRoute('oe_oembed_server.oembed', [], ['query' => ['url' => Url::fromUri('https://example.com/media/' . $media->uuid())->toString()]]));
     $this->assertSession()->statusCodeEquals(404);
     $this->assertSession()->responseContains('The source file is missing.');
   }

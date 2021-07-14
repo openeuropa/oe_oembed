@@ -1,0 +1,10 @@
+name: OpenEuropa oEmbed Server
+description: Provides entry point to get entity following the oEmbed format.
+package: OpenEuropa
+
+type: module
+core: 8.x
+
+dependencies:
+  - drupal:media
+  - oe_oembed:oe_oembed

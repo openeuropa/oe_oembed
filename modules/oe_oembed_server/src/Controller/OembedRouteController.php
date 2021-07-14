@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\oe_oembed\Controller;
+namespace Drupal\oe_oembed_server\Controller;
 
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Access\AccessResult;
@@ -12,9 +12,9 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
-use Drupal\oe_oembed\Oembed\OembedCacheableException;
-use Drupal\oe_oembed\Oembed\OembedResolver;
-use Drupal\oe_oembed\Oembed\OembedResolverInterface;
+use Drupal\oe_oembed_server\Oembed\OembedCacheableException;
+use Drupal\oe_oembed_server\Oembed\OembedResolver;
+use Drupal\oe_oembed_server\Oembed\OembedResolverInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,7 +27,7 @@ class OembedRouteController implements ContainerInjectionInterface {
   /**
    * The oEmbed resolver.
    *
-   * @var \Drupal\oe_oembed\Oembed\OembedResolverInterface
+   * @var \Drupal\oe_oembed_server\Oembed\OembedResolverInterface
    */
   protected $oembedResolver;
 
@@ -48,7 +48,7 @@ class OembedRouteController implements ContainerInjectionInterface {
   /**
    * OembedRouteController constructor.
    *
-   * @param \Drupal\oe_oembed\Oembed\OembedResolverInterface $oembedResolver
+   * @param \Drupal\oe_oembed_server\Oembed\OembedResolverInterface $oembedResolver
    *   The oEmbed resolver.
    * @param \Symfony\Component\HttpFoundation\Request $request
    *   The current request.
@@ -66,7 +66,7 @@ class OembedRouteController implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('oe_oembed.oembed_resolver'),
+      $container->get('oe_oembed_server.oembed_resolver'),
       $container->get('request_stack')->getCurrentRequest(),
       $container->get('entity.repository')
     );

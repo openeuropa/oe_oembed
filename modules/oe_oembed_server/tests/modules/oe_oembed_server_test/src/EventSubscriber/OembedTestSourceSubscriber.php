@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\Tests\oe_oembed\modules\oe_oembed_test\src\EventSubscriber;
+namespace Drupal\oe_oembed_server_test\EventSubscriber;
 
-use Drupal\oe_oembed\Event\OembedResolverSource;
+use Drupal\oe_oembed_server\Event\OembedResolverSource;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -24,7 +24,7 @@ class OembedTestSourceSubscriber implements EventSubscriberInterface {
   /**
    * Resolve a given source.
    *
-   * @param \Drupal\oe_oembed\Event\OembedResolverSource $event
+   * @param \Drupal\oe_oembed_server\Event\OembedResolverSource $event
    *   The event.
    */
   public function resolveSource(OembedResolverSource $event): void {

@@ -2,12 +2,12 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\Tests\oe_oembed\Kernel;
+namespace Drupal\Tests\oe_oembed_server\Kernel;
 
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Url;
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\oe_oembed\Oembed\OembedCacheableException;
+use Drupal\oe_oembed_server\Oembed\OembedCacheableException;
 use Drupal\Tests\oe_oembed\Traits\OembedTestTrait;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -21,7 +21,7 @@ class OembedResolverTest extends KernelTestBase {
   /**
    * The oEmbed resolver service.
    *
-   * @var \Drupal\oe_oembed\Oembed\OembedResolverInterface
+   * @var \Drupal\oe_oembed_server\Oembed\OembedResolverInterface
    */
   protected $oembedResolver;
 
@@ -44,8 +44,8 @@ class OembedResolverTest extends KernelTestBase {
     'media',
     'user',
     'system',
-    'oe_oembed',
-    'oe_oembed_test',
+    'oe_oembed_server',
+    'oe_oembed_server_test',
     'media_test_source',
   ];
 
@@ -69,7 +69,7 @@ class OembedResolverTest extends KernelTestBase {
 
     $this->createMedia();
 
-    $this->oembedResolver = $this->container->get('oe_oembed.oembed_resolver');
+    $this->oembedResolver = $this->container->get('oe_oembed_server.oembed_resolver');
     $this->entityTypeManager = $this->container->get('entity_type.manager');
   }
 
