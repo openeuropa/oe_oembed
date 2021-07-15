@@ -4,3 +4,6 @@ package: OpenEuropa
 
 type: module
 core_version_requirement: ^8.9 || ^9.1
+
+dependencies:
+  - embed:embed
