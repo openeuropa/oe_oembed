@@ -52,7 +52,7 @@ class OembedResolverTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->installConfig([
@@ -107,7 +107,7 @@ class OembedResolverTest extends KernelTestBase {
     $url = Url::fromUri('https://example.com/media/' . $media->uuid(), ['query' => ['view_mode' => 'full']]);
     $result = $this->oembedResolver->resolve($url);
     $data = $result->getData();
-    $this->assertContains('http://example.com/sites/default/files/styles/thumbnail/public/example_1.jpeg', $data['url']);
+    $this->assertStringContainsString('http://example.com/sites/default/files/styles/thumbnail/public/example_1.jpeg', $data['url']);
     $this->assertEquals(100, $data['width']);
     $this->assertEquals(45, $data['height']);
     $this->assertEquals($media->id(), $result->getMedia()->id());
@@ -121,7 +121,7 @@ class OembedResolverTest extends KernelTestBase {
     $this->assertCount(1, $picture);
     $fallback_image = $picture->filter('img');
     $this->assertCount(1, $fallback_image);
-    $this->assertContains('http://example.com/sites/default/files/styles/large/public/example_1.jpeg', $fallback_image->attr('src'));
+    $this->assertStringContainsString('http://example.com/sites/default/files/styles/large/public/example_1.jpeg', $fallback_image->attr('src'));
     $this->assertEquals('rich', $data['type']);
     $this->assertEquals(200, $data['width']);
     $this->assertEquals(89, $data['height']);
@@ -170,7 +170,7 @@ class OembedResolverTest extends KernelTestBase {
     $iframe = $crawler->filter('iframe');
 
     $this->assertCount(1, $iframe);
-    $this->assertContains(UrlHelper::encodePath('https://www.youtube.com/watch?v=1-g73ty9v04'), $iframe->attr('src'));
+    $this->assertStringContainsString(UrlHelper::encodePath('https://www.youtube.com/watch?v=1-g73ty9v04'), $iframe->attr('src'));
     $this->assertEquals('video', $data['type']);
     $this->assertEquals('en', $data['lang']);
     $this->assertEquals(400, $iframe->attr('width'));
