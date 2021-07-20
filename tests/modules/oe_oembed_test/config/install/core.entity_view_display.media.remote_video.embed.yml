@@ -13,6 +13,7 @@ dependencies:
 third_party_settings:
   oe_oembed:
     embeddable: true
+    inline: false
 id: media.remote_video.embed
 targetEntityType: media
 bundle: remote_video

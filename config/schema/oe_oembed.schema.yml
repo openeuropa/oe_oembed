@@ -40,3 +40,6 @@ core.entity_view_display.*.*.*.third_party.oe_oembed:
     embeddable:
       type: boolean
       label: 'Embeddable'
+    inline:
+      type: boolean
+      label: 'Whether the embed should not be inline instead of a paragraph-based block'

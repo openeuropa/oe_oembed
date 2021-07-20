@@ -2,17 +2,17 @@ langcode: en
 status: true
 dependencies:
   config:
-    - core.entity_view_mode.node.embed
+    - core.entity_view_mode.node.inline
     - node.type.page
   module:
     - user
-id: node.page.embed
+id: node.page.inline
 targetEntityType: node
 bundle: page
-mode: embed
+mode: inline
 third_party_settings:
   oe_oembed:
-    embeddable: true
+    embeddable: false
     inline: false
 content:
   links:

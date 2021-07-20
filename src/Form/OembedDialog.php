@@ -702,6 +702,8 @@ class OembedDialog extends FormBase {
     $config = $this->configFactory->get('oe_oembed.settings');
     $resource_base_url = $config->get('resource_base_url');
     $service_url = $config->get('service_url');
+    // Set inline if the view display is configured as such.
+    $attributes['data-embed-inline'] = $this->isViewModeInline($entity, $query['view_mode']);
     $resource_url = Url::fromUri($resource_base_url . $entity_type . '/' . $uuid, ['query' => $query]);
     $attributes['data-oembed'] = Url::fromUri($service_url, ['query' => ['url' => $resource_url->toString()]])->toString();
     $attributes['data-resource-url'] = $resource_url->setOption('query', [])->toString();
@@ -805,6 +807,24 @@ class OembedDialog extends FormBase {
     }
 
     return $options;
+  }
+
+  /**
+   * Determines if the given view mode should be embedded inline.
+   *
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   *   The entity.
+   * @param string $view_mode
+   *   The view mode.
+   *
+   * @return bool
+   *   Whether the view mode should be embedded inline.
+   */
+  protected function isViewModeInline(ContentEntityInterface $entity, string $view_mode): bool {
+    $view_display_storage = $this->entityTypeManager->getStorage('entity_view_display');
+    /** @var \Drupal\Core\Entity\Display\EntityDisplayInterface $display */
+    $display = $view_display_storage->load($entity->getEntityTypeId() . '.' . $entity->bundle() . '.' . $view_mode);
+    return (bool) $display->getThirdPartySetting('oe_oembed', 'inline');
   }
 
 }
