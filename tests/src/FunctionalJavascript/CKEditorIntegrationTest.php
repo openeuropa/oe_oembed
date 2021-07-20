@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Drupal\Tests\oe_oembed\FunctionalJavascript;
 
 use Drupal\Component\Render\FormattableMarkup;
+use Drupal\Core\Entity\Entity\EntityViewDisplay;
 
 /**
  * Tests CKEditor integration.
@@ -175,6 +176,46 @@ class CKEditorIntegrationTest extends EmbedTestBase {
     $this->assertSession()->buttonExists('Save')->press();
 
     $element = new FormattableMarkup('<p data-oembed="https://oembed.ec.europa.eu?url=https%3A//data.ec.europa.eu/ewp/node/@uuid%3Fview_mode%3Dembed"><a href="https://data.ec.europa.eu/ewp/node/@uuid">@title</a></p>', [
+      '@uuid' => $node->uuid(),
+      '@title' => $node->label(),
+    ]);
+    $this->assertStringContainsString($element->__toString(), $this->getSession()->getPage()->getHtml());
+
+    // Embed again the node but this time enable a new view mode configured to
+    // be embedded inline.
+    $view_display = EntityViewDisplay::load('node.page.inline');
+    $view_display->setThirdPartySetting('oe_oembed', 'inline', TRUE);
+    $view_display->setThirdPartySetting('oe_oembed', 'embeddable', TRUE);
+    $view_display->save();
+
+    $this->drupalGet('/node/add/page');
+    $this->assignNameToCkeditorIframe();
+
+    $this->getSession()->switchToIFrame('ckeditor');
+    $this->assertSession()->pageTextNotContains('Embed node');
+
+    // Embed the node.
+    $this->getSession()->switchToIFrame();
+    $this->assertSession()->elementExists('css', 'a.cke_button__' . $this->nodeButton->id())->click();
+    $this->assertSession()->waitForId('drupal-modal');
+    $this->assertSession()->fieldExists('entity_id')->setValue('Embed node (' . $node->id() . ')');
+    $this->assertSession()->elementExists('css', 'button.js-button-next')->click();
+    $this->assertSession()->assertWaitOnAjaxRequest();
+    $this->assertSession()->responseContains('Selected entity');
+    $this->assertSession()->linkExists('Embed node');
+    $this->assertSession()->fieldExists('Display as')->selectOption('Inline');
+    $this->assertSession()->elementExists('css', 'button.button--primary')->press();
+    $this->assertSession()->assertWaitOnAjaxRequest();
+    // Verify that the embedded entity gets a preview inside the text editor.
+    $this->getSession()->switchToIFrame('ckeditor');
+    $this->assertSession()->pageTextContains('Embed node');
+
+    // Save the page.
+    $this->getSession()->switchToIFrame();
+    $this->getSession()->getPage()->fillField('Title', 'Node with embedded inline node');
+    $this->assertSession()->buttonExists('Save')->press();
+
+    $element = new FormattableMarkup('<a data-oembed="https://oembed.ec.europa.eu?url=https%3A//data.ec.europa.eu/ewp/node/@uuid%3Fview_mode%3Dinline" href="https://data.ec.europa.eu/ewp/node/@uuid">@title</a>', [
       '@uuid' => $node->uuid(),
       '@title' => $node->label(),
     ]);
