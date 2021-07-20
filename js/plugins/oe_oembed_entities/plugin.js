@@ -26,21 +26,15 @@
           };
 
           var saveCallback = function (values) {
-            var entityElement = editor.document.createElement('p');
             var attributes = values.attributes;
+            var inline = Boolean(attributes['data-embed-inline']);
 
-            for (var key in attributes) {
-              if (['data-resource-url', 'data-resource-label'].includes(key)) {
-                continue;
-              }
-              entityElement.setAttribute(key, attributes[key]);
+            if (inline) {
+              createAndEmbedInlineElement(editor, attributes);
             }
-
-            var childElement = editor.document.createElement('a');
-            childElement.setAttribute('href', attributes['data-resource-url']);
-            childElement.setHtml(attributes['data-resource-label']);
-            entityElement.setHtml(childElement.getOuterHtml());
-            editor.insertHtml(entityElement.getOuterHtml() + '<p></p>');
+            else {
+              createAndEmbedBlockElement(editor, attributes);
+            }
           };
 
           var embed_button_id = data.id;
@@ -110,6 +104,53 @@
       generateEmbedId.counter = 0;
     }
     return 'oe-embed-embed-' + generateEmbedId.counter++;
+  }
+
+  /**
+   * Creates and inserts into the editor the <p> based embed code.
+   *
+   * @param editor
+   *   The editor.
+   * @param attributes
+   *   The array of attributes.
+   */
+  function createAndEmbedBlockElement(editor, attributes) {
+    var entityElement = editor.document.createElement('p');
+    for (var key in attributes) {
+      if (['data-resource-url', 'data-resource-label', 'data-embed-inline'].includes(key)) {
+        continue;
+      }
+      entityElement.setAttribute(key, attributes[key]);
+    }
+
+    var childElement = editor.document.createElement('a');
+    childElement.setAttribute('href', attributes['data-resource-url']);
+    childElement.setHtml(attributes['data-resource-label']);
+    entityElement.setHtml(childElement.getOuterHtml());
+    editor.insertHtml(entityElement.getOuterHtml() + '<p></p>');
+  }
+
+  /**
+   * Creates and inserts into the editor the <a> based embed code.
+   *
+   * @param editor
+   *   The editor.
+   * @param attributes
+   *   The array of attributes.
+   */
+  function createAndEmbedInlineElement(editor, attributes) {
+    var entityElement = editor.document.createElement('a');
+    for (var key in attributes) {
+      if (['data-resource-url', 'data-resource-label', 'data-embed-inline'].includes(key)) {
+        continue;
+      }
+      entityElement.setAttribute(key, attributes[key]);
+    }
+
+
+    entityElement.setAttribute('href', attributes['data-resource-url']);
+    entityElement.setHtml(attributes['data-resource-label']);
+    editor.insertHtml(entityElement.getOuterHtml());
   }
 
 })(jQuery, Drupal, CKEDITOR);

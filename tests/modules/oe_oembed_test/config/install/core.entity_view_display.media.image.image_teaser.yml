@@ -10,6 +10,7 @@ dependencies:
 third_party_settings:
   oe_oembed:
     embeddable: true
+    inline: false
 id: media.image.image_teaser
 targetEntityType: media
 bundle: image
