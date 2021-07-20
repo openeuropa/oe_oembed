@@ -1,0 +1,9 @@
+name: OE oEmbed Test
+description: Test module for embeds
+core_version_requirement: ^8.9 || ^9
+type: module
+package: Testing
+
+dependencies:
+  - oe_media:oe_media
+  - oe_oembed:oe_oembed

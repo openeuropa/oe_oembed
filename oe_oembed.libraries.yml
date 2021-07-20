@@ -1,0 +1,10 @@
+oe_oembed.dialog:
+  version: VERSION
+  js:
+    js/oe_oembed.dialog.js: {}
+  css:
+    theme:
+      css/oe_oembed.dialog.css: {}
+  dependencies:
+    - core/drupal
+    - core/jquery

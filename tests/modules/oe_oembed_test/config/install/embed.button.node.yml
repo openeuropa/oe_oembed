@@ -1,0 +1,17 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - oe_oembed
+    - node
+label: Node
+id: node
+type_id: oe_oembed_entities
+type_settings:
+  entity_type: node
+  bundles:
+    - page
+  entity_browser: ''
+  entity_browser_settings:
+    display_review: false
+icon_uuid: null
