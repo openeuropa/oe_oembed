@@ -28,6 +28,10 @@ drupal:
         - "bower_components"
         - "vendor"
         - "${drupal.root}"
+selenium:
+  host: "http://selenium"
+  port: "4444"
+  browser: "chrome"
 
 commands:
   drupal:site-setup:
@@ -35,7 +39,6 @@ commands:
     - { task: "run", command: "drupal:drush-setup" }
     - { task: "run", command: "drupal:settings-setup" }
     - { task: "run", command: "setup:phpunit" }
-    - { task: "run", command: "setup:behat" }
   setup:phpunit:
     - { task: "process", source: "phpunit.xml.dist", destination: "phpunit.xml" }
   setup:behat:

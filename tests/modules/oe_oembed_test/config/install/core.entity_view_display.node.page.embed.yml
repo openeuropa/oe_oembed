@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.embed
+    - node.type.page
+  module:
+    - user
+id: node.page.embed
+targetEntityType: node
+bundle: page
+mode: embed
+third_party_settings:
+  oe_oembed:
+    embeddable: true
+content:
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden: {  }
