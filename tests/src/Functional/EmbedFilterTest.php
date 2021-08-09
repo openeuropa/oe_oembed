@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Drupal\Tests\oe_oembed\Functional;
 
+use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\editor\Entity\Editor;
 use Drupal\file\Entity\File;
 use Drupal\filter\Entity\FilterFormat;
@@ -59,6 +60,11 @@ class EmbedFilterTest extends EmbedTestBase {
 
     $this->entityTypeManager = $this->container->get('entity_type.manager');
     $this->createTestEntities();
+
+    $view_display = EntityViewDisplay::load('node.page.inline');
+    $view_display->setThirdPartySetting('oe_oembed', 'inline', TRUE);
+    $view_display->setThirdPartySetting('oe_oembed', 'embeddable', TRUE);
+    $view_display->save();
   }
 
   /**
@@ -119,13 +125,14 @@ class EmbedFilterTest extends EmbedTestBase {
     $assert_session->responseNotContains($content);
     $media_data[$media->uuid()] = $media->label();
 
-    // Create a node with all the media.
+    // Create a node with all the media and node embeds.
     $content = '';
     foreach ($media_data as $uuid => $name) {
       $content .= '<p data-oembed="https://oembed.ec.europa.eu?url=https%3A//data.ec.europa.eu/ewp/media/' . $uuid . '"><a href="https://data.ec.europa.eu/ewp/media/' . $uuid . '">' . $name . '</a></p>';
     }
     $embedded_node = $this->drupalGetNodeByTitle('Embedded node');
     $content .= '<p data-oembed="https://oembed.ec.europa.eu?url=https%3A//data.ec.europa.eu/ewp/node/' . $embedded_node->uuid() . '"><a href="https://data.ec.europa.eu/ewp/node/' . $embedded_node->uuid() . '">' . $embedded_node->label() . '</a></p>';
+    $content .= '<a data-oembed="https://oembed.ec.europa.eu?url=https%3A//data.ec.europa.eu/ewp/node/' . $embedded_node->uuid() . '%3Fview_mode%3Dinline" href="https://data.ec.europa.eu/ewp/node/' . $embedded_node->uuid() . '">' . $embedded_node->label() . '</a>';
 
     $values = [];
     $values['type'] = 'page';
@@ -138,8 +145,12 @@ class EmbedFilterTest extends EmbedTestBase {
     $assert_session->elementAttributeContains('css', '.field--name-oe-media-image img', 'src', 'files/example_1.jpeg');
     $assert_session->elementExists('css', '.media--type-document');
     $assert_session->responseNotContains($content);
-    // Check that the node elements got rendered.
+    // Check that the node elements got rendered (both block and inline).
     $assert_session->pageTextContains('Embedded node');
+    $assert_session->elementExists('css', '.node--type-page.node--promoted.node--view-mode-default');
+    $assert_session->elementExists('css', '.node--type-page.node--promoted.node--view-mode-inline');
+    $assert_session->responseNotContains('<p data-oembed="https://oembed.ec.europa.eu?url=https%3A//data.ec.europa.eu/ewp/node/' . $embedded_node->uuid() . '"><a href="https://data.ec.europa.eu/ewp/node/' . $embedded_node->uuid() . '">' . $embedded_node->label() . '</a></p>');
+    $assert_session->responseNotContains('<a data-oembed="https://oembed.ec.europa.eu?url=https%3A//data.ec.europa.eu/ewp/node/' . $embedded_node->uuid() . '%3Fview_mode%3Dinline" href="https://data.ec.europa.eu/ewp/node/' . $embedded_node->uuid() . '">' . $embedded_node->label() . '</a>');
 
     // Unpublish the node entity and ensure it's no longer in the markup.
     $embedded_node->setUnpublished();
