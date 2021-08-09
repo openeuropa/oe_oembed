@@ -104,7 +104,7 @@ class FilterOembed extends FilterBase implements ContainerFactoryPluginInterface
     $dom = Html::load($text);
     $xpath = new \DOMXPath($dom);
 
-    foreach ($xpath->query('//p[@data-oembed]') as $node) {
+    foreach ($xpath->query('//*[@data-oembed]') as $node) {
       $this->replaceOembedNode($node, $result);
     }
 
