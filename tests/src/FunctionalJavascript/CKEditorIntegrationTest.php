@@ -128,13 +128,13 @@ class CKEditorIntegrationTest extends EmbedTestBase {
       ->getStorage('media')
       ->loadMultiple();
 
-    $element = new FormattableMarkup('<p data-oembed="https://oembed.ec.europa.eu?url=https%3A//data.ec.europa.eu/ewp/media/@uuid%3Fview_mode%3Dimage_teaser"><a href="https://data.ec.europa.eu/ewp/media/@uuid">@title</a></p>', [
+    $element = new FormattableMarkup('<p data-display-as="image_teaser" data-oembed="https://oembed.ec.europa.eu?url=https%3A//data.ec.europa.eu/ewp/media/@uuid%3Fview_mode%3Dimage_teaser"><a href="https://data.ec.europa.eu/ewp/media/@uuid">@title</a></p>', [
       '@uuid' => $media[1]->uuid(),
       '@title' => $media[1]->label(),
     ]);
     $this->assertStringContainsString($element->__toString(), $this->getSession()->getPage()->getHtml());
 
-    $element = new FormattableMarkup('<p data-oembed="https://oembed.ec.europa.eu?url=https%3A//data.ec.europa.eu/ewp/media/@uuid%3Fview_mode%3Dembed"><a href="https://data.ec.europa.eu/ewp/media/@uuid">@title</a></p>', [
+    $element = new FormattableMarkup('<p data-display-as="embed" data-oembed="https://oembed.ec.europa.eu?url=https%3A//data.ec.europa.eu/ewp/media/@uuid%3Fview_mode%3Dembed"><a href="https://data.ec.europa.eu/ewp/media/@uuid">@title</a></p>', [
       '@uuid' => $media[2]->uuid(),
       '@title' => $media[2]->label(),
     ]);
@@ -175,7 +175,7 @@ class CKEditorIntegrationTest extends EmbedTestBase {
     $this->getSession()->getPage()->fillField('Title', 'Node with embedded node');
     $this->assertSession()->buttonExists('Save')->press();
 
-    $element = new FormattableMarkup('<p data-oembed="https://oembed.ec.europa.eu?url=https%3A//data.ec.europa.eu/ewp/node/@uuid%3Fview_mode%3Dembed"><a href="https://data.ec.europa.eu/ewp/node/@uuid">@title</a></p>', [
+    $element = new FormattableMarkup('<p data-display-as="embed" data-oembed="https://oembed.ec.europa.eu?url=https%3A//data.ec.europa.eu/ewp/node/@uuid%3Fview_mode%3Dembed"><a href="https://data.ec.europa.eu/ewp/node/@uuid">@title</a></p>', [
       '@uuid' => $node->uuid(),
       '@title' => $node->label(),
     ]);
@@ -215,7 +215,7 @@ class CKEditorIntegrationTest extends EmbedTestBase {
     $this->getSession()->getPage()->fillField('Title', 'Node with embedded inline node');
     $this->assertSession()->buttonExists('Save')->press();
 
-    $element = new FormattableMarkup('<a data-oembed="https://oembed.ec.europa.eu?url=https%3A//data.ec.europa.eu/ewp/node/@uuid%3Fview_mode%3Dinline" href="https://data.ec.europa.eu/ewp/node/@uuid">@title</a>', [
+    $element = new FormattableMarkup('<a data-display-as="inline" data-oembed="https://oembed.ec.europa.eu?url=https%3A//data.ec.europa.eu/ewp/node/@uuid%3Fview_mode%3Dinline" href="https://data.ec.europa.eu/ewp/node/@uuid">@title</a>', [
       '@uuid' => $node->uuid(),
       '@title' => $node->label(),
     ]);
