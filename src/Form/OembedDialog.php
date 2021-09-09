@@ -692,6 +692,7 @@ class OembedDialog extends FormBase {
     $query = [];
     if (isset($attributes['data-entity-view-mode'])) {
       $query['view_mode'] = $attributes['data-entity-view-mode'];
+      $attributes['data-display-as'] = $query['view_mode'];
       unset($attributes['data-entity-view-mode']);
     }
 
