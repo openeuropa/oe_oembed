@@ -22,6 +22,15 @@ services:
     command: --innodb-log-file-size=1G --max_allowed_packet=1G --innodb-buffer-pool-size=512M --wait_timeout=3000 --net_write_timeout=3000 --log_error_verbosity=3
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+  selenium:
+    image: registry.fpfis.eu/fpfis/selenium:standalone-chrome-3.141.5
+    shm_size: 2g
+    environment:
+      - DISPLAY=:99
+      - SCREEN_WIDTH=1280
+      - SCREEN_HEIGHT=800
+      - NODE_MAX_INSTANCES=5
+      - NODE_MAX_SESSION=5
 
 pipeline:
   composer-install:
@@ -62,16 +71,9 @@ pipeline:
     commands:
       - ./vendor/bin/phpunit
 
-  behat:
-    group: test
-    image: registry.fpfis.eu/fpfis/httpd-php:${PHP_VERSION}-ci
-    commands:
-      - ./vendor/bin/behat --strict
-
 matrix:
   COMPOSER_BOUNDARY:
     - lowest
     - highest
   PHP_VERSION:
-    - 7.2
     - 7.3

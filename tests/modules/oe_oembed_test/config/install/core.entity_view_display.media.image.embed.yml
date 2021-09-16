@@ -1,0 +1,32 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.media.embed
+    - field.field.media.image.oe_media_image
+    - media.type.image
+  module:
+    - image
+third_party_settings:
+  oe_oembed:
+    embeddable: true
+    inline: false
+id: media.image.embed
+targetEntityType: media
+bundle: image
+mode: embed
+content:
+  oe_media_image:
+    type: image
+    weight: 0
+    region: content
+    label: hidden
+    settings:
+      image_style: ''
+      image_link: ''
+    third_party_settings: {  }
+hidden:
+  created: true
+  name: true
+  thumbnail: true
+  uid: true

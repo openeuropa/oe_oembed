@@ -1,0 +1,23 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.inline
+    - node.type.page
+  module:
+    - user
+id: node.page.inline
+targetEntityType: node
+bundle: page
+mode: inline
+third_party_settings:
+  oe_oembed:
+    embeddable: false
+    inline: false
+content:
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden: {  }

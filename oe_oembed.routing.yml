@@ -1,6 +1,13 @@
-oe_oembed.oembed:
-  path: '/oembed'
+oe_oembed.dialog:
+  path: '/oe-oembed-embed/dialog/{editor}/{embed_button}'
   defaults:
-    _controller: '\Drupal\oe_oembed\Controller\OembedRouteController::getOembedJson'
+    _form: '\Drupal\oe_oembed\Form\OembedDialog'
+    _title: 'Embed entities'
+  options:
+    parameters:
+      editor:
+        type: entity:editor
+      embed_button:
+        type: entity:embed_button
   requirements:
-    _custom_access: '\Drupal\oe_oembed\Controller\OembedRouteController::checkAccess'
+    _embed_button_editor_access: 'TRUE'
