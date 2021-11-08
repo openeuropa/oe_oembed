@@ -773,7 +773,7 @@ class OembedDialog extends FormBase {
         '#type' => 'select',
         '#title' => $this->t('Display as'),
         '#options' => $display_options,
-        '#default_value' => $entity_element['data-entity-view-mode'],
+        '#default_value' => $entity_element['data-entity-view-mode'] ?? NULL,
         '#required' => TRUE,
       ],
     ];
