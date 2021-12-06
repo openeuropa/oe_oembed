@@ -1,8 +1,17 @@
 # Changelog
 
+## [0.1.1](https://github.com/openeuropa/oe_oembed/tree/0.1.1) (2021-12-06)
+
+[Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.1.0...0.1.1)
+
+**Merged pull requests:**
+
+- EWPP-000: Fix issue with functional javascript test related to selenium performance. [\#27](https://github.com/openeuropa/oe_oembed/pull/27) ([sergepavle](https://github.com/sergepavle))
+- EWPP-913: Fixing non-set notice. [\#25](https://github.com/openeuropa/oe_oembed/pull/25) ([upchuk](https://github.com/upchuk))
+
 ## [0.1.0](https://github.com/openeuropa/oe_oembed/tree/0.1.0) (2021-09-27)
 
-[Full Changelog](https://github.com/openeuropa/oe_oembed/compare/01b964617a60e42db0f6009a6f72bb43a1ce3f7a...0.1.0)
+[Full Changelog](https://github.com/openeuropa/oe_oembed/compare/86074b81ad37bcea887df2441a93e356fecb6550...0.1.0)
 
 **Closed issues:**
 
@@ -10,6 +19,7 @@
 
 **Merged pull requests:**
 
+- Release-0.1.0: Update changelog. [\#24](https://github.com/openeuropa/oe_oembed/pull/24) ([nagyad](https://github.com/nagyad))
 - EWPP-1294: WYSIWYG embed epic [\#23](https://github.com/openeuropa/oe_oembed/pull/23) ([upchuk](https://github.com/upchuk))
 - EWPP-1338: Setting the view mode on the embedded element as data attribute [\#22](https://github.com/openeuropa/oe_oembed/pull/22) ([upchuk](https://github.com/upchuk))
 - EWPP-1338: Inline embed elements are replaced by the filter. [\#21](https://github.com/openeuropa/oe_oembed/pull/21) ([upchuk](https://github.com/upchuk))
