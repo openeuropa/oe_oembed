@@ -48,6 +48,8 @@ class EmbedButtonAdminTest extends WebDriverTestBase {
     $this->drupalGet('admin/config/content/embed/button/add');
 
     $this->getSession()->getPage()->fillField('label', 'Test button no bundles');
+    $this->assertSession()->waitForElementVisible('css', '.machine-name-value');
+
     $this->getSession()->getPage()->selectFieldOption('type_id', 'oe_oembed_entities');
     $this->assertSession()->assertWaitOnAjaxRequest();
 
