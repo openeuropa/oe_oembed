@@ -160,7 +160,7 @@ class FilterOembed extends FilterBase implements ContainerFactoryPluginInterface
 
     // Extract the entity type.
     $entity_type = trim(str_replace([$resource_base_url, $uuid], ['', ''], $parsed_resource_url['path']), '/');
-    $entity_type_definition = $this->entityTypeManager->getDefinition($entity_type);
+    $entity_type_definition = $this->entityTypeManager->getDefinition($entity_type, FALSE);
     if (!$entity_type_definition instanceof ContentEntityTypeInterface) {
       $this->replaceNodeContent($node, $output);
       return;
