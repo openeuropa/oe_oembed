@@ -175,7 +175,7 @@ class EmbedFilterTest extends EmbedTestBase {
     $assert_session->elementNotExists('css', '.media--type-document');
     $assert_session->pageTextNotContains('Embedded node');
 
-    // Test a non-valid URL that doesn't get replaced.
+    // Test a non-valid embed that doesn't get replaced.
     $content = '<p data-oembed="https://oembed.ec.europa.eu">Test no real media embed</p>';
     $values = [];
     $values['type'] = 'page';
@@ -184,6 +184,18 @@ class EmbedFilterTest extends EmbedTestBase {
     $node = $this->drupalCreateNode($values);
     $this->drupalGet('node/' . $node->id());
     $assert_session->responseContains($content);
+
+    // Test a non-valid embed URL that gets removed.
+    $content = '<p data-oembed="https://oembed.ec.europa.eu?url=https%3A//data.ec.europa.eu/ewp/14d7e768-1b50-11ec-b4fe-01aa75ed71a1"><a href="https://data.ec.europa.eu/ewp/14d7e768-1b50-11ec-b4fe-01aa75ed71a1">Has no entity type</a></p>';
+    $values = [];
+    $values['type'] = 'page';
+    $values['title'] = 'Test no valid URL';
+    $values['body'] = [['value' => $content, 'format' => 'format_with_embed']];
+    $node = $this->drupalCreateNode($values);
+    $this->drupalGet('node/' . $node->id());
+    $assert_session->pageTextContains('Test no valid URL');
+    $assert_session->responseNotContains('oembed.ec.europa.eu');
+    $assert_session->responseNotContains('Has no entity type');
   }
 
   /**
