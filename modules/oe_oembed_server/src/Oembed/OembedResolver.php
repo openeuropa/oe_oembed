@@ -388,7 +388,7 @@ class OembedResolver implements OembedResolverInterface {
       if (!file_exists($uri)) {
         $image_style->createDerivative($image->getFileUri(), $uri);
       }
-      list($width, $height) = getimagesize($uri);
+      [$width, $height] = getimagesize($uri);
 
       return [
         'type' => 'photo',
@@ -420,7 +420,7 @@ class OembedResolver implements OembedResolverInterface {
       if (!file_exists($uri)) {
         $image_style->createDerivative($image->getFileUri(), $uri);
       }
-      list($width, $height) = getimagesize($uri);
+      [$width, $height] = getimagesize($uri);
       // Then we render the field to get the <picture> tag.
       $responsive_image_render_array = $this->entityTypeManager->getViewBuilder('media')->viewField($media->{$source_field_definition->getName()}, $view_mode);
       $rendered_responsive_image = $this->renderer->renderRoot($responsive_image_render_array);
