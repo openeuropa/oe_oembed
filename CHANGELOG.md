@@ -1,11 +1,21 @@
 # Changelog
 
+## [0.2.0](https://github.com/openeuropa/oe_oembed/tree/0.2.0) (2022-02-17)
+
+[Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.1.1...0.2.0)
+
+**Merged pull requests:**
+
+- EWPP-1991: Upgrade to PHP8 and Composer v2. [\#30](https://github.com/openeuropa/oe_oembed/pull/30) ([22Alexandra](https://github.com/22Alexandra))
+- EWPP-1880: oEmbed filter doesn't crash on missing entity type. [\#29](https://github.com/openeuropa/oe_oembed/pull/29) ([upchuk](https://github.com/upchuk))
+
 ## [0.1.1](https://github.com/openeuropa/oe_oembed/tree/0.1.1) (2021-12-06)
 
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.1.0...0.1.1)
 
 **Merged pull requests:**
 
+- Prepare release 0.1.1. [\#28](https://github.com/openeuropa/oe_oembed/pull/28) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - EWPP-000: Fix issue with functional javascript test related to selenium performance. [\#27](https://github.com/openeuropa/oe_oembed/pull/27) ([sergepavle](https://github.com/sergepavle))
 - EWPP-913: Fixing non-set notice. [\#25](https://github.com/openeuropa/oe_oembed/pull/25) ([upchuk](https://github.com/upchuk))
 
