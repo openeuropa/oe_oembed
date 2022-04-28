@@ -243,6 +243,15 @@ class CKEditorIntegrationTest extends EmbedTestBase {
     $this->getSession()->switchToIFrame();
     $this->assertSession()->elementExists('css', 'a.cke_button__' . $this->mediaButton->id())->click();
     $this->assertSession()->waitForId('drupal-modal');
+    // Assert that the embed dialog URL contains in its POST values information
+    // about the current page the embed is found on.
+    $this->assertEquals([
+      'current_route' => 'node.add',
+      'current_route_parameters' => [
+        'node_type' => 'page',
+      ],
+    ], \Drupal::state()->get('oe_oembed_test.embed_url.current_route_data'));
+
     $this->getSession()->switchToIFrame('entity_browser_iframe_embed_media_entity_browser_test');
     // Check the image checkbox.
     $this->getSession()->getPage()->checkField('entity_browser_select[media:1]');
