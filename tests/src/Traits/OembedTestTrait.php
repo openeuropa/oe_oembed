@@ -174,6 +174,7 @@ trait OembedTestTrait {
     $content[$source_field->getName()]['type'] = 'responsive_image';
     unset($content[$source_field->getName()]['settings']['image_style']);
     unset($content[$source_field->getName()]['settings']['image_link']);
+    unset($content[$source_field->getName()]['settings']['image_loading']);
     $content[$source_field->getName()]['settings']['responsive_image_style'] = 'responsive_style';
     $responsive->set('content', $content);
     $responsive->save();
