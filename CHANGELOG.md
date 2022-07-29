@@ -1,11 +1,20 @@
 # Changelog
 
+## [0.3.0](https://github.com/openeuropa/oe_oembed/tree/0.3.0) (2022-07-29)
+
+[Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.2.0...0.3.0)
+
+**Merged pull requests:**
+
+- EWPP-2358: Drupal 9.4 support. [\#33](https://github.com/openeuropa/oe_oembed/pull/33) ([yenyasinn](https://github.com/yenyasinn))
+
 ## [0.2.0](https://github.com/openeuropa/oe_oembed/tree/0.2.0) (2022-02-17)
 
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.1.1...0.2.0)
 
 **Merged pull requests:**
 
+- EWPP-0000: Prepare for 0.2.0 release. [\#31](https://github.com/openeuropa/oe_oembed/pull/31) ([hernani](https://github.com/hernani))
 - EWPP-1991: Upgrade to PHP8 and Composer v2. [\#30](https://github.com/openeuropa/oe_oembed/pull/30) ([22Alexandra](https://github.com/22Alexandra))
 - EWPP-1880: oEmbed filter doesn't crash on missing entity type. [\#29](https://github.com/openeuropa/oe_oembed/pull/29) ([upchuk](https://github.com/upchuk))
 
