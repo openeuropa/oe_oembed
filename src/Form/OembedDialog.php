@@ -357,6 +357,7 @@ class OembedDialog extends FormBase {
     $embed_button = $form_state->get('embed_button');
     /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
     $entity = $form_state->get('entity');
+    $entity = $this->entityRepository->getTranslationFromContext($entity);
 
     $form['#title'] = $this->t('Embed entity');
 
@@ -459,6 +460,7 @@ class OembedDialog extends FormBase {
       return;
     }
 
+    $entity = $this->entityRepository->getTranslationFromContext($entity);
     $uuid = $entity->uuid();
     if ($uuid) {
       $form_state->setValueForElement($form['attributes']['data-entity-uuid'], $uuid);
@@ -609,6 +611,7 @@ class OembedDialog extends FormBase {
     $entity = $this->entityTypeManager->getStorage($entity_type)
       ->loadByProperties(['uuid' => $entity_element['data-entity-uuid']]);
     $entity = current($entity);
+    $entity = $this->entityRepository->getTranslationFromContext($entity);
 
     $values = $form_state->getValues();
     // Display errors in form, if any.
