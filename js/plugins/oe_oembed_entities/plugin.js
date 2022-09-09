@@ -38,9 +38,13 @@
           };
 
           var embed_button_id = data.id;
+          var extra_values = {
+            'current_route': editor.config.current_route,
+            'current_route_parameters': editor.config.current_route_parameters,
+          };
 
           // Open the dialog to look for an entity.
-          Drupal.ckeditor.openDialog(editor, Drupal.url('oe-oembed-embed/dialog/' + editor.config.drupal.format + '/' + embed_button_id), {}, saveCallback, dialogSettings);
+          Drupal.ckeditor.openDialog(editor, Drupal.url('oe-oembed-embed/dialog/' + editor.config.drupal.format + '/' + embed_button_id), extra_values, saveCallback, dialogSettings);
         }
       });
 
