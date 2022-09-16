@@ -1,11 +1,21 @@
 # Changelog
 
-## [0.3.0](https://github.com/openeuropa/oe_oembed/tree/0.3.0) (2022-07-29)
+## [0.4.0](https://github.com/openeuropa/oe_oembed/tree/0.4.0) (2022-09-16)
+
+[Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.3.0...0.4.0)
+
+**Merged pull requests:**
+
+- EWPP-2501: Make sure the current translation is being used in the OembedDialog. [\#35](https://github.com/openeuropa/oe_oembed/pull/35) ([22Alexandra](https://github.com/22Alexandra))
+- EWPP-2170: Passing the current route and parameters to the oembed modal request. [\#32](https://github.com/openeuropa/oe_oembed/pull/32) ([upchuk](https://github.com/upchuk))
+
+## [0.3.0](https://github.com/openeuropa/oe_oembed/tree/0.3.0) (2022-08-02)
 
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.2.0...0.3.0)
 
 **Merged pull requests:**
 
+- Prepare release 0.3.0. [\#34](https://github.com/openeuropa/oe_oembed/pull/34) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - EWPP-2358: Drupal 9.4 support. [\#33](https://github.com/openeuropa/oe_oembed/pull/33) ([yenyasinn](https://github.com/yenyasinn))
 
 ## [0.2.0](https://github.com/openeuropa/oe_oembed/tree/0.2.0) (2022-02-17)
