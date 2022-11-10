@@ -5,11 +5,8 @@ declare(strict_types = 1);
 namespace Drupal\oe_oembed\Plugin\Filter;
 
 use Drupal\Component\Utility\Html;
-use Drupal\Component\Utility\UrlHelper;
-use Drupal\Component\Uuid\Uuid;
 use Drupal\Core\Access\AccessResultAllowed;
 use Drupal\Core\Cache\CacheableMetadata;
-use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\ContentEntityTypeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
@@ -18,6 +15,7 @@ use Drupal\Core\Render\Renderer;
 use Drupal\embed\DomHelperTrait;
 use Drupal\filter\FilterProcessResult;
 use Drupal\filter\Plugin\FilterBase;
+use Drupal\oe_oembed\OembedDataResolver;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -34,13 +32,6 @@ class FilterOembed extends FilterBase implements ContainerFactoryPluginInterface
   use DomHelperTrait;
 
   /**
-   * The general module settings.
-   *
-   * @var \Drupal\Core\Config\ImmutableConfig
-   */
-  protected $config;
-
-  /**
    * The renderer.
    *
    * @var \Drupal\Core\Render\Renderer
@@ -55,6 +46,13 @@ class FilterOembed extends FilterBase implements ContainerFactoryPluginInterface
   protected $entityTypeManager;
 
   /**
+   * The oembed data resolver.
+   *
+   * @var \Drupal\oe_oembed\OembedDataResolver
+   */
+  protected $oembedDataResolver;
+
+  /**
    * Constructs a new FilterOembed object.
    *
    * @param array $configuration
@@ -63,18 +61,18 @@ class FilterOembed extends FilterBase implements ContainerFactoryPluginInterface
    *   The plugin_id for the plugin instance.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
-   *   The config factory.
    * @param \Drupal\Core\Render\Renderer $renderer
    *   The renderer.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   The entity type manager.
+   * @param \Drupal\oe_oembed\OembedDataResolver $oembedDataResolver
+   *   The oembed data resolver.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactoryInterface $config_factory, Renderer $renderer, EntityTypeManagerInterface $entityTypeManager) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, Renderer $renderer, EntityTypeManagerInterface $entityTypeManager, OembedDataResolver $oembedDataResolver) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->config = $config_factory->get('oe_oembed.settings');
     $this->renderer = $renderer;
     $this->entityTypeManager = $entityTypeManager;
+    $this->oembedDataResolver = $oembedDataResolver;
   }
 
   /**
@@ -85,9 +83,9 @@ class FilterOembed extends FilterBase implements ContainerFactoryPluginInterface
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('config.factory'),
       $container->get('renderer'),
-      $container->get('entity_type.manager')
+      $container->get('entity_type.manager'),
+      $container->get('oe_oembed.uuid_resolver')
     );
   }
 
@@ -130,23 +128,8 @@ class FilterOembed extends FilterBase implements ContainerFactoryPluginInterface
    */
   protected function replaceOembedNode(\DOMNode $node, FilterProcessResult $result): void {
     $oembed = $node->getAttribute('data-oembed');
-    $parsed = UrlHelper::parse($oembed);
-
-    $service_url = $this->config->get('service_url');
-    $resource_base_url = $this->config->get('resource_base_url');
-
-    if (!isset($parsed['path']) || $parsed['path'] !== $service_url) {
-      return;
-    }
-
-    if (!isset($parsed['query']['url']) || strpos($parsed['query']['url'], $resource_base_url) === FALSE) {
-      return;
-    }
-
-    $parsed_resource_url = UrlHelper::parse($parsed['query']['url']);
-    $regex = '/' . Uuid::VALID_PATTERN . '/';
-    preg_match($regex, $parsed_resource_url['path'], $matches);
-    if (!$matches) {
+    $uuid = $this->oembedDataResolver->resolveUuid($oembed);
+    if (!$uuid) {
       return;
     }
 
@@ -156,10 +139,8 @@ class FilterOembed extends FilterBase implements ContainerFactoryPluginInterface
     // embedded tag.
     $output = '';
 
-    $uuid = $matches[0];
-
     // Extract the entity type.
-    $entity_type = trim(str_replace([$resource_base_url, $uuid], ['', ''], $parsed_resource_url['path']), '/');
+    $entity_type = $this->oembedDataResolver->resolveEntityType($oembed);
     $entity_type_definition = $this->entityTypeManager->getDefinition($entity_type, FALSE);
     if (!$entity_type_definition instanceof ContentEntityTypeInterface) {
       $this->replaceNodeContent($node, $output);
@@ -174,7 +155,7 @@ class FilterOembed extends FilterBase implements ContainerFactoryPluginInterface
 
     $entity = reset($entity);
 
-    $view_mode = $parsed_resource_url['query']['view_mode'] ?? 'default';
+    $view_mode = $this->oembedDataResolver->resolveViewMode($oembed);
     $build = $this->entityTypeManager->getViewBuilder($entity_type)->view($entity, $view_mode);
     $cache = CacheableMetadata::createFromRenderArray($build);
     $access = $entity->access('view', NULL, TRUE);

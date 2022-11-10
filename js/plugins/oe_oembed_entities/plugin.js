@@ -25,6 +25,22 @@
             resizable: false
           };
 
+          var existing_element = getSelectedEmbeddedEntity(editor);
+
+          var existing_values = {};
+          if (existing_element && existing_element.$ && existing_element.$.firstChild) {
+            var embed_dom_element = existing_element.$.firstChild;
+            // Populate array with the entity's current attributes.
+            var attribute = null, attributeName;
+            for (var key = 0; key < embed_dom_element.attributes.length; key++) {
+              attribute = embed_dom_element.attributes.item(key);
+              attributeName = attribute.nodeName.toLowerCase();
+              if (attributeName === 'data-display-as' || attributeName === 'data-oembed') {
+                existing_values[attributeName] = attribute.nodeValue;
+              }
+            }
+          }
+
           var saveCallback = function (values) {
             var attributes = values.attributes;
             var inline = Boolean(attributes['data-embed-inline']);
@@ -33,14 +49,34 @@
               createAndEmbedInlineElement(editor, attributes);
             }
             else {
-              createAndEmbedBlockElement(editor, attributes);
+              createAndEmbedBlockElement(editor, attributes, Boolean(existing_element));
+            }
+
+            if (existing_element) {
+              existing_element.remove();
             }
           };
 
           var embed_button_id = data.id;
+          if (!embed_button_id && existing_element) {
+            // When we are editing the existing embed, we don't have the
+            // embed button so we need to determine a default one: any which
+            // is configured to use the embedded entity type should suffice
+            // as we can end up loading the entity by just the UUID and move to
+            // the second dialog.
+            var oembed = existing_values['data-oembed'];
+
+            Object.keys(editor.config.Oembed_default_buttons).forEach(function (entity_type) {
+              if (oembed.includes('/' + entity_type + '/')) {
+                embed_button_id = editor.config.Oembed_default_buttons[entity_type];
+              }
+            })
+
+          }
           var extra_values = {
             'current_route': editor.config.current_route,
             'current_route_parameters': editor.config.current_route_parameters,
+            ...existing_values
           };
 
           // Open the dialog to look for an entity.
@@ -94,6 +130,15 @@
           });
         }
       }
+
+      // Execute widget editing action on double click.
+      editor.on('doubleclick', function (evt) {
+        var element = getSelectedEmbeddedEntity(editor) || evt.data.element;
+
+        if (isEditableEntityWidget(editor, element)) {
+          editor.execCommand('edit_entities');
+        }
+      });
     }
   });
 
@@ -117,8 +162,10 @@
    *   The editor.
    * @param attributes
    *   The array of attributes.
+   * @param existing
+   *   Whether the element is being replaced.
    */
-  function createAndEmbedBlockElement(editor, attributes) {
+  function createAndEmbedBlockElement(editor, attributes, existing = false) {
     var entityElement = editor.document.createElement('p');
     for (var key in attributes) {
       if (['data-resource-url', 'data-resource-label', 'data-embed-inline'].includes(key)) {
@@ -131,7 +178,11 @@
     childElement.setAttribute('href', attributes['data-resource-url']);
     childElement.setHtml(attributes['data-resource-label']);
     entityElement.setHtml(childElement.getOuterHtml());
-    editor.insertHtml(entityElement.getOuterHtml() + '<p></p>');
+    var suffix = String('');
+    if (!existing) {
+      suffix = '<p></p>';
+    }
+    editor.insertHtml(entityElement.getOuterHtml() + suffix);
   }
 
   /**
@@ -155,6 +206,36 @@
     entityElement.setAttribute('href', attributes['data-resource-url']);
     entityElement.setHtml(attributes['data-resource-label']);
     editor.insertHtml(entityElement.getOuterHtml());
+  }
+
+  /**
+   * Get the surrounding drupalentity widget element.
+   *
+   * @param {CKEDITOR.editor} editor
+   */
+  function getSelectedEmbeddedEntity(editor) {
+    var selection = editor.getSelection();
+    var selectedElement = selection.getSelectedElement();
+    if (isEditableEntityWidget(editor, selectedElement)) {
+      return selectedElement;
+    }
+
+    return null;
+  }
+
+  /**
+   * Checks if the given element is an editable widget.
+   *
+   * @param {CKEDITOR.editor} editor
+   * @param {CKEDITOR.htmlParser.element} element
+   */
+  function isEditableEntityWidget (editor, element) {
+    var widget = editor.widgets.getByElement(element, true);
+    if (!widget || widget.name !== 'oe_oembed_entities') {
+      return false;
+    }
+
+    return true;
   }
 
 })(jQuery, Drupal, CKEDITOR);
