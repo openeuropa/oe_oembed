@@ -150,19 +150,24 @@ class CKEditorIntegrationTest extends EmbedTestBase {
     $this->drupalGet($node->toUrl('edit-form'));
     $this->assignNameToCkeditorIframe();
     $this->getSession()->switchToIFrame('ckeditor');
-    $this->getSession()->getPage()->find('xpath', "//p[@data-display-as='image_teaser']")->doubleClick();
+    $this->getSession()->getPage()->find('xpath', "//p[@data-display-as='image_teaser']")->rightClick();
+    $this->getSession()->switchToIFrame();
+    $this->assignNameToCkeditorPanelIframe();
+    $this->getSession()->switchToIFrame('panel');
+    $this->getSession()->getPage()->clickLink('Edit display options');
     $this->assertSession()->waitForId('drupal-modal');
     $this->getSession()->switchToIFrame();
     $this->assertSession()->linkExists('My image media');
     $select = $this->assertSession()->fieldExists('Display as');
     $this->assertEquals('image_teaser', $select->find('css', 'option[selected]')->getValue());
-    $select->selectOption('Embed');
+    $select->selectOption('Demo');
     $this->assertSession()->elementExists('css', 'button.button--primary')->press();
     $this->assertSession()->assertWaitOnAjaxRequest();
     $this->assertSession()->buttonExists('Save')->press();
 
-    // Assert that the image media embed view mode was changed.
-    $element = new FormattableMarkup('<p data-display-as="embed" data-oembed="https://oembed.ec.europa.eu?url=https%3A//data.ec.europa.eu/ewp/media/@uuid%3Fview_mode%3Dembed"><a href="https://data.ec.europa.eu/ewp/media/@uuid">@title</a></p>', [
+    // Assert that the image media embed view mode was changed and the other
+    // stayed the same.
+    $element = new FormattableMarkup('<p data-display-as="demo" data-oembed="https://oembed.ec.europa.eu?url=https%3A//data.ec.europa.eu/ewp/media/@uuid%3Fview_mode%3Ddemo"><a href="https://data.ec.europa.eu/ewp/media/@uuid">@title</a></p>', [
       '@uuid' => $media[1]->uuid(),
       '@title' => $media[1]->label(),
     ]);
@@ -331,6 +336,20 @@ class CKEditorIntegrationTest extends EmbedTestBase {
     $javascript = <<<JS
 (function(){
   document.getElementsByClassName('cke_wysiwyg_frame')[0].id = 'ckeditor';
+})()
+JS;
+    $this->getSession()->evaluateScript($javascript);
+  }
+
+  /**
+   * Assigns a name to the CKEditor context menu iframe.
+   *
+   * Note that this iframe doesn't appear until context menu appears.
+   */
+  protected function assignNameToCkeditorPanelIframe() {
+    $javascript = <<<JS
+(function(){
+  document.getElementsByClassName('cke_panel_frame')[0].id = 'panel';
 })()
 JS;
     $this->getSession()->evaluateScript($javascript);

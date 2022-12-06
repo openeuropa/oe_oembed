@@ -139,6 +139,23 @@
           editor.execCommand('edit_entities');
         }
       });
+
+      if (editor.addMenuItems) {
+        editor.addMenuGroup('oembed');
+        editor.addMenuItem('edit_display', {
+          label: Drupal.t('Edit display options'),
+          command: 'edit_entities',
+          group: 'oembed'
+        });
+      }
+
+      if (editor.contextMenu) {
+        editor.contextMenu.addListener(function (element) {
+          if (isEditableEntityWidget(editor, element)) {
+            return { edit_display: CKEDITOR.TRISTATE_OFF };
+          }
+        });
+      }
     }
   });
 
