@@ -23,6 +23,7 @@ use Drupal\editor\EditorInterface;
 use Drupal\embed\EmbedButtonInterface;
 use Drupal\entity_browser\Events\Events;
 use Drupal\entity_browser\Events\RegisterJSCallbacks;
+use Drupal\oe_oembed\OembedDataResolver;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -83,6 +84,13 @@ class OembedDialog extends FormBase {
   protected $entityRepository;
 
   /**
+   * The UUID resolver.
+   *
+   * @var \Drupal\oe_oembed\OembedDataResolver
+   */
+  protected $oembedDataResolver;
+
+  /**
    * Constructs a oEmbedDialog object.
    *
    * @param \Drupal\Core\Form\FormBuilderInterface $form_builder
@@ -97,14 +105,17 @@ class OembedDialog extends FormBase {
    *   The entity repository.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The config factory.
+   * @param \Drupal\oe_oembed\OembedDataResolver $oembedDataResolver
+   *   The oembed data resolver.
    */
-  public function __construct(FormBuilderInterface $form_builder, EntityTypeManagerInterface $entity_type_manager, EventDispatcherInterface $event_dispatcher, ModuleHandler $module_handler, EntityRepositoryInterface $entity_repository, ConfigFactoryInterface $config_factory) {
+  public function __construct(FormBuilderInterface $form_builder, EntityTypeManagerInterface $entity_type_manager, EventDispatcherInterface $event_dispatcher, ModuleHandler $module_handler, EntityRepositoryInterface $entity_repository, ConfigFactoryInterface $config_factory, OembedDataResolver $oembedDataResolver) {
     $this->formBuilder = $form_builder;
     $this->entityTypeManager = $entity_type_manager;
     $this->eventDispatcher = $event_dispatcher;
     $this->moduleHandler = $module_handler;
     $this->entityRepository = $entity_repository;
     $this->configFactory = $config_factory;
+    $this->oembedDataResolver = $oembedDataResolver;
   }
 
   /**
@@ -117,7 +128,8 @@ class OembedDialog extends FormBase {
       $container->get('event_dispatcher'),
       $container->get('module_handler'),
       $container->get('entity.repository'),
-      $container->get('config.factory')
+      $container->get('config.factory'),
+      $container->get('oe_oembed.uuid_resolver')
     );
   }
 
@@ -150,6 +162,13 @@ class OembedDialog extends FormBase {
       $form_state->set('entity_element', $input['editor_object'] ?? []);
     }
     $entity_element += $form_state->get('entity_element');
+    if (isset($entity_element['data-oembed'])) {
+      $entity_element['data-entity-uuid'] = $this->oembedDataResolver->resolveUuid($entity_element['data-oembed']);
+      $entity_element['data-entity-type'] = $this->oembedDataResolver->resolveEntityType($entity_element['data-oembed']);
+    }
+    if (isset($entity_element['data-display-as'])) {
+      $entity_element['data-entity-view-mode'] = $entity_element['data-display-as'];
+    }
     $entity_element += [
       'data-entity-uuid' => '',
       'data-entity-type' => '',

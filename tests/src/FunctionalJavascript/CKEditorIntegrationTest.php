@@ -104,6 +104,11 @@ class CKEditorIntegrationTest extends EmbedTestBase {
     $this->assertSession()->assertWaitOnAjaxRequest();
 
     // Embed the Remote video media.
+    $this->getSession()->switchToIFrame('ckeditor');
+    // Click on the next, empty paragraph so that pressing the embed button
+    // embeds a new one and doesn't open for the existing (selected) one.
+    $this->getSession()->getPage()->find('xpath', '//p[not(@*)]')->click();
+    $this->getSession()->switchToIFrame();
     $this->assertSession()->elementExists('css', 'a.cke_button__' . $this->mediaButton->id())->click();
     $this->assertSession()->waitForId('drupal-modal');
     $this->assertSession()->fieldExists('entity_id')->setValue('Digital Single Market: cheaper calls to other EU countries as of 15 May (2)');
@@ -129,6 +134,40 @@ class CKEditorIntegrationTest extends EmbedTestBase {
       ->loadMultiple();
 
     $element = new FormattableMarkup('<p data-display-as="image_teaser" data-oembed="https://oembed.ec.europa.eu?url=https%3A//data.ec.europa.eu/ewp/media/@uuid%3Fview_mode%3Dimage_teaser"><a href="https://data.ec.europa.eu/ewp/media/@uuid">@title</a></p>', [
+      '@uuid' => $media[1]->uuid(),
+      '@title' => $media[1]->label(),
+    ]);
+    $this->assertStringContainsString($element->__toString(), $this->getSession()->getPage()->getHtml());
+
+    $element = new FormattableMarkup('<p data-display-as="embed" data-oembed="https://oembed.ec.europa.eu?url=https%3A//data.ec.europa.eu/ewp/media/@uuid%3Fview_mode%3Dembed"><a href="https://data.ec.europa.eu/ewp/media/@uuid">@title</a></p>', [
+      '@uuid' => $media[2]->uuid(),
+      '@title' => $media[2]->label(),
+    ]);
+    $this->assertStringContainsString($element->__toString(), $this->getSession()->getPage()->getHtml());
+
+    // Edit the node and change the media embed view mode.
+    $node = $this->drupalGetNodeByTitle('Node with embedded media');
+    $this->drupalGet($node->toUrl('edit-form'));
+    $this->assignNameToCkeditorIframe();
+    $this->getSession()->switchToIFrame('ckeditor');
+    $this->getSession()->getPage()->find('xpath', "//p[@data-display-as='image_teaser']")->rightClick();
+    $this->getSession()->switchToIFrame();
+    $this->assignNameToCkeditorPanelIframe();
+    $this->getSession()->switchToIFrame('panel');
+    $this->getSession()->getPage()->clickLink('Edit display options');
+    $this->assertSession()->waitForId('drupal-modal');
+    $this->getSession()->switchToIFrame();
+    $this->assertSession()->linkExists('My image media');
+    $select = $this->assertSession()->fieldExists('Display as');
+    $this->assertEquals('image_teaser', $select->find('css', 'option[selected]')->getValue());
+    $select->selectOption('Demo');
+    $this->assertSession()->elementExists('css', 'button.button--primary')->press();
+    $this->assertSession()->assertWaitOnAjaxRequest();
+    $this->assertSession()->buttonExists('Save')->press();
+
+    // Assert that the image media embed view mode was changed and the other
+    // stayed the same.
+    $element = new FormattableMarkup('<p data-display-as="demo" data-oembed="https://oembed.ec.europa.eu?url=https%3A//data.ec.europa.eu/ewp/media/@uuid%3Fview_mode%3Ddemo"><a href="https://data.ec.europa.eu/ewp/media/@uuid">@title</a></p>', [
       '@uuid' => $media[1]->uuid(),
       '@title' => $media[1]->label(),
     ]);
@@ -297,6 +336,20 @@ class CKEditorIntegrationTest extends EmbedTestBase {
     $javascript = <<<JS
 (function(){
   document.getElementsByClassName('cke_wysiwyg_frame')[0].id = 'ckeditor';
+})()
+JS;
+    $this->getSession()->evaluateScript($javascript);
+  }
+
+  /**
+   * Assigns a name to the CKEditor context menu iframe.
+   *
+   * Note that this iframe doesn't appear until context menu appears.
+   */
+  protected function assignNameToCkeditorPanelIframe() {
+    $javascript = <<<JS
+(function(){
+  document.getElementsByClassName('cke_panel_frame')[0].id = 'panel';
 })()
 JS;
     $this->getSession()->evaluateScript($javascript);

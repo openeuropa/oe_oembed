@@ -1,0 +1,4 @@
+services:
+  oe_oembed.uuid_resolver:
+    class: Drupal\oe_oembed\OembedDataResolver
+    arguments: ['@config.factory']
