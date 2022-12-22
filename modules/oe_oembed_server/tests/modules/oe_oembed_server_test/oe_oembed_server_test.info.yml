@@ -1,5 +1,5 @@
 name: OpenEuropa oEmbed Test
 description: Test module for the oEmbed functionality
-core_version_requirement: ^9.2
+core_version_requirement: ^9.4
 type: module
 package: Testing
