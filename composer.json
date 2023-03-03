@@ -21,7 +21,7 @@
         "masterminds/html5": "^2.7.6",
         "mikey179/vfsstream": "^1.6.10",
         "openeuropa/code-review": "^2.0.0-alpha6",
-        "openeuropa/oe_media": "dev-master as 1.22",
+        "openeuropa/oe_media": "^1.22",
         "openeuropa/task-runner-drupal-project-symlink": "^1.0-beta6",
         "phpspec/prophecy-phpunit": "^2",
         "symfony/console": "^4.4.30",
