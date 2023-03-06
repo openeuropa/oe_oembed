@@ -1,11 +1,18 @@
 # Changelog
 
-## [0.5.0](https://github.com/openeuropa/oe_oembed/tree/0.5.0) (2023-01-03)
+## [0.6.0](https://github.com/openeuropa/oe_oembed/tree/0.6.0) (2023-03-03)
+[Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.5.0...0.6.0)
 
+**Merged pull requests:**
+
+- OEL-2115: Update to PHP 8.1 [\#38](https://github.com/openeuropa/oe_oembed/pull/38) ([brummbar](https://github.com/brummbar))
+
+## [0.5.0](https://github.com/openeuropa/oe_oembed/tree/0.5.0) (2023-01-03)
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.4.0...0.5.0)
 
 **Merged pull requests:**
 
+- Prepare release 0.5.0. [\#39](https://github.com/openeuropa/oe_oembed/pull/39) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - EWPP-2766: Allow to edit embedded widgets. [\#37](https://github.com/openeuropa/oe_oembed/pull/37) ([upchuk](https://github.com/upchuk))
 
 ## [0.4.0](https://github.com/openeuropa/oe_oembed/tree/0.4.0) (2022-09-16)
