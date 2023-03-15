@@ -6,14 +6,14 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "drupal/core": "^9.4",
-        "drupal/embed": "^1.4",
-        "php": ">=8.0"
+        "php": ">=8.0",
+        "drupal/core": "^9.4 || ^10",
+        "drupal/embed": "^1.4"
     },
     "require-dev": {
         "behat/mink-selenium2-driver": "^1.5",
         "composer/installers": "^1.5",
-        "drupal/core-composer-scaffold": "^9.4",
+        "drupal/core-composer-scaffold": "^9.4 || ^10",
         "drupal/config_devel": "^1.2",
         "drupal/drupal-extension": "dev-master as 4.0",
         "drush/drush": "^11.1",
