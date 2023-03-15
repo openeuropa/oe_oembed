@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace Drupal\oe_oembed_server\Event;
 
 use Drupal\media\MediaInterface;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Used for resolving other sources for the OembedResolver.

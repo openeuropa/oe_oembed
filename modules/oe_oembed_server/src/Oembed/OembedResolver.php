@@ -8,6 +8,7 @@ use Drupal\Component\Uuid\Uuid;
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\File\FileUrlGeneratorInterface;
 use Drupal\Core\Render\RenderContext;
 use Drupal\Core\Render\Renderer;
 use Drupal\Core\Url;
@@ -53,6 +54,13 @@ class OembedResolver implements OembedResolverInterface {
   protected $eventDispatcher;
 
   /**
+   * The file url generator.
+   *
+   * @var \Drupal\Core\File\FileUrlGeneratorInterface
+   */
+  protected $fileUrlGenerator;
+
+  /**
    * Constructs the oEmbed resolver.
    *
    * @param \Drupal\Core\Entity\EntityRepositoryInterface $entity_repository
@@ -63,12 +71,21 @@ class OembedResolver implements OembedResolverInterface {
    *   The entity repository.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
    *   The event dispatcher.
+   * @param \Drupal\Core\File\FileUrlGeneratorInterface|null $file_url_generator
+   *   The file url generator.
    */
-  public function __construct(EntityRepositoryInterface $entity_repository, Renderer $renderer, EntityTypeManagerInterface $entity_type_manager, EventDispatcherInterface $event_dispatcher) {
+  public function __construct(
+    EntityRepositoryInterface $entity_repository,
+    Renderer $renderer,
+    EntityTypeManagerInterface $entity_type_manager,
+    EventDispatcherInterface $event_dispatcher,
+    FileUrlGeneratorInterface $file_url_generator = NULL
+  ) {
     $this->entityRepository = $entity_repository;
     $this->renderer = $renderer;
     $this->entityTypeManager = $entity_type_manager;
     $this->eventDispatcher = $event_dispatcher;
+    $this->fileUrlGenerator = $file_url_generator ?? \Drupal::service('file_url_generator');
   }
 
   /**
@@ -224,7 +241,7 @@ class OembedResolver implements OembedResolverInterface {
         // If we are not resolving any of these core source types, allow other
         // modules to try to resolve it.
         $event = new OembedResolverSource($media, $query_params);
-        $this->eventDispatcher->dispatch(OembedResolverSource::OEMBED_RESOLVER_SOURCE, $event);
+        $this->eventDispatcher->dispatch($event, OembedResolverSource::OEMBED_RESOLVER_SOURCE);
         $resolved = $event->getData();
         break;
     }
@@ -237,7 +254,7 @@ class OembedResolver implements OembedResolverInterface {
 
     // Allow other modules to alter the resolved data if something was resolved.
     $event = new OembedResolverAlter($media, $query_params, $resolved);
-    $this->eventDispatcher->dispatch(OembedResolverAlter::OEMBED_RESOLVER_ALTER, $event);
+    $this->eventDispatcher->dispatch($event, OembedResolverAlter::OEMBED_RESOLVER_ALTER);
     return $event->getData();
   }
 
@@ -325,11 +342,11 @@ class OembedResolver implements OembedResolverInterface {
 
     $cache->addCacheableDependency($image);
 
-    // We need to execute this in it's own render context because
+    // We need to execute this in its own render context because
     // file_create_url() may call a toString() on a URL object causing early
     // rendering.
     $original_image_url = $this->renderer->executeInRenderContext(new RenderContext(), function () use ($image) {
-      return file_create_url($image->getFileUri());
+      return $this->fileUrlGenerator->generateAbsoluteString($image->getFileUri());
     });
 
     // If no view mode is requested, we return information about the original
@@ -462,11 +479,11 @@ class OembedResolver implements OembedResolverInterface {
 
     $cache->addCacheableDependency($file);
 
-    // We need to execute this in it's own render context because
+    // We need to execute this in its own render context because
     // file_create_url() may call a toString() on a URL object causing early
     // rendering.
     $download_link = $this->renderer->executeInRenderContext(new RenderContext(), function () use ($file) {
-      return file_create_url($file->getFileUri());
+      return $this->fileUrlGenerator->generateAbsoluteString($file->getFileUri());
     });
 
     return [

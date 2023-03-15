@@ -58,7 +58,7 @@ abstract class EmbedTestBase extends WebDriverTestBase {
     $assert_session = $this->assertSession();
     $this->drupalGet('media/add/image');
     $page->fillField('name[0][value]', 'My image media');
-    $path = drupal_get_path('module', 'oe_media');
+    $path = \Drupal::service('extension.list.module')->getPath('oe_media');
     $page->attachFileToField('files[oe_media_image_0]', $this->root . '/' . $path . '/tests/fixtures/example_1.jpeg');
     $result = $assert_session->waitForButton('Remove');
     $this->assertNotEmpty($result);

@@ -817,6 +817,7 @@ class OembedDialog extends FormBase {
       ->condition('targetEntityType', $entity->getEntityTypeId())
       ->condition('bundle', $bundle)
       ->condition('status', TRUE)
+      ->accessCheck()
       ->execute();
 
     /** @var \Drupal\Core\Entity\Display\EntityViewDisplayInterface[] $displays */
