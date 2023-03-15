@@ -13,8 +13,9 @@
     "require-dev": {
         "composer/installers": "^1.5",
         "drupal/core-composer-scaffold": "^9.4 || ^10",
-        "drupal/config_devel": "^1.2",
-        "drupal/drupal-extension": "dev-master as 4.0",
+        "drupal/core-dev": "^9.4 || ^10",
+        "drupal/config_devel": "^1.8",
+        "drupal/drupal-extension": "^5.0",
         "drush/drush": "^11.1",
         "openeuropa/code-review": "^2.0.0-alpha6",
         "openeuropa/oe_media": "^1.22",
@@ -54,10 +55,7 @@
             "locations": {
                 "web-root": "./build"
             }
-        },
-        "_readme": [
-            "Use master branch of drupal/drupal-extension to replace fabpot/goutte with behat/mink-browserkit-driver.",
-        ]
+        }
     },
     "config": {
         "sort-packages": true,
