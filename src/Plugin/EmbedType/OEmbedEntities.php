@@ -80,7 +80,7 @@ class OEmbedEntities extends EmbedTypeBase implements ContainerFactoryPluginInte
    *   The entity type repository.
    * @param \Drupal\Core\Entity\EntityTypeBundleInfoInterface $entityTypeBundleInfo
    *   The entity type bundle info service.
-   * @param \Drupal\Core\Extension\ModuleExtensionList|NULL $moduleExtensionList
+   * @param \Drupal\Core\Extension\ModuleExtensionList|null $moduleExtensionList
    *   The module extension list.
    * @param \Drupal\Core\File\FileUrlGeneratorInterface|null $file_url_generator
    *   The file url generator.

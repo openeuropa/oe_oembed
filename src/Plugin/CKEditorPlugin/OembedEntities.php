@@ -59,7 +59,7 @@ class OembedEntities extends EmbedCKEditorPluginBase {
    *   The current route match.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   The entity type manager.
-   * @param \Drupal\Core\Extension\ModuleExtensionList|NULL $moduleExtensionList
+   * @param \Drupal\Core\Extension\ModuleExtensionList|null $moduleExtensionList
    *   The module extension list.
    */
   public function __construct(
