@@ -12,9 +12,10 @@
     },
     "require-dev": {
         "composer/installers": "^1.5",
+        "drupal/ckeditor": "^1.0",
+        "drupal/config_devel": "^1.8",
         "drupal/core-composer-scaffold": "^9.4 || ^10",
         "drupal/core-dev": "^9.4 || ^10",
-        "drupal/config_devel": "^1.8",
         "drush/drush": "^11.1",
         "openeuropa/code-review": "^2.0.0-alpha6",
         "openeuropa/oe_media": "dev-EWPP-3006",
