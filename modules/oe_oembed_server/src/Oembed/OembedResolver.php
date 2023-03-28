@@ -85,7 +85,13 @@ class OembedResolver implements OembedResolverInterface {
     $this->renderer = $renderer;
     $this->entityTypeManager = $entity_type_manager;
     $this->eventDispatcher = $event_dispatcher;
-    $this->fileUrlGenerator = $file_url_generator ?? \Drupal::service('file_url_generator');
+    if (!$file_url_generator) {
+      // @codingStandardsIgnoreStart
+      @trigger_error('Calling ' . __METHOD__ . ' without the $file_url_generator argument is deprecated in 0.7.0 and will be required in 1.0.0.', E_USER_DEPRECATED);
+      // @codingStandardsIgnoreEnd
+      $file_url_generator = \Drupal::service('file_url_generator');
+    }
+    $this->fileUrlGenerator = $file_url_generator;
   }
 
   /**

@@ -74,7 +74,13 @@ class OembedEntities extends EmbedCKEditorPluginBase {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $embed_button_query);
     $this->currentRouteMatch = $current_route_match;
     $this->entityTypeManager = $entityTypeManager;
-    $this->moduleExtensionList = $moduleExtensionList ?? \Drupal::service('extension.list.module');
+    if (!$moduleExtensionList) {
+      // @codingStandardsIgnoreStart
+      @trigger_error('Calling ' . __METHOD__ . ' without the $moduleExtensionList argument is deprecated in 0.7.0 and will be required in 1.0.0.', E_USER_DEPRECATED);
+      // @codingStandardsIgnoreEnd
+      $moduleExtensionList = \Drupal::service('extension.list.module');
+    }
+    $this->moduleExtensionList = $moduleExtensionList;
   }
 
   /**
