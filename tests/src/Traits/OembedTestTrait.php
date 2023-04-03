@@ -56,7 +56,7 @@ trait OembedTestTrait {
     $this->ensurePublicFilesPath();
 
     // Create a media entity for each type.
-    $this->container->get('file_system')->copy(drupal_get_path('module', 'oe_oembed') . '/tests/fixtures/example_1.jpeg', 'public://example_1.jpeg');
+    $this->container->get('file_system')->copy(\Drupal::service('extension.list.module')->getPath('oe_oembed') . '/tests/fixtures/example_1.jpeg', 'public://example_1.jpeg');
     $image = File::create([
       'uri' => 'public://example_1.jpeg',
     ]);
@@ -82,7 +82,7 @@ trait OembedTestTrait {
     ]);
     $media->save();
 
-    $this->container->get('file_system')->copy(drupal_get_path('module', 'oe_oembed') . '/tests/fixtures/sample.pdf', 'public://sample.pdf');
+    $this->container->get('file_system')->copy(\Drupal::service('extension.list.module')->getPath('oe_oembed') . '/tests/fixtures/sample.pdf', 'public://sample.pdf');
     $file = File::create([
       'uri' => 'public://sample.pdf',
     ]);

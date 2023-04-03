@@ -29,7 +29,7 @@ class OembedTestSubscriber implements EventSubscriberInterface {
    *   The event.
    */
   public function alterData(AlterEntityBrowserDisplayData $event): void {
-    \Drupal::state()->set('oe_oembed_test.embed_url.current_route_data', \Drupal::requestStack()->getCurrentRequest()->request->get('editor_object'));
+    \Drupal::state()->set('oe_oembed_test.embed_url.current_route_data', \Drupal::requestStack()->getCurrentRequest()->request->all('editor_object'));
   }
 
 }

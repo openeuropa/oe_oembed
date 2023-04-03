@@ -27,7 +27,7 @@
    */
   Drupal.behaviors.oEmbedDialog = {
     attach: function (context, settings) {
-      $('body').once('js-oe-oembed-entity-dialog').on('entityBrowserIFrameAppend', function () {
+      $(once('js-oe-oembed-entity-dialog', 'body')).on('entityBrowserIFrameAppend', function () {
         $('.oe-oembed-entities-select-dialog').trigger('resize');
         // Hide the next button, the click is triggered by Drupal.oEmbedDialog.selectionCompleted.
         $('#drupal-modal').parent().find('.js-button-next').addClass('visually-hidden');

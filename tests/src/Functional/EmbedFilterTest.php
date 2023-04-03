@@ -206,7 +206,8 @@ class EmbedFilterTest extends EmbedTestBase {
     $media_types = $this->container->get('entity_type.manager')->getStorage('media_type')->loadMultiple();
 
     // Image media.
-    $this->container->get('file_system')->copy(drupal_get_path('module', 'oe_media') . '/tests/fixtures/example_1.jpeg', 'public://example_1.jpeg');
+    $oe_media_module_path = \Drupal::service('extension.list.module')->getPath('oe_media');
+    $this->container->get('file_system')->copy($oe_media_module_path . '/tests/fixtures/example_1.jpeg', 'public://example_1.jpeg');
     $image = File::create([
       'uri' => 'public://example_1.jpeg',
     ]);
@@ -235,7 +236,7 @@ class EmbedFilterTest extends EmbedTestBase {
     $media->save();
 
     // File media.
-    $this->container->get('file_system')->copy(drupal_get_path('module', 'oe_media') . '/tests/fixtures/sample.pdf', 'public://sample.pdf');
+    $this->container->get('file_system')->copy($oe_media_module_path . '/tests/fixtures/sample.pdf', 'public://sample.pdf');
     $file = File::create([
       'uri' => 'public://sample.pdf',
     ]);

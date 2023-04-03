@@ -9,6 +9,8 @@ use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\EntityTypeRepositoryInterface;
+use Drupal\Core\Extension\ModuleExtensionList;
+use Drupal\Core\File\FileUrlGeneratorInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Plugin\PluginDependencyTrait;
@@ -50,13 +52,55 @@ class OEmbedEntities extends EmbedTypeBase implements ContainerFactoryPluginInte
   protected $entityTypeBundleInfo;
 
   /**
-   * {@inheritdoc}
+   * The file url generator.
+   *
+   * @var \Drupal\Core\File\FileUrlGeneratorInterface
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityTypeManagerInterface $entityTypeManager, EntityTypeRepositoryInterface $entityTypeRepository, EntityTypeBundleInfoInterface $entityTypeBundleInfo) {
+  protected $fileUrlGenerator;
+
+  /**
+   * The module extension list.
+   *
+   * @var \Drupal\Core\Extension\ModuleExtensionList
+   */
+  protected ModuleExtensionList $moduleExtensionList;
+
+  /**
+   * Constructs a new instance of the class.
+   *
+   * @param array $configuration
+   *   A configuration array containing information about the plugin instance.
+   * @param string $plugin_id
+   *   The plugin_id for the plugin instance.
+   * @param mixed $plugin_definition
+   *   The plugin implementation definition.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   The entity type manager.
+   * @param \Drupal\Core\Entity\EntityTypeRepositoryInterface $entityTypeRepository
+   *   The entity type repository.
+   * @param \Drupal\Core\Entity\EntityTypeBundleInfoInterface $entityTypeBundleInfo
+   *   The entity type bundle info service.
+   * @param \Drupal\Core\Extension\ModuleExtensionList|null $moduleExtensionList
+   *   The module extension list.
+   * @param \Drupal\Core\File\FileUrlGeneratorInterface|null $file_url_generator
+   *   The file url generator.
+   */
+  public function __construct(
+    array $configuration,
+    $plugin_id,
+    $plugin_definition,
+    EntityTypeManagerInterface $entityTypeManager,
+    EntityTypeRepositoryInterface $entityTypeRepository,
+    EntityTypeBundleInfoInterface $entityTypeBundleInfo,
+    ModuleExtensionList $moduleExtensionList = NULL,
+    FileUrlGeneratorInterface $file_url_generator = NULL
+  ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->entityTypeManager = $entityTypeManager;
     $this->entityTypeRepository = $entityTypeRepository;
     $this->entityTypeBundleInfo = $entityTypeBundleInfo;
+    $this->moduleExtensionList = $moduleExtensionList ?? \Drupal::service('extension.list.module');
+    $this->fileUrlGenerator = $file_url_generator ?? \Drupal::service('file_url_generator');
   }
 
   /**
@@ -69,7 +113,9 @@ class OEmbedEntities extends EmbedTypeBase implements ContainerFactoryPluginInte
       $plugin_definition,
       $container->get('entity_type.manager'),
       $container->get('entity_type.repository'),
-      $container->get('entity_type.bundle.info')
+      $container->get('entity_type.bundle.info'),
+      $container->get('extension.list.module'),
+      $container->get('file_url_generator')
     );
   }
 
@@ -266,7 +312,9 @@ class OEmbedEntities extends EmbedTypeBase implements ContainerFactoryPluginInte
    * {@inheritdoc}
    */
   public function getDefaultIconUrl() {
-    return file_create_url(drupal_get_path('module', 'oe_oembed') . '/js/plugins/oe_oembed_entities/embed.png');
+    return $this->fileUrlGenerator->generateAbsoluteString(
+      $this->moduleExtensionList->getPath('oe_oembed') . '/js/plugins/oe_oembed_entities/embed.png'
+    );
   }
 
 }

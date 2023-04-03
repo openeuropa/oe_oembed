@@ -8,3 +8,4 @@ oe_oembed.dialog:
   dependencies:
     - core/drupal
     - core/jquery
+    - core/once

@@ -15,7 +15,7 @@ use Drupal\Core\Form\FormStateInterface;
  * Implements hook_ckeditor_css_alter().
  */
 function oe_oembed_ckeditor_css_alter(&$css, $editor) {
-  $css[] = drupal_get_path('module', 'oe_oembed') . '/css/ckeditor_embed.css';
+  $css[] = \Drupal::service('extension.list.module')->getPath('oe_oembed') . '/css/ckeditor_embed.css';
 }
 
 /**

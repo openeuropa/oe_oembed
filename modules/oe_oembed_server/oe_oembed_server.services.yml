@@ -1,4 +1,4 @@
 services:
   oe_oembed_server.oembed_resolver:
     class: Drupal\oe_oembed_server\Oembed\OembedResolver
-    arguments: ['@entity.repository', '@renderer', '@entity_type.manager', '@event_dispatcher']
+    arguments: ['@entity.repository', '@renderer', '@entity_type.manager', '@event_dispatcher', '@file_url_generator']

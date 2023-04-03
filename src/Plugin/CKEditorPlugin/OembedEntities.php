@@ -6,6 +6,7 @@ namespace Drupal\oe_oembed\Plugin\CKEditorPlugin;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
+use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\editor\Entity\Editor;
 use Drupal\embed\EmbedCKEditorPluginBase;
@@ -37,12 +38,49 @@ class OembedEntities extends EmbedCKEditorPluginBase {
   protected $entityTypeManager;
 
   /**
-   * {@inheritdoc}
+   * The module extension list.
+   *
+   * @var \Drupal\Core\Extension\ModuleExtensionList
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, QueryInterface $embed_button_query, RouteMatchInterface $current_route_match, EntityTypeManagerInterface $entityTypeManager) {
+  protected ModuleExtensionList $moduleExtensionList;
+
+  /**
+   * Constructs a new instance of the class.
+   *
+   * @param array $configuration
+   *   A configuration array containing information about the plugin instance.
+   * @param string $plugin_id
+   *   The plugin_id for the plugin instance.
+   * @param mixed $plugin_definition
+   *   The plugin implementation definition.
+   * @param \Drupal\Core\Entity\Query\QueryInterface $embed_button_query
+   *   The entity query object for embed button.
+   * @param \Drupal\Core\Routing\RouteMatchInterface $current_route_match
+   *   The current route match.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   The entity type manager.
+   * @param \Drupal\Core\Extension\ModuleExtensionList|null $moduleExtensionList
+   *   The module extension list.
+   */
+  public function __construct(
+    array $configuration,
+    $plugin_id,
+    $plugin_definition,
+    QueryInterface $embed_button_query,
+    RouteMatchInterface $current_route_match,
+    EntityTypeManagerInterface $entityTypeManager,
+    ModuleExtensionList $moduleExtensionList = NULL
+  ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $embed_button_query);
     $this->currentRouteMatch = $current_route_match;
     $this->entityTypeManager = $entityTypeManager;
+    if (!$moduleExtensionList) {
+      // @codingStandardsIgnoreStart
+      @trigger_error('Calling ' . __METHOD__ . ' without the $moduleExtensionList argument is deprecated in 0.7.0 and will be required in 1.0.0.', E_USER_DEPRECATED);
+      // @codingStandardsIgnoreEnd
+      $moduleExtensionList = \Drupal::service('extension.list.module');
+    }
+    $this->moduleExtensionList = $moduleExtensionList;
   }
 
   /**
@@ -55,7 +93,8 @@ class OembedEntities extends EmbedCKEditorPluginBase {
       $plugin_definition,
       $container->get('entity_type.manager')->getStorage('embed_button')->getQuery(),
       $container->get('current_route_match'),
-      $container->get('entity_type.manager')
+      $container->get('entity_type.manager'),
+      $container->get('extension.list.module')
     );
   }
 
@@ -63,7 +102,7 @@ class OembedEntities extends EmbedCKEditorPluginBase {
    * {@inheritdoc}
    */
   public function getFile(): string {
-    return drupal_get_path('module', 'oe_oembed') . '/js/plugins/oe_oembed_entities/plugin.js';
+    return $this->moduleExtensionList->getPath('oe_oembed') . '/js/plugins/oe_oembed_entities/plugin.js';
   }
 
   /**
