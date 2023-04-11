@@ -1,10 +1,18 @@
-# Changelog
+# Change Log
 
-## [0.6.0](https://github.com/openeuropa/oe_oembed/tree/0.6.0) (2023-03-03)
+## [0.7.0](https://github.com/openeuropa/oe_oembed/tree/0.7.0) (2023-04-06)
+[Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.6.0...0.7.0)
+
+**Merged pull requests:**
+
+- EWPP-2996: Drupal 10 compatibility. [\#41](https://github.com/openeuropa/oe_oembed/pull/41) ([brummbar](https://github.com/brummbar))
+
+## [0.6.0](https://github.com/openeuropa/oe_oembed/tree/0.6.0) (2023-03-06)
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.5.0...0.6.0)
 
 **Merged pull requests:**
 
+- Prepare changelog for release 0.6.0 [\#40](https://github.com/openeuropa/oe_oembed/pull/40) ([brummbar](https://github.com/brummbar))
 - OEL-2115: Update to PHP 8.1 [\#38](https://github.com/openeuropa/oe_oembed/pull/38) ([brummbar](https://github.com/brummbar))
 
 ## [0.5.0](https://github.com/openeuropa/oe_oembed/tree/0.5.0) (2023-01-03)
