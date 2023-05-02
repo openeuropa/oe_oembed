@@ -1,0 +1,63 @@
+/**
+ * @file registers the simpleBox toolbar button and binds functionality to it.
+ */
+
+import { Plugin } from 'ckeditor5/src/core';
+import { ButtonView } from 'ckeditor5/src/ui';
+import defaultIcon from '../../../../icons/embed.svg';
+
+export default class OembedEntitiesUI extends Plugin {
+  init() {
+    const editor = this.editor;
+    const command = editor.commands.get('oembedEntities');
+    const options = editor.config.get('oembedEntities');
+    const { dialogSettings = {} } = options;
+
+    if (!options) {
+      return;
+    }
+
+    Object.keys(options.buttons).forEach(id => {
+      const libraryUrl = Drupal.url('oe-oembed-embed/dialog/' + options.format + '/' + id);
+      editor.ui.componentFactory.add(id, (locale) => {
+        const button = options.buttons[id];
+        const buttonView = new ButtonView(locale);
+
+        let icon = null;
+        if (button.icon.endsWith('svg')) {
+          let XMLrequest = new XMLHttpRequest();
+          XMLrequest.open('GET', button.icon, false);
+          XMLrequest.send(null);
+          icon = XMLrequest.response;
+        }
+
+        // Create the toolbar button.
+        buttonView.set({
+          label: button.label,
+          icon: icon ?? defaultIcon,
+          tooltip: true,
+        });
+
+        // Bind the state of the button to the command.
+        buttonView.bind('isOn', 'isEnabled').to(command, 'value', 'isEnabled');
+
+        // Execute the command when the button is clicked (executed).
+        this.listenTo(buttonView, 'execute', () =>
+          //editor.execute('oembedEntities', {
+          //  'data-display-as': 'image_teaser',
+          //  'data-oembed': 'https://oembed.ec.eu'
+          //}),
+          Drupal.ckeditor5.openDialog(
+            libraryUrl,
+            ({ attributes }) => {
+              editor.execute('oembedEntities', attributes);
+            },
+            dialogSettings,
+          ),
+        );
+
+        return buttonView;
+      });
+    });
+  }
+}

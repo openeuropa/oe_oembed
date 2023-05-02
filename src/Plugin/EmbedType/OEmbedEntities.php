@@ -313,7 +313,7 @@ class OEmbedEntities extends EmbedTypeBase implements ContainerFactoryPluginInte
    */
   public function getDefaultIconUrl() {
     return $this->fileUrlGenerator->generateAbsoluteString(
-      $this->moduleExtensionList->getPath('oe_oembed') . '/js/plugins/oe_oembed_entities/embed.png'
+      $this->moduleExtensionList->getPath('oe_oembed') . '/icons/embed.svg'
     );
   }
 
