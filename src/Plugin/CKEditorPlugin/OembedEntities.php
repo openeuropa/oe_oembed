@@ -31,13 +31,6 @@ class OembedEntities extends EmbedCKEditorPluginBase {
   protected $currentRouteMatch;
 
   /**
-   * The entity type manager.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
-   */
-  protected $entityTypeManager;
-
-  /**
    * The module extension list.
    *
    * @var \Drupal\Core\Extension\ModuleExtensionList
@@ -79,7 +72,6 @@ class OembedEntities extends EmbedCKEditorPluginBase {
     }
     parent::__construct($configuration, $plugin_id, $plugin_definition, $entityTypeManager, $csrf_token_generator);
     $this->currentRouteMatch = $current_route_match;
-    $this->entityTypeManager = $entityTypeManager;
     if (!$moduleExtensionList) {
       // @codingStandardsIgnoreStart
       @trigger_error('Calling ' . __METHOD__ . ' without the $moduleExtensionList argument is deprecated in 0.7.0 and will be required in 1.0.0.', E_USER_DEPRECATED);

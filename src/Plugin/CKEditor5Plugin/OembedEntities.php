@@ -11,6 +11,9 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\editor\EditorInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * @todo use EmbedCKEditor5PluginBase when pr is ready for embed module.
+ */
 class OembedEntities extends CKEditor5PluginDefault implements ContainerFactoryPluginInterface {
 
   /**

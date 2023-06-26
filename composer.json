@@ -10,7 +10,8 @@
         "drupal/ckeditor5_dev": "^1.0",
         "drupal/core": "^9.4 || ^10",
         "drupal/embed": "^1.7",
-        "drupal/entity_embed": "^1.0@dev"
+        "drupal/entity_embed": "^1.0@dev",
+        "symfony/validator": "~4.4.48 || ~6.2.5"
     },
     "require-dev": {
         "composer/installers": "^1.5",
