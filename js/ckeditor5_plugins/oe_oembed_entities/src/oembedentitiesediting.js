@@ -70,9 +70,7 @@ export default class OembedEntitiesEditing extends Plugin {
     });
 
     schema.register('oembedEntityInline', {
-      isObject: true,
-      isInline: true,
-      allowWhere: '$text',
+      inheritAllFrom: '$inlineObject',
       allowAttributes: Object.keys(this.modelAttrs)
     });
   }
