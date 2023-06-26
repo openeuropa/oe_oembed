@@ -176,7 +176,7 @@ export default class OembedEntitiesEditing extends Plugin {
       .elementToStructure({
         model: 'oembedEntity',
         view: (modelElement, { writer }) => {
-          return this._generateViewBlockElement(modelElement, writer);
+          return this._generateViewBlockElement(modelElement, writer, true);
         },
       });
 
@@ -278,7 +278,7 @@ export default class OembedEntitiesEditing extends Plugin {
       .elementToElement({
         model: 'oembedEntityInline',
         view: (modelElement, { writer }) => {
-          return this._generateViewInlineElement(modelElement, writer);
+          return this._generateViewInlineElement(modelElement, writer, true);
         },
       });
 
@@ -287,11 +287,11 @@ export default class OembedEntitiesEditing extends Plugin {
       .elementToElement({
         model: 'oembedEntityInline',
         view: (modelElement, { writer }) => {
-          const link = this._generateViewInlineElement(modelElement, writer);
+          const span = this._generateViewInlineElement(modelElement, writer);
 
-          writer.setAttribute('data-oembed', '', link);
+          writer.setAttribute('data-oembed', '', span.getChild(0));
 
-          return toWidget(link, writer, {
+          return toWidget(span, writer, {
             label: Drupal.t('OpenEuropa Oembed widget'),
           })
         },
@@ -315,7 +315,7 @@ export default class OembedEntitiesEditing extends Plugin {
     });
   }
 
-  _generateViewInlineElement(modelElement, writer) {
+  _generateViewInlineElement(modelElement, writer, forDataDowncast = false) {
     const link = writer.createContainerElement('a', {
       href: modelElement.getAttribute('oembedEntitiesResourceUrl')
     }, { priority: 5 });
@@ -323,11 +323,11 @@ export default class OembedEntitiesEditing extends Plugin {
     const text = writer.createText(modelElement.getAttribute('oembedEntitiesResourceLabel'));
     writer.insert(writer.createPositionAt(link, 0), text);
 
-    return link;
+    return forDataDowncast ? link : writer.createContainerElement('span', {}, [link]);
   }
 
-  _generateViewBlockElement(modelElement, writer) {
-    const link = this._generateViewInlineElement(modelElement, writer);
+  _generateViewBlockElement(modelElement, writer, forDataDowncast = false) {
+    const link = this._generateViewInlineElement(modelElement, writer, forDataDowncast);
 
     return writer.createContainerElement('p', {}, [link]);
   }

@@ -6,3 +6,8 @@ p[data-oembed] {
     padding-bottom: 1.2em;
     line-height: 8em;
 }
+
+p.ck-widget[data-oembed] span > a,
+span.ck-widget > a[data-oembed] {
+  pointer-events: none;
+}
