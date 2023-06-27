@@ -188,6 +188,7 @@ export default class OembedEntitiesEditing extends Plugin {
           const container = this._generateViewBlockElement(modelElement, writer);
 
           writer.setAttribute('data-oembed', '', container);
+          writer.setCustomProperty('OembedEntity', true, container);
 
           return toWidget(container, writer, {
             label: Drupal.t('OpenEuropa Oembed widget'),
@@ -227,11 +228,12 @@ export default class OembedEntitiesEditing extends Plugin {
       .elementToElement({
         model: 'oembedEntityInline',
         view: (modelElement, { writer }) => {
-          const span = this._generateViewInlineElement(modelElement, writer);
+          const container = this._generateViewInlineElement(modelElement, writer);
 
-          writer.setAttribute('data-oembed', '', span.getChild(0));
+          writer.setAttribute('data-oembed', '', container.getChild(0));
+          writer.setCustomProperty('OembedEntity', true, container);
 
-          return toWidget(span, writer, {
+          return toWidget(container, writer, {
             label: Drupal.t('OpenEuropa Oembed widget'),
           })
         },
