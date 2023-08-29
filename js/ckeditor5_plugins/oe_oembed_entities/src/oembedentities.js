@@ -13,12 +13,13 @@
 import OembedEntitiesEditing from './oembedentitiesediting';
 import OembedEntitiesUI from "./oembedentitiesui";
 import { Plugin } from 'ckeditor5/src/core';
+import OembedToolbar from "./oembedtoolbar";
 
 export default class OembedEntities extends Plugin {
   // Note that SimpleBoxEditing and SimpleBoxUI also extend `Plugin`, but these
   // are not seen as individual plugins by CKEditor 5. CKEditor 5 will only
   // discover the plugins explicitly exported in index.js.
   static get requires() {
-    return [OembedEntitiesEditing, OembedEntitiesUI];
+    return [OembedEntitiesEditing, OembedEntitiesUI, OembedToolbar];
   }
 }
