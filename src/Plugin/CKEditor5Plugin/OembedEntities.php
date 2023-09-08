@@ -57,38 +57,56 @@ class OembedEntities extends CKEditor5PluginDefault implements ContainerFactoryP
    * {@inheritdoc}
    */
   public function getDynamicPluginConfig(array $static_plugin_config, EditorInterface $editor): array {
+    // @todo this method is called for each button present in the editor!
     $dynamic_plugin_config = $static_plugin_config;
 
     // Register embed buttons as individual buttons on admin pages.
     $embed_buttons = $this
       ->entityTypeManager
       ->getStorage('embed_button')
-      ->loadMultiple();
+      ->loadByProperties([
+        'type_id' => 'oe_oembed_entities',
+      ]);
+
+    $toolbar_items = $editor->getSettings()['toolbar']['items'];
     $buttons = [];
+    $default_buttons = [];
+
     /** @var \Drupal\embed\EmbedButtonInterface $embed_button */
     foreach ($embed_buttons as $embed_button) {
       $id = $embed_button->id();
+
+      // This is needed only because we are loading all the buttons instead
+      // of only the current plugin button.
+      if (!in_array($id, $toolbar_items)) {
+        continue;
+      }
+
       $label = Html::escape($embed_button->label());
       $buttons[$id] = [
-        'id' => $id,
         'name' => $label,
         'label' => $label,
         'icon' => $embed_button->getIconUrl(),
       ];
+
+      $entity_type = $embed_button->getTypeSetting('entity_type');
+      if (!isset($default_buttons[$entity_type])) {
+        $default_buttons[$entity_type] = $id;
+      }
     }
 
     // Add configured embed buttons and pass it to the UI.
     $dynamic_plugin_config['oembedEntities'] = [
       'buttons' => $buttons,
+      'defaultButtons' => $default_buttons,
       'format' => $editor->getFilterFormat()->id(),
       'dialogSettings' => [
         'dialogClass' => 'oe-oembed-entities-select-dialog',
-        'resizable' => false,
+        'resizable' => FALSE,
       ],
     ];
 
     return $dynamic_plugin_config;
   }
-
 
 }

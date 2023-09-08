@@ -47,10 +47,12 @@ export default class OembedEntitiesUI extends Plugin {
           Drupal.ckeditor5.openDialog(
             libraryUrl,
             ({ attributes }) => {
+              // Our module doesn't support sending the button from the response.
+              attributes['data-button-id'] = id;
               editor.execute('oembedEntities', attributes);
             },
             dialogSettings,
-          ),
+          )
         );
 
         return buttonView;

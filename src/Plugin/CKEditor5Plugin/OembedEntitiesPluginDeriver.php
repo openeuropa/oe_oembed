@@ -40,10 +40,14 @@ class OembedEntitiesPluginDeriver extends DeriverBase implements ContainerDerive
     );
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getDerivativeDefinitions($base_plugin_definition) {
     $storage = $this->entityTypeManager->getStorage('embed_button');
+    $buttons = $storage->loadByProperties(['type_id' => 'oe_oembed_entities']);
 
-    foreach ($storage->loadMultiple() as $embed_button) {
+    foreach ($buttons as $embed_button) {
       $embed_button_id = $embed_button->id();
       $embed_button_label = Html::escape($embed_button->label());
       $plugin_id = "oe_oembed_entities_{$embed_button_id}";
@@ -56,11 +60,11 @@ class OembedEntitiesPluginDeriver extends DeriverBase implements ContainerDerive
         ],
       ];
       $definition['drupal']['elements'][] = '<p data-oembed data-display-as data-embed-inline>';
+      $definition['drupal']['elements'][] = '<a data-oembed data-display-as data-embed-inline>';
       $this->derivatives[$plugin_id] = new CKEditor5PluginDefinition($definition);
     }
 
     return $this->derivatives;
   }
-
 
 }
