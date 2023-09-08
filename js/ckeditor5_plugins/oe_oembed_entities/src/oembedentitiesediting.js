@@ -43,7 +43,8 @@ export default class OembedEntitiesEditing extends Plugin {
     };
     this.modelAttrs = Object.assign({
       oembedEntitiesResourceLabel: 'data-resource-label',
-      oembedEntitiesResourceUrl: 'data-resource-url'
+      oembedEntitiesResourceUrl: 'data-resource-url',
+      oembedEntitiesButtonId: 'data-button-id',
     }, this.viewAttrs);
   }
 
@@ -100,10 +101,12 @@ export default class OembedEntitiesEditing extends Plugin {
           // Define elements consumables.
           // This basically is used to check if the element or its attributes
           // have been already "consumed" (converted) by another converter.
-          const wrapper = {name: true};
-          const link = {name: true, attributes: 'href'};
+          const wrapper = { name: true };
+          const link = { name: true, attributes: 'href' };
 
           // We are converting only p[data-oembed] elements.
+          // We do not use this attribute in the wrapper consumable above
+          // so that the attributes downcast will do it for us.
           if (!viewItem.hasAttribute('data-oembed')) {
             return;
           }
@@ -237,6 +240,74 @@ export default class OembedEntitiesEditing extends Plugin {
             label: Drupal.t('OpenEuropa Oembed widget'),
           })
         },
+      });
+
+    // We need to use a structure conversion as we don't only need to process the "a" tag,
+    // but also consume the inner text.
+    conversion
+      .for('upcast')
+      .add(dispatcher => {
+        dispatcher.on('element:a', (evt, data, conversionApi) => {
+          const {
+            consumable,
+            writer,
+            safeInsert,
+            updateConversionResult
+          } = conversionApi;
+
+          // Get view item from data object.
+          const { viewItem } = data;
+          const link = { name: true, attributes: 'href' };
+
+          // We are converting only a[data-oembed] elements.
+          // We do not use this attribute in the wrapper consumable above
+          // so that the attributes downcast will do it for us.
+          if (!viewItem.hasAttribute('data-oembed')) {
+            return;
+          }
+
+          // Tests if the view element can be consumed.
+          if (!consumable.test(viewItem, link)) {
+            return;
+          }
+
+          // Check if there is only one child.
+          if (viewItem.childCount !== 1) {
+            return;
+          }
+
+          const textNode = viewItem.getChild(0);
+          if (!textNode.is('text')) {
+            return;
+          }
+
+          if (!consumable.test(textNode)) {
+            return;
+          }
+
+          // Create our model with the two attributes coming from the link
+          // element. The rest of the attributes will be converted by a
+          // dedicated upcast.
+          const modelElement = writer.createElement('oembedEntityInline', {
+            oembedEntitiesResourceUrl: viewItem.getAttribute('href'),
+            oembedEntitiesResourceLabel: textNode.data,
+          });
+
+          // Insert element on a current cursor location.
+          if (!safeInsert(modelElement, data.modelCursor)) {
+            return;
+          }
+
+          // Mark objects as consumed.
+          consumable.consume(viewItem, link);
+          consumable.consume(textNode);
+
+          // Necessary function call to help setting model range and cursor
+          // for some specific cases when elements being split.
+          updateConversionResult(modelElement, data);
+          // This converter is marked with high priority, so it runs before
+          // the default <a> conversion.
+        }, { priority: 'high' });
       });
 
     Object.keys(this.viewAttrs).forEach((modelKey) => {
