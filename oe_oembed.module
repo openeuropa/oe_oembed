@@ -114,3 +114,21 @@ function _oe_oembed_get_enabled_display_options(EntityViewDisplayInterface $disp
 
   return $available_options;
 }
+
+/**
+ * Implements hook_ckeditor4to5upgrade_plugin_info_alter().
+ */
+function oe_oembed_ckeditor4to5upgrade_plugin_info_alter(array &$plugin_definitions): void {
+  // Alter the \Drupal\oe_oembed\Plugin\CKEditor4To5Upgrade\OeOembed definition
+  // to add the existing buttons.
+  $embed_buttons = \Drupal::entityTypeManager()
+    ->getStorage('embed_button')
+    ->loadByProperties([
+      'type_id' => 'oe_oembed_entities',
+    ]);
+  $buttons = array_map(fn($button) => $button->id(), $embed_buttons);
+
+  if ($buttons) {
+    $plugin_definitions['oe_oembed']['cke4_buttons'] = $buttons;
+  }
+}
