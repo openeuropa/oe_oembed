@@ -5,6 +5,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 import defaultIcon from '../../../../icons/embed.svg';
+import { openDialog } from "./utils";
 
 export default class OembedEntitiesUI extends Plugin {
 
@@ -12,7 +13,7 @@ export default class OembedEntitiesUI extends Plugin {
     const editor = this.editor;
     const command = editor.commands.get('oembedEntities');
     const options = editor.config.get('oembedEntities');
-    const { dialogSettings = {} } = options;
+    const { dialogSettings = {}, currentRoute, currentRouteParameters } = options;
 
     if (!options) {
       return;
@@ -44,8 +45,12 @@ export default class OembedEntitiesUI extends Plugin {
 
         // Execute the command when the button is clicked (executed).
         this.listenTo(buttonView, 'execute', () =>
-          Drupal.ckeditor5.openDialog(
+          openDialog(
             libraryUrl,
+            {
+              'current_route': currentRoute,
+              'current_route_parameters': currentRouteParameters,
+            },
             ({ attributes }) => {
               // Our module doesn't support sending the button from the response.
               attributes['data-button-id'] = id;

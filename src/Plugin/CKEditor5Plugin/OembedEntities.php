@@ -8,6 +8,7 @@ use Drupal\ckeditor5\Plugin\CKEditor5PluginDefault;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\editor\EditorInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -15,6 +16,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @todo use EmbedCKEditor5PluginBase when pr is ready for embed module.
  */
 class OembedEntities extends CKEditor5PluginDefault implements ContainerFactoryPluginInterface {
+
+  /**
+   * The current route match.
+   *
+   * @var \Drupal\Core\Routing\RouteMatchInterface
+   */
+  protected RouteMatchInterface $currentRouteMatch;
 
   /**
    * The entity type manager.
@@ -34,11 +42,14 @@ class OembedEntities extends CKEditor5PluginDefault implements ContainerFactoryP
    *   The plugin implementation definition.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   The entity type manager.
+   * @param \Drupal\Core\Routing\RouteMatchInterface $currentRouteMatch
+   *   The current route match.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityTypeManagerInterface $entityTypeManager) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityTypeManagerInterface $entityTypeManager, RouteMatchInterface $currentRouteMatch) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
 
     $this->entityTypeManager = $entityTypeManager;
+    $this->currentRouteMatch = $currentRouteMatch;
   }
 
   /**
@@ -49,7 +60,8 @@ class OembedEntities extends CKEditor5PluginDefault implements ContainerFactoryP
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('entity_type.manager')
+      $container->get('entity_type.manager'),
+      $container->get('current_route_match')
     );
   }
 
@@ -104,6 +116,8 @@ class OembedEntities extends CKEditor5PluginDefault implements ContainerFactoryP
         'dialogClass' => 'oe-oembed-entities-select-dialog',
         'resizable' => FALSE,
       ],
+      'currentRoute' => $this->currentRouteMatch->getRouteName(),
+      'currentRouteParameters' => $this->currentRouteMatch->getRawParameters()->all(),
     ];
 
     return $dynamic_plugin_config;

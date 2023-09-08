@@ -1,6 +1,7 @@
 import { Plugin, icons } from 'ckeditor5/src/core';
 import { ButtonView } from "ckeditor5/src/ui";
 import { WidgetToolbarRepository, isWidget } from 'ckeditor5/src/widget';
+import { openDialog } from "./utils";
 
 export default class OembedToolbar extends Plugin {
 
@@ -21,7 +22,7 @@ export default class OembedToolbar extends Plugin {
   init() {
     const editor = this.editor;
     const options = editor.config.get('oembedEntities');
-    const { dialogSettings = {}, defaultButtons = {} } = options;
+    const { dialogSettings = {}, defaultButtons, currentRoute, currentRouteParameters } = options;
     const oembedEntitiesEditing = this.editor.plugins.get('OembedEntitiesEditing');
 
     editor.ui.componentFactory.add('oembedEntityEdit', (locale) => {
@@ -38,14 +39,17 @@ export default class OembedToolbar extends Plugin {
         const buttonId = this._getButtonId(element, defaultButtons);
         const libraryUrl = Drupal.url('oe-oembed-embed/dialog/' + options.format + '/' + buttonId);
 
-        let existingValues = {};
+        let existingValues = {
+          'current_route': currentRoute,
+          'current_route_parameters': currentRouteParameters,
+        };
         for (const [modelAttribute, dataAttribute] of Object.entries(oembedEntitiesEditing.viewAttrs)) {
           if (element.hasAttribute(modelAttribute)) {
             existingValues[dataAttribute] = element.getAttribute(modelAttribute);
           }
         }
 
-        this._openDialog(
+        openDialog(
           libraryUrl,
           existingValues,
           ({ attributes }) => {
@@ -83,48 +87,6 @@ export default class OembedToolbar extends Plugin {
         return null;
       },
     });
-  }
-
-  /**
-   * Open a dialog for a Drupal-based plugin.
-   *
-   * Copy of Drupal.ckeditor5.openDialog, with addition of existingValues parameter.
-   *
-   * @param {string} url
-   *   The URL that contains the contents of the dialog.
-   * @param {object} existingValues
-   *   Existing values that will be sent via POST to the url for the dialog
-   *  contents.
-   * @param {function} saveCallback
-   *   A function to be called upon saving the dialog.
-   * @param {object} dialogSettings
-   *   An object containing settings to be passed to the jQuery UI.
-   */
-  _openDialog(url, existingValues, saveCallback, dialogSettings) {
-    // Add a consistent dialog class.
-    const classes = dialogSettings.dialogClass
-      ? dialogSettings.dialogClass.split(' ')
-      : [];
-    classes.push('ui-dialog--narrow');
-    dialogSettings.dialogClass = classes.join(' ');
-    dialogSettings.autoResize =
-      window.matchMedia('(min-width: 600px)').matches;
-    dialogSettings.width = 'auto';
-
-    const ckeditorAjaxDialog = Drupal.ajax({
-      dialog: dialogSettings,
-      dialogType: 'modal',
-      selector: '.ckeditor5-dialog-loading-link',
-      url,
-      progress: { type: 'fullscreen' },
-      submit: {
-        editor_object: existingValues,
-      },
-    });
-    ckeditorAjaxDialog.execute();
-
-    // Store the save callback to be executed when this dialog is closed.
-    Drupal.ckeditor5.saveCallback = saveCallback;
   }
 
   /**
