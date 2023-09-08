@@ -1,4 +1,5 @@
-p[data-oembed] {
+p[data-oembed],
+.ck p.ck-widget.ck-oe-oembed {
     height: 8em;
     width: 100%;
     background-color: #E0E0E0;
@@ -7,7 +8,7 @@ p[data-oembed] {
     line-height: 8em;
 }
 
-p.ck-widget[data-oembed] span > a,
-span.ck-widget > a[data-oembed] {
+.ck p.ck-widget.ck-oe-oembed span > a,
+.ck span.ck-widget.ck-oe-oembed > a {
   pointer-events: none;
 }

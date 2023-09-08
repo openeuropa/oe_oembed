@@ -190,7 +190,7 @@ export default class OembedEntitiesEditing extends Plugin {
         view: (modelElement, { writer }) => {
           const container = this._generateViewBlockElement(modelElement, writer);
 
-          writer.setAttribute('data-oembed', '', container);
+          writer.addClass('ck-oe-oembed', container);
           writer.setCustomProperty('OembedEntity', true, container);
 
           return toWidget(container, writer, {
@@ -233,7 +233,7 @@ export default class OembedEntitiesEditing extends Plugin {
         view: (modelElement, { writer }) => {
           const container = this._generateViewInlineElement(modelElement, writer);
 
-          writer.setAttribute('data-oembed', '', container.getChild(0));
+          writer.addClass('ck-oe-oembed', container);
           writer.setCustomProperty('OembedEntity', true, container);
 
           return toWidget(container, writer, {
