@@ -70,8 +70,13 @@ export default class OembedEntitiesEditing extends Plugin {
       allowAttributes: Object.keys(this.modelAttrs)
     });
 
+    // The inline model behaves like an $inlineObject, but without allowing
+    // $text attributes.
+    // @see https://ckeditor.com/docs/ckeditor5/latest/framework/deep-dive/schema.html#generic-items
     schema.register('oembedEntityInline', {
-      inheritAllFrom: '$inlineObject',
+      isInline: true,
+      isObject: true,
+      allowWhere: '$text',
       allowAttributes: Object.keys(this.modelAttrs)
     });
   }
