@@ -13,7 +13,28 @@ use Drupal\editor\EditorInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * @todo use EmbedCKEditor5PluginBase when pr is ready for embed module.
+ * @todo use EmbedCKEditor5PluginBase when PR is ready for embed module.
+ *
+ * @CKEditor5Plugin(
+ *   id = "oe_oembed_entities",
+ *   ckeditor5 = @CKEditor5AspectsOfCKEditor5Plugin(
+ *     plugins = {"oe_oembed_entities.OembedEntities"},
+ *     config = {},
+ *   ),
+ *   drupal = @DrupalAspectsOfCKEditor5Plugin(
+ *     deriver = "Drupal\oe_oembed\Plugin\CKEditor5Plugin\OembedEntitiesPluginDeriver",
+ *     library = "oe_oembed/oe_oembed_entities_ck5",
+ *     elements = {
+ *       "<p>",
+ *       "<a>",
+ *       "<p data-oembed data-display-as data-embed-inline>",
+ *       "<a data-oembed data-display-as data-embed-inline href>",
+ *     },
+ *     conditions = {
+ *       "filter" = "oe_oembed_filter",
+ *     },
+ *   )
+ * )
  */
 class OembedEntities extends CKEditor5PluginDefault implements ContainerFactoryPluginInterface {
 

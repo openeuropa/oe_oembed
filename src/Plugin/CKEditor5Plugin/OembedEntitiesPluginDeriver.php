@@ -53,14 +53,13 @@ class OembedEntitiesPluginDeriver extends DeriverBase implements ContainerDerive
       $plugin_id = "oe_oembed_entities_{$embed_button_id}";
       $definition = $base_plugin_definition->toArray();
       $definition['id'] = $plugin_id;
-      $definition['drupal']['label'] = $this->t('Entity Embed - @label', ['@label' => $embed_button_label])->render();
+      $definition['drupal']['label'] = $this->t('OpenEuropa Oembed - @label', ['@label' => $embed_button_label])->render();
       $definition['drupal']['toolbar_items'] = [
         $embed_button_id => [
           'label' => $embed_button_label,
         ],
       ];
-      $definition['drupal']['elements'][] = '<p data-oembed data-display-as data-embed-inline>';
-      $definition['drupal']['elements'][] = '<a data-oembed data-display-as data-embed-inline>';
+
       $this->derivatives[$plugin_id] = new CKEditor5PluginDefinition($definition);
     }
 
