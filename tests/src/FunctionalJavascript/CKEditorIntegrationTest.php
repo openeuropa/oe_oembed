@@ -13,13 +13,6 @@ use Drupal\Core\Entity\Entity\EntityViewDisplay;
 class CKEditorIntegrationTest extends EmbedTestBase {
 
   /**
-   * {@inheritdoc}
-   */
-  protected static $modules = [
-    'field_ui',
-  ];
-
-  /**
    * The test media button.
    *
    * @var \Drupal\embed\Entity\EmbedButton
