@@ -27,8 +27,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *     elements = {
  *       "<p>",
  *       "<a>",
- *       "<p data-oembed data-display-as data-embed-inline>",
- *       "<a data-oembed data-display-as data-embed-inline href>",
+ *       "<p data-oembed data-display-as>",
+ *       "<a data-oembed data-display-as href>",
  *     },
  *     conditions = {
  *       "filter" = "oe_oembed_filter",

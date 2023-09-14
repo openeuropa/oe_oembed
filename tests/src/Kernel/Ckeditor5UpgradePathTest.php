@@ -85,7 +85,7 @@ class Ckeditor5UpgradePathTest extends SmartDefaultSettingsTest {
         'filter_html' => [
           'status' => 1,
           'settings' => [
-            'allowed_html' => '<p> <br> <strong> <p data-oembed data-display-as data-embed-inline> <a data-oembed data-display-as data-embed-inline href>',
+            'allowed_html' => '<p> <br> <strong> <p data-oembed data-display-as> <a data-oembed data-display-as href>',
           ],
         ],
       ] + $filter_config_oe_oembed_filter_on,
@@ -176,12 +176,12 @@ class Ckeditor5UpgradePathTest extends SmartDefaultSettingsTest {
         'toolbar' => $expected_ckeditor5_toolbar,
         'plugins' => [],
       ],
-      'expected_superset' => '<p data-oembed data-display-as data-embed-inline> <a data-oembed data-display-as data-embed-inline href>',
+      'expected_superset' => '<p data-oembed data-display-as> <a data-oembed data-display-as href>',
       'expected_fundamental_compatibility_violations' => [],
       'expected_db_logs' => [],
       'expected_messages' => [
         'warning' => [
-          'Updating to CKEditor 5 added support for some previously unsupported tags/attributes. A plugin introduced support for the following:  The tag <em class="placeholder">&lt;a&gt;</em>; These attributes: <em class="placeholder"> data-oembed (for &lt;p&gt;, &lt;a&gt;), data-display-as (for &lt;p&gt;, &lt;a&gt;), data-embed-inline (for &lt;p&gt;, &lt;a&gt;), href (for &lt;a&gt;)</em>; Additional details are available in your logs.',
+          'Updating to CKEditor 5 added support for some previously unsupported tags/attributes. A plugin introduced support for the following:  The tag <em class="placeholder">&lt;a&gt;</em>; These attributes: <em class="placeholder"> data-oembed (for &lt;p&gt;, &lt;a&gt;), data-display-as (for &lt;p&gt;, &lt;a&gt;), href (for &lt;a&gt;)</em>; Additional details are available in your logs.',
         ],
       ],
     ];

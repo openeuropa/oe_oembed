@@ -12,7 +12,7 @@ export default class OembedEntitiesCommand extends Command {
     const oembedEntitiesEditing = this.editor.plugins.get('OembedEntitiesEditing');
 
     // Create object that contains supported data-attributes in view data by
-    // flipping `EntityEmbedEditing.attrs` object (i.e. keys from object become
+    // flipping `EntityEmbedEditing.modelAttrs` object (i.e. keys from object become
     // values and values from object become keys).
     const dataAttributeMapping = Object.entries(oembedEntitiesEditing.modelAttrs).reduce(
       (result, [key, value]) => {

@@ -39,9 +39,9 @@ export default class OembedEntitiesEditing extends Plugin {
     this.viewAttrs = {
       oembedEntitiesOembed: 'data-oembed',
       oembedEntitiesDisplayAs: 'data-display-as',
-      oembedEntitiesEmbedInline: 'data-embed-inline',
     };
     this.modelAttrs = Object.assign({
+      oembedEntitiesEmbedInline: 'data-embed-inline',
       oembedEntitiesResourceLabel: 'data-resource-label',
       oembedEntitiesResourceUrl: 'data-resource-url',
       oembedEntitiesButtonId: 'data-button-id',
