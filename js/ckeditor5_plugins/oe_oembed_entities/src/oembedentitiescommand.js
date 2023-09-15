@@ -35,6 +35,14 @@ export default class OembedEntitiesCommand extends Command {
       {},
     );
 
+    // @todo Check if we prefer this.
+    //const modelAttributes = {}
+    //for (const [modelAttribute, dataAttribute] of Object.entries(oembedEntitiesEditing.modelAttrs)) {
+    //  if (attributes[dataAttribute]) {
+    //    modelAttributes[modelAttribute] = attributes[dataAttribute];
+    //  }
+    //}
+
     model.change((writer) => {
       model.insertContent(insertOembedEntity(writer, modelAttributes));
     });
