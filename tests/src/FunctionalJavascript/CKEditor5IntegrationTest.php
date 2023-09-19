@@ -18,6 +18,8 @@ use Drupal\node\Entity\NodeType;
 use Drupal\Tests\ckeditor5\Traits\CKEditor5TestTrait;
 use Drupal\Tests\oe_oembed\Traits\CKEditor5TestTrait as ExtraCKEditor5TestTrait;
 use Drupal\Tests\oe_oembed\Traits\MediaCreationTrait;
+use Drupal\Tests\oe_oembed\Traits\OembedMarkupTrait;
+use Drupal\Tests\oe_oembed\Traits\OembedWidgetAssertTrait;
 use Symfony\Component\Validator\ConstraintViolation;
 use WebDriver\Exception;
 
@@ -29,6 +31,8 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
   use CKEditor5TestTrait;
   use ExtraCKEditor5TestTrait;
   use MediaCreationTrait;
+  use OembedMarkupTrait;
+  use OembedWidgetAssertTrait;
 
   /**
    * {@inheritdoc}
@@ -128,7 +132,7 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
       'status' => 1,
       'title' => 'Host page',
       'body' => [
-        'value' => $this->getBlockEmbedString('node', 'default', $embeddable->uuid(), $embeddable->label()),
+        'value' => $this->getBlockEmbedMarkup('node', 'default', $embeddable->uuid(), $embeddable->label()),
         'format' => 'test_format',
       ],
     ]);
@@ -148,7 +152,7 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
     $this->assertEquals($host->get('body')->value, $this->getEditorDataAsHtmlString());
 
     $host->set('body', [
-      'value' => $this->getInlineEmbedString('node', 'default', $embeddable->uuid(), $embeddable->label()),
+      'value' => $this->getInlineEmbedMarkup('node', 'default', $embeddable->uuid(), $embeddable->label()),
       'format' => 'test_format',
     ])->save();
     $this->drupalGet($edit_url);
@@ -204,7 +208,7 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
     $editor = $this->getEditor();
     $widget = $this->assertBlockEmbedWidget($node, $editor);
     // The strong tag has been replaced by the embedded entity markup.
-    $this->assertEquals('<p>First paragraph</p><p>Pre text&nbsp;</p>' . $this->getBlockEmbedString('node', 'embed', $node->uuid(), $node->label()) . '<p>&nbsp;after text</p><p>Last paragraph</p>', $this->getEditorDataAsHtmlString());
+    $this->assertEquals('<p>First paragraph</p><p>Pre text&nbsp;</p>' . $this->getBlockEmbedMarkup('node', 'embed', $node->uuid(), $node->label()) . '<p>&nbsp;after text</p><p>Last paragraph</p>', $this->getEditorDataAsHtmlString());
 
     // Create a new node to embed.
     $another_embeddable = Node::create([
@@ -218,7 +222,7 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
     $widget->click();
     $this->editEmbeddedEntityWithSimpleModal($node, $another_embeddable);
     $this->assertBlockEmbedWidget($another_embeddable, $editor);
-    $this->assertEquals('<p>First paragraph</p><p>Pre text&nbsp;</p>' . $this->getBlockEmbedString('node', 'embed', $another_embeddable->uuid(), $another_embeddable->label()) . '<p>&nbsp;after text</p><p>Last paragraph</p>', $this->getEditorDataAsHtmlString());
+    $this->assertEquals('<p>First paragraph</p><p>Pre text&nbsp;</p>' . $this->getBlockEmbedMarkup('node', 'embed', $another_embeddable->uuid(), $another_embeddable->label()) . '<p>&nbsp;after text</p><p>Last paragraph</p>', $this->getEditorDataAsHtmlString());
 
     // Check that the correct button gets reassigned to the element on edit.
     $assert_session = $this->assertSession();
@@ -275,7 +279,7 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
     $this->embedEntityWithSimpleModal('Node', $node, 'Inline');
     $editor = $this->getEditor();
     $widget = $this->assertInlineEmbedWidget($node, $editor);
-    $this->assertEquals('<p>Some text in the editor' . $this->getInlineEmbedString('node', 'inline', $node->uuid(), $node->label()) . '</p>', $this->getEditorDataAsHtmlString());
+    $this->assertEquals('<p>Some text in the editor' . $this->getInlineEmbedMarkup('node', 'inline', $node->uuid(), $node->label()) . '</p>', $this->getEditorDataAsHtmlString());
 
     // Create a new node to embed.
     $another_embeddable = Node::create([
@@ -289,7 +293,7 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
     $widget->click();
     $this->editEmbeddedEntityWithSimpleModal($node, $another_embeddable);
     $this->assertInlineEmbedWidget($another_embeddable, $editor);
-    $this->assertEquals('<p>Some text in the editor' . $this->getInlineEmbedString('node', 'inline', $another_embeddable->uuid(), $another_embeddable->label()) . '</p>', $this->getEditorDataAsHtmlString());
+    $this->assertEquals('<p>Some text in the editor' . $this->getInlineEmbedMarkup('node', 'inline', $another_embeddable->uuid(), $another_embeddable->label()) . '</p>', $this->getEditorDataAsHtmlString());
 
     // Test that the inline widget can be put inside block elements, but not
     // inside inline elements such as links.
@@ -304,7 +308,7 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
     // The splitting of the link is done by CKEditor, not by our plugin. It
     // appears that the link loses the href attribute in the process.
     $this->assertEquals(
-      '<p><a>A link with&nbsp;</a>' . $this->getInlineEmbedString('node', 'inline', $node->uuid(), $node->label()) . '<a>&nbsp;in it.</a></p>',
+      '<p><a>A link with&nbsp;</a>' . $this->getInlineEmbedMarkup('node', 'inline', $node->uuid(), $node->label()) . '<a>&nbsp;in it.</a></p>',
       $this->getEditorDataAsHtmlString()
     );
   }
@@ -345,7 +349,7 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
     $this->embedEntityWithSimpleModal('Media', $video);
     $editor = $this->getEditor();
     $video_widget = $this->assertBlockEmbedWidget($video, $editor);
-    $this->assertEquals($this->getBlockEmbedString('media', 'embed', $video->uuid(), $video->label()), $this->getEditorDataAsHtmlString());
+    $this->assertEquals($this->getBlockEmbedMarkup('media', 'embed', $video->uuid(), $video->label()), $this->getEditorDataAsHtmlString());
 
     // Block widgets get a newline button to add space before or after the
     // widget itself. Press the button to space after.
@@ -356,7 +360,7 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
     $editor = $this->getEditor();
     $node_widget = $this->assertBlockEmbedWidget($node, $editor);
     $this->assertEquals(
-      $this->getBlockEmbedString('media', 'embed', $video->uuid(), $video->label()) . $this->getBlockEmbedString('node', 'embed', $node->uuid(), $node->label()),
+      $this->getBlockEmbedMarkup('media', 'embed', $video->uuid(), $video->label()) . $this->getBlockEmbedMarkup('node', 'embed', $node->uuid(), $node->label()),
       $this->getEditorDataAsHtmlString()
     );
 
@@ -364,14 +368,14 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
     $video_widget->click();
     $this->editEmbeddedEntityWithSimpleModal($video);
     $this->assertEquals(
-      $this->getBlockEmbedString('media', 'embed', $video->uuid(), $video->label()) . $this->getBlockEmbedString('node', 'embed', $node->uuid(), $node->label()),
+      $this->getBlockEmbedMarkup('media', 'embed', $video->uuid(), $video->label()) . $this->getBlockEmbedMarkup('node', 'embed', $node->uuid(), $node->label()),
       $this->getEditorDataAsHtmlString()
     );
 
     $node_widget->click();
     $this->editEmbeddedEntityWithSimpleModal($node);
     $this->assertEquals(
-      $this->getBlockEmbedString('media', 'embed', $video->uuid(), $video->label()) . $this->getBlockEmbedString('node', 'embed', $node->uuid(), $node->label()),
+      $this->getBlockEmbedMarkup('media', 'embed', $video->uuid(), $video->label()) . $this->getBlockEmbedMarkup('node', 'embed', $node->uuid(), $node->label()),
       $this->getEditorDataAsHtmlString()
     );
 
@@ -502,110 +506,6 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
 
     $assert_session->elementExists('css', 'button.button--primary', $modal)->press();
     $assert_session->assertWaitOnAjaxRequest();
-  }
-
-  /**
-   * Returns the first instance of a block embed widget for a given entity.
-   *
-   * @param \Drupal\Core\Entity\EntityInterface $entity
-   *   The entity.
-   * @param \Behat\Mink\Element\NodeElement $editor
-   *   The editor element.
-   *
-   * @return \Behat\Mink\Element\NodeElement
-   *   The block widget element wrapper.
-   */
-  protected function assertBlockEmbedWidget(EntityInterface $entity, NodeElement $editor): NodeElement {
-    $assert_session = $this->assertSession();
-    $xpath = sprintf(
-      '%s[%s]',
-      $this->cssSelectToXpath('p.ck-oe-oembed.ck-widget'),
-      $this->cssSelectToXpath(sprintf('span > a[href="https://data.ec.europa.eu/ewp/%s/%s"]', $entity->getEntityTypeId(), $entity->uuid()), TRUE, './')
-    );
-    $widget = $assert_session->elementExists('xpath', $xpath, $editor);
-    $this->assertEquals($entity->label(), $widget->find('css', 'a')->getHtml());
-
-    return $widget;
-  }
-
-  /**
-   * Returns the first instance of an inline embed widget for a given entity.
-   *
-   * @param \Drupal\Core\Entity\EntityInterface $entity
-   *   The entity.
-   * @param \Behat\Mink\Element\NodeElement $editor
-   *   The editor element.
-   *
-   * @return \Behat\Mink\Element\NodeElement
-   *   The inline widget element wrapper.
-   */
-  protected function assertInlineEmbedWidget(EntityInterface $entity, NodeElement $editor): NodeElement {
-    $assert_session = $this->assertSession();
-    $xpath = sprintf(
-      '%s[%s]',
-      $this->cssSelectToXpath('span.ck-oe-oembed.ck-widget'),
-      $this->cssSelectToXpath(sprintf('a[href="https://data.ec.europa.eu/ewp/%s/%s"]', $entity->getEntityTypeId(), $entity->uuid()), TRUE, './')
-    );
-    $widget = $assert_session->elementExists('xpath', $xpath, $editor);
-    $this->assertEquals($entity->label(), $widget->find('css', 'a')->getHtml());
-
-    return $widget;
-  }
-
-  /**
-   * Returns the markup for an embedded entity with a non-inline view mode.
-   *
-   * @param string $entity_type
-   *   The entity type ID.
-   * @param string $view_mode
-   *   The view mode.
-   * @param string $uuid
-   *   The entity UUID.
-   * @param string $label
-   *   The entity label.
-   *
-   * @return string
-   *   The embed markup as created by the JS plugin.
-   */
-  protected function getBlockEmbedString(string $entity_type, string $view_mode, string $uuid, string $label): string {
-    return sprintf(
-      '<p data-display-as="%s" data-oembed="https://oembed.ec.europa.eu?url=https%%3A//data.ec.europa.eu/ewp/%s/%s%%3Fview_mode%%3D%s"><a href="https://data.ec.europa.eu/ewp/%s/%s">%s</a></p>',
-      $view_mode,
-      $entity_type,
-      $uuid,
-      $view_mode,
-      $entity_type,
-      $uuid,
-      $label
-    );
-  }
-
-  /**
-   * Returns the markup for an embedded entity with an inline view mode.
-   *
-   * @param string $entity_type
-   *   The entity type ID.
-   * @param string $view_mode
-   *   The view mode.
-   * @param string $uuid
-   *   The entity UUID.
-   * @param string $label
-   *   The entity label.
-   *
-   * @return string
-   *   The embed markup as created by the JS plugin.
-   */
-  protected function getInlineEmbedString(string $entity_type, string $view_mode, string $uuid, string $label): string {
-    return sprintf(
-      '<a href="https://data.ec.europa.eu/ewp/%s/%s" data-display-as="%s" data-oembed="https://oembed.ec.europa.eu?url=https%%3A//data.ec.europa.eu/ewp/%s/%s%%3Fview_mode%%3D%s">%s</a>',
-      $entity_type,
-      $uuid,
-      $view_mode,
-      $entity_type,
-      $uuid,
-      $view_mode,
-      $label
-    );
   }
 
 }
