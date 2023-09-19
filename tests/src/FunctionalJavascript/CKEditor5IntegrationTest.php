@@ -222,19 +222,7 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
 
     // Edit the previous embedded node and replace it with the new one.
     $assert_session->elementExists('css', 'p.ck-oe-oembed.ck-widget', $editor)->click();
-    $this->getBalloonButton('Edit')->click();
-    $modal = $assert_session->waitForElement('css', '.oe-oembed-entities-select-dialog');
-    $this->assertStringContainsString('Selected entity', $modal->getText());
-    $this->assertNotEmpty($modal->findLink($node->label()));
-    $assert_session->elementExists('xpath', '//button[text()="Back"]', $modal)->click();
-    $assert_session->assertWaitOnAjaxRequest();
-    $assert_session->fieldExists('entity_id', $modal)->setValue(sprintf('%s (%s)', $another_embeddable->label(), $another_embeddable->id()));
-    $assert_session->elementExists('css', 'button.js-button-next', $modal)->click();
-    $assert_session->assertWaitOnAjaxRequest();
-    $this->assertStringContainsString('Selected entity', $modal->getText());
-    $this->assertNotEmpty($modal->findLink($another_embeddable->label()));
-    $assert_session->elementExists('css', 'button.button--primary', $modal)->press();
-    $assert_session->assertWaitOnAjaxRequest();
+    $this->editEmbeddedEntityWithSimpleModal($node, $another_embeddable);
     $editor = $assert_session->elementExists('css', '.ck-editor .ck-content');
     $link = $assert_session->elementExists('css', sprintf('p.ck-oe-oembed.ck-widget > span > a[href="https://data.ec.europa.eu/ewp/node/%s"]', $another_embeddable->uuid()), $editor);
     $this->assertEquals($another_embeddable->label(), $link->getHtml());
@@ -308,19 +296,7 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
 
     // Edit the previous embedded node and replace it with the new one.
     $assert_session->elementExists('css', 'span.ck-oe-oembed.ck-widget', $editor)->click();
-    $this->getBalloonButton('Edit')->click();
-    $modal = $assert_session->waitForElement('css', '.oe-oembed-entities-select-dialog');
-    $this->assertStringContainsString('Selected entity', $modal->getText());
-    $this->assertNotEmpty($modal->findLink($node->label()));
-    $assert_session->elementExists('xpath', '//button[text()="Back"]', $modal)->click();
-    $assert_session->assertWaitOnAjaxRequest();
-    $assert_session->fieldExists('entity_id', $modal)->setValue(sprintf('%s (%s)', $another_embeddable->label(), $another_embeddable->id()));
-    $assert_session->elementExists('css', 'button.js-button-next', $modal)->click();
-    $assert_session->assertWaitOnAjaxRequest();
-    $this->assertStringContainsString('Selected entity', $modal->getText());
-    $this->assertNotEmpty($modal->findLink($another_embeddable->label()));
-    $assert_session->elementExists('css', 'button.button--primary', $modal)->press();
-    $assert_session->assertWaitOnAjaxRequest();
+    $this->editEmbeddedEntityWithSimpleModal($node, $another_embeddable);
     $editor = $assert_session->elementExists('css', '.ck-editor .ck-content');
     $link = $assert_session->elementExists('css', sprintf('span.ck-oe-oembed.ck-widget > a[href="https://data.ec.europa.eu/ewp/node/%s"]', $another_embeddable->uuid()), $editor);
     $this->assertEquals($another_embeddable->label(), $link->getHtml());
@@ -398,19 +374,9 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
       $this->getEditorDataAsHtmlString()
     );
 
+    // Test that the correct button gets passed back to the modal.
     $video_widget->click();
-    $this->getBalloonButton('Edit')->click();
-    $modal = $assert_session->waitForElement('css', '.oe-oembed-entities-select-dialog');
-    $this->assertStringContainsString('Selected entity', $modal->getText());
-    $this->assertNotEmpty($modal->findLink($video->label()));
-    $assert_session->elementExists('xpath', '//button[text()="Back"]', $modal)->click();
-    $assert_session->assertWaitOnAjaxRequest();
-    $assert_session->elementExists('css', 'button.js-button-next', $modal)->click();
-    $assert_session->assertWaitOnAjaxRequest();
-    $this->assertStringContainsString('Selected entity', $modal->getText());
-    $this->assertNotEmpty($modal->findLink($video->label()));
-    $assert_session->elementExists('css', 'button.button--primary', $modal)->press();
-    $assert_session->assertWaitOnAjaxRequest();
+    $this->editEmbeddedEntityWithSimpleModal($video);
     $this->assertEquals(
       $this->getBlockEmbedString('media', 'embed', $video->uuid(), $video->label()) . $this->getBlockEmbedString('node', 'embed', $node->uuid(), $node->label()),
       $this->getEditorDataAsHtmlString()
@@ -418,23 +384,14 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
 
     $node_widget = $assert_session->elementExists('xpath', $this->cssSelectToXpath('p.ck-oe-oembed.ck-widget', TRUE, 'ancestor::'), $link);
     $node_widget->click();
-    $this->getBalloonButton('Edit')->click();
-    $modal = $assert_session->waitForElement('css', '.oe-oembed-entities-select-dialog');
-    $this->assertStringContainsString('Selected entity', $modal->getText());
-    $this->assertNotEmpty($modal->findLink($node->label()));
-    $assert_session->elementExists('xpath', '//button[text()="Back"]', $modal)->click();
-    $assert_session->assertWaitOnAjaxRequest();
-    $assert_session->elementExists('css', 'button.js-button-next', $modal)->click();
-    $assert_session->assertWaitOnAjaxRequest();
-    $this->assertStringContainsString('Selected entity', $modal->getText());
-    $this->assertNotEmpty($modal->findLink($node->label()));
-    $assert_session->elementExists('css', 'button.button--primary', $modal)->press();
-    $assert_session->assertWaitOnAjaxRequest();
+    $this->editEmbeddedEntityWithSimpleModal($node);
     $this->assertEquals(
       $this->getBlockEmbedString('media', 'embed', $video->uuid(), $video->label()) . $this->getBlockEmbedString('node', 'embed', $node->uuid(), $node->label()),
       $this->getEditorDataAsHtmlString()
     );
 
+    // Test that the correct button is determined from the list of available
+    // buttons after editing a saved content.
     $assert_session->buttonExists('Save')->press();
     $assert_session->statusMessageContains('Basic page Host page has been updated.');
     $this->drupalGet($host->toUrl('edit-form'));
@@ -520,6 +477,42 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
     }
     else {
       $assert_session->fieldNotExists('Display as');
+    }
+
+    $assert_session->elementExists('css', 'button.button--primary', $modal)->press();
+    $assert_session->assertWaitOnAjaxRequest();
+  }
+
+  /**
+   * Open the edit modal for the currently selected embedded element.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface $current_entity
+   *   The current entity embedded. Useful to run assertions.
+   * @param \Drupal\Core\Entity\EntityInterface|null $new_entity
+   *   The new entity to replace. When left empty, no changes are done.
+   * @param string|null $display_mode
+   *   The display mode to use. If left empty, no changes are done.
+   */
+  protected function editEmbeddedEntityWithSimpleModal(EntityInterface $current_entity, ?EntityInterface $new_entity = NULL, string $display_mode = NULL): void {
+    $this->getBalloonButton('Edit')->click();
+    $assert_session = $this->assertSession();
+    $modal = $assert_session->waitForElement('css', '.oe-oembed-entities-select-dialog');
+    $this->assertStringContainsString('Selected entity', $modal->getText());
+    $this->assertNotEmpty($modal->findLink($current_entity->label()));
+    $assert_session->elementExists('xpath', '//button[text()="Back"]', $modal)->click();
+    $assert_session->assertWaitOnAjaxRequest();
+
+    if ($new_entity) {
+      $assert_session->fieldExists('entity_id', $modal)->setValue(sprintf('%s (%s)', $new_entity->label(), $new_entity->id()));
+    }
+
+    $assert_session->elementExists('css', 'button.js-button-next', $modal)->click();
+    $assert_session->assertWaitOnAjaxRequest();
+    $this->assertStringContainsString('Selected entity', $modal->getText());
+    $this->assertNotEmpty($modal->findLink($new_entity ? $new_entity->label() : $current_entity->label()));
+
+    if ($display_mode !== NULL) {
+      $assert_session->selectExists('Display as')->selectOption($display_mode);
     }
 
     $assert_session->elementExists('css', 'button.button--primary', $modal)->press();
