@@ -7,6 +7,7 @@ namespace Drupal\Tests\oe_oembed\FunctionalJavascript;
 use Behat\Mink\Element\NodeElement;
 use Drupal\ckeditor5\Plugin\Editor\CKEditor5;
 use Drupal\Core\Entity\Entity\EntityViewDisplay;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\editor\EditorInterface;
 use Drupal\editor\Entity\Editor;
 use Drupal\filter\Entity\FilterFormat;
@@ -203,16 +204,8 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
     $this->waitForEditor();
     // Select the <strong> tag.
     $this->selectTextInsideElement('strong');
-    $this->pressEditorButton('Node');
+    $this->embedEntityWithSimpleModal('Node', $node);
     $assert_session = $this->assertSession();
-    $modal = $assert_session->waitForElement('css', '.oe-oembed-entities-select-dialog');
-    $assert_session->fieldExists('entity_id', $modal)->setValue(sprintf('%s (%s)', $node->label(), $node->id()));
-    $assert_session->elementExists('css', 'button.js-button-next', $modal)->click();
-    $assert_session->assertWaitOnAjaxRequest();
-    $this->assertStringContainsString('Selected entity', $modal->getText());
-    $this->assertNotEmpty($modal->findLink($node->label()));
-    $assert_session->elementExists('css', 'button.button--primary', $modal)->press();
-    $assert_session->assertWaitOnAjaxRequest();
     $editor = $assert_session->elementExists('css', '.ck-editor .ck-content');
     $link = $assert_session->elementExists('css', sprintf('p.ck-oe-oembed.ck-widget > span > a[href="https://data.ec.europa.eu/ewp/node/%s"]', $node->uuid()), $editor);
     $this->assertEquals($node->label(), $link->getHtml());
@@ -298,17 +291,8 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
     $this->drupalGet($host->toUrl('edit-form'));
     $this->waitForEditor();
     $this->placeCursorAtBoundaryOfElement('p', FALSE);
-    $this->pressEditorButton('Node');
+    $this->embedEntityWithSimpleModal('Node', $node, 'Inline');
     $assert_session = $this->assertSession();
-    $modal = $assert_session->waitForElement('css', '.oe-oembed-entities-select-dialog');
-    $assert_session->fieldExists('entity_id', $modal)->setValue(sprintf('%s (%s)', $node->label(), $node->id()));
-    $assert_session->elementExists('css', 'button.js-button-next', $modal)->click();
-    $assert_session->assertWaitOnAjaxRequest();
-    $this->assertStringContainsString('Selected entity', $modal->getText());
-    $this->assertNotEmpty($modal->findLink($node->label()));
-    $assert_session->selectExists('Display as')->selectOption('Inline');
-    $assert_session->elementExists('css', 'button.button--primary', $modal)->press();
-    $assert_session->assertWaitOnAjaxRequest();
     $editor = $assert_session->elementExists('css', '.ck-editor .ck-content');
     $link = $assert_session->elementExists('css', sprintf('span.ck-oe-oembed.ck-widget > a[href="https://data.ec.europa.eu/ewp/node/%s"]', $node->uuid()), $editor);
     $this->assertEquals($node->label(), $link->getHtml());
@@ -351,17 +335,7 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
     $this->drupalGet($host->toUrl('edit-form'));
     $this->waitForEditor();
     $this->selectTextInsideElement('strong');
-    $this->pressEditorButton('Node');
-    $assert_session = $this->assertSession();
-    $modal = $assert_session->waitForElement('css', '.oe-oembed-entities-select-dialog');
-    $assert_session->fieldExists('entity_id', $modal)->setValue(sprintf('%s (%s)', $node->label(), $node->id()));
-    $assert_session->elementExists('css', 'button.js-button-next', $modal)->click();
-    $assert_session->assertWaitOnAjaxRequest();
-    $this->assertStringContainsString('Selected entity', $modal->getText());
-    $this->assertNotEmpty($modal->findLink($node->label()));
-    $assert_session->selectExists('Display as')->selectOption('Inline');
-    $assert_session->elementExists('css', 'button.button--primary', $modal)->press();
-    $assert_session->assertWaitOnAjaxRequest();
+    $this->embedEntityWithSimpleModal('Node', $node, 'Inline');
     // The splitting of the link is done by CKEditor, not by our plugin. It
     // appears that the link loses the href attribute in the process.
     $this->assertEquals(
@@ -403,16 +377,8 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
     $this->drupalGet($host->toUrl('edit-form'));
     $this->waitForEditor();
     // Embed the remote video media.
-    $this->pressEditorButton('Media');
+    $this->embedEntityWithSimpleModal('Media', $video);
     $assert_session = $this->assertSession();
-    $modal = $assert_session->waitForElement('css', '.oe-oembed-entities-select-dialog');
-    $assert_session->fieldExists('entity_id', $modal)->setValue(sprintf('%s (%s)', $video->label(), $video->id()));
-    $assert_session->elementExists('css', 'button.js-button-next', $modal)->click();
-    $assert_session->assertWaitOnAjaxRequest();
-    $this->assertStringContainsString('Selected entity', $modal->getText());
-    $this->assertNotEmpty($modal->findLink($video->label()));
-    $assert_session->elementExists('css', 'button.button--primary', $modal)->press();
-    $assert_session->assertWaitOnAjaxRequest();
     $editor = $assert_session->elementExists('css', '.ck-editor .ck-content');
     $link = $assert_session->elementExists('css', sprintf('p.ck-oe-oembed.ck-widget > span > a[href="https://data.ec.europa.eu/ewp/media/%s"]', $video->uuid()), $editor);
     $this->assertEquals($video->label(), $link->getHtml());
@@ -423,16 +389,7 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
     $video_widget = $assert_session->elementExists('xpath', $this->cssSelectToXpath('p.ck-oe-oembed.ck-widget', TRUE, 'ancestor::'), $link);
     $assert_session->elementExists('css', 'div.ck-widget__type-around__button_after', $video_widget)->click();
 
-    $this->pressEditorButton('Node');
-    $assert_session = $this->assertSession();
-    $modal = $assert_session->waitForElement('css', '.oe-oembed-entities-select-dialog');
-    $assert_session->fieldExists('entity_id', $modal)->setValue(sprintf('%s (%s)', $node->label(), $node->id()));
-    $assert_session->elementExists('css', 'button.js-button-next', $modal)->click();
-    $assert_session->assertWaitOnAjaxRequest();
-    $this->assertStringContainsString('Selected entity', $modal->getText());
-    $this->assertNotEmpty($modal->findLink($node->label()));
-    $assert_session->elementExists('css', 'button.button--primary', $modal)->press();
-    $assert_session->assertWaitOnAjaxRequest();
+    $this->embedEntityWithSimpleModal('Node', $node);
     $editor = $assert_session->elementExists('css', '.ck-editor .ck-content');
     $link = $assert_session->elementExists('css', sprintf('p.ck-oe-oembed.ck-widget > span > a[href="https://data.ec.europa.eu/ewp/node/%s"]', $node->uuid()), $editor);
     $this->assertEquals($node->label(), $link->getHtml());
@@ -535,6 +492,38 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
 
       throw $e;
     }
+  }
+
+  /**
+   * Embeds an entity in the editor.
+   *
+   * @param string $button_label
+   *   The label of the button.
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   The entity to embed.
+   * @param string|null $display_mode
+   *   The display mode to use. If left empty, it will assert that no display
+   *   mode field is shown.
+   */
+  protected function embedEntityWithSimpleModal(string $button_label, EntityInterface $entity, string $display_mode = NULL): void {
+    $this->pressEditorButton($button_label);
+    $assert_session = $this->assertSession();
+    $modal = $assert_session->waitForElement('css', '.oe-oembed-entities-select-dialog');
+    $assert_session->fieldExists('entity_id', $modal)->setValue(sprintf('%s (%s)', $entity->label(), $entity->id()));
+    $assert_session->elementExists('css', 'button.js-button-next', $modal)->click();
+    $assert_session->assertWaitOnAjaxRequest();
+    $this->assertStringContainsString('Selected entity', $modal->getText());
+    $this->assertNotEmpty($modal->findLink($entity->label()));
+
+    if ($display_mode !== NULL) {
+      $assert_session->selectExists('Display as')->selectOption($display_mode);
+    }
+    else {
+      $assert_session->fieldNotExists('Display as');
+    }
+
+    $assert_session->elementExists('css', 'button.button--primary', $modal)->press();
+    $assert_session->assertWaitOnAjaxRequest();
   }
 
   /**
