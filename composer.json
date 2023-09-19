@@ -7,10 +7,8 @@
     "prefer-stable": true,
     "require": {
         "php": ">=8.0",
-        "drupal/ckeditor5_dev": "^1.0",
         "drupal/core": "^9.4 || ^10",
         "drupal/embed": "^1.7",
-        "drupal/entity_embed": "^1.0@dev",
         "symfony/validator": "~4.4.48 || ~6.2.5"
     },
     "require-dev": {
@@ -57,11 +55,6 @@
         "drupal-scaffold": {
             "locations": {
                 "web-root": "./build"
-            }
-        },
-        "patches": {
-            "drupal/entity_embed": {
-                "CKEditor 5 compatibility": "https://git.drupalcode.org/project/entity_embed/-/merge_requests/12.diff"
             }
         }
     },
