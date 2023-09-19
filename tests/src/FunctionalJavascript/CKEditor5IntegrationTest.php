@@ -352,10 +352,11 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
     $this->assertEquals($this->getBlockEmbedMarkup('media', 'embed', $video->uuid(), $video->label()), $this->getEditorDataAsHtmlString());
 
     // Block widgets get a newline button to add space before or after the
-    // widget itself. Press the button to space after.
+    // widget itself. Press the button to add space after.
     $assert_session = $this->assertSession();
     $assert_session->elementExists('css', 'div.ck-widget__type-around__button_after', $video_widget)->click();
 
+    // Embed the node.
     $this->embedEntityWithSimpleModal('Node', $node);
     $editor = $this->getEditor();
     $node_widget = $this->assertBlockEmbedWidget($node, $editor);
@@ -364,7 +365,7 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
       $this->getEditorDataAsHtmlString()
     );
 
-    // Test that the correct button gets passed back to the modal.
+    // Test that the correct buttons get passed back to the modal.
     $video_widget->click();
     $this->editEmbeddedEntityWithSimpleModal($video);
     $this->assertEquals(
@@ -399,6 +400,67 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
     $this->assertNotEmpty($modal->findLink($node->label()));
     $modal->find('css', 'button.ui-dialog-titlebar-close')->press();
     $assert_session->waitForElementRemoved('css', 'oe-oembed-entities-select-dialog');
+  }
+
+  /**
+   * Tests embedding multiple times the same entity.
+   */
+  public function testEmbedSameEntityMultipleTimes(): void {
+    $view_display = EntityViewDisplay::load('media.image.demo');
+    $view_display->setThirdPartySetting('oe_oembed', 'inline', TRUE);
+    $view_display->save();
+
+    $this->editor->setSettings(array_merge_recursive($this->editor->getSettings(), [
+      'toolbar' => [
+        'items' => [
+          'media',
+        ],
+      ],
+    ]))->save();
+    $this->validateEditorFormatPair();
+
+    $image = $this->createImageMedia();
+
+    $host = Node::create([
+      'type' => 'page',
+      'status' => 1,
+      'title' => 'Host page',
+    ]);
+    $host->save();
+
+    $this->drupalLogin($this->user);
+    $this->drupalGet($host->toUrl('edit-form'));
+    $this->waitForEditor();
+    // Embed the remote video media.
+    $this->embedEntityWithSimpleModal('Media', $image, 'Embed');
+    $editor = $this->getEditor();
+    $image_widget = $this->assertBlockEmbedWidget($image, $editor);
+    $expected_markup = $this->getBlockEmbedMarkup('media', 'embed', $image->uuid(), $image->label());
+    $this->assertEquals($expected_markup, $this->getEditorDataAsHtmlString());
+
+    $assert_session = $this->assertSession();
+    $assert_session->elementExists('css', 'div.ck-widget__type-around__button_after', $image_widget)->click();
+    $this->embedEntityWithSimpleModal('Media', $image, 'Embed');
+    // Two equal widgets have been embedded.
+    $this->assertEquals($expected_markup . $expected_markup, $this->getEditorDataAsHtmlString());
+
+    // Change the view mode of the first embed instance.
+    $image_widget->click();
+    $this->editEmbeddedEntityWithSimpleModal($image, NULL, 'Image teaser');
+    $this->assertEquals($this->getBlockEmbedMarkup('media', 'image_teaser', $image->uuid(), $image->label()) . $expected_markup, $this->getEditorDataAsHtmlString());
+
+    // Change again the first widget with an inline view mode.
+    $image_widget->click();
+    $this->editEmbeddedEntityWithSimpleModal($image, NULL, 'Demo');
+    $this->assertEquals('<p>' . $this->getInlineEmbedMarkup('media', 'demo', $image->uuid(), $image->label()) . '</p>' . $expected_markup, $this->getEditorDataAsHtmlString());
+
+    // Change the second widget view mode.
+    $this->assertBlockEmbedWidget($image, $editor)->click();
+    $this->editEmbeddedEntityWithSimpleModal($image, NULL, 'Image teaser');
+    $this->assertEquals(
+      '<p>' . $this->getInlineEmbedMarkup('media', 'demo', $image->uuid(), $image->label()) . '</p>' . $this->getBlockEmbedMarkup('media', 'image_teaser', $image->uuid(), $image->label()),
+      $this->getEditorDataAsHtmlString()
+    );
   }
 
   /**

@@ -13,22 +13,25 @@ use Drupal\Core\Entity\EntityInterface;
 trait OembedWidgetAssertTrait {
 
   /**
-   * Returns the first instance of a block embed widget for a given entity.
+   * Returns the block embed widget for a given entity.
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *   The entity.
    * @param \Behat\Mink\Element\NodeElement $editor
    *   The editor element.
+   * @param int $instance
+   *   Which instance to return in case of multiple widgets for the same entity.
    *
    * @return \Behat\Mink\Element\NodeElement
    *   The block widget element wrapper.
    */
-  protected function assertBlockEmbedWidget(EntityInterface $entity, NodeElement $editor): NodeElement {
+  protected function assertBlockEmbedWidget(EntityInterface $entity, NodeElement $editor, int $instance = 1): NodeElement {
     $assert_session = $this->assertSession();
     $xpath = sprintf(
-      '%s[%s]',
+      '%s[%s][%s]',
       $this->cssSelectToXpath('p.ck-oe-oembed.ck-widget'),
-      $this->cssSelectToXpath(sprintf('span > a[href="https://data.ec.europa.eu/ewp/%s/%s"]', $entity->getEntityTypeId(), $entity->uuid()), TRUE, './')
+      $this->cssSelectToXpath(sprintf('span > a[href="https://data.ec.europa.eu/ewp/%s/%s"]', $entity->getEntityTypeId(), $entity->uuid()), TRUE, './'),
+      $instance
     );
     $widget = $assert_session->elementExists('xpath', $xpath, $editor);
     $this->assertEquals($entity->label(), $widget->find('css', 'a')->getHtml());
@@ -37,22 +40,25 @@ trait OembedWidgetAssertTrait {
   }
 
   /**
-   * Returns the first instance of an inline embed widget for a given entity.
+   * Returns an instance of an inline embed widget for a given entity.
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *   The entity.
    * @param \Behat\Mink\Element\NodeElement $editor
    *   The editor element.
+   * @param int $instance
+   *   Which instance to return in case of multiple widgets for the same entity.
    *
    * @return \Behat\Mink\Element\NodeElement
    *   The inline widget element wrapper.
    */
-  protected function assertInlineEmbedWidget(EntityInterface $entity, NodeElement $editor): NodeElement {
+  protected function assertInlineEmbedWidget(EntityInterface $entity, NodeElement $editor, int $instance = 1): NodeElement {
     $assert_session = $this->assertSession();
     $xpath = sprintf(
-      '%s[%s]',
+      '%s[%s][%s]',
       $this->cssSelectToXpath('span.ck-oe-oembed.ck-widget'),
-      $this->cssSelectToXpath(sprintf('a[href="https://data.ec.europa.eu/ewp/%s/%s"]', $entity->getEntityTypeId(), $entity->uuid()), TRUE, './')
+      $this->cssSelectToXpath(sprintf('a[href="https://data.ec.europa.eu/ewp/%s/%s"]', $entity->getEntityTypeId(), $entity->uuid()), TRUE, './'),
+      $instance
     );
     $widget = $assert_session->elementExists('xpath', $xpath, $editor);
     $this->assertEquals($entity->label(), $widget->find('css', 'a')->getHtml());

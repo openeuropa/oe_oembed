@@ -50,7 +50,7 @@ trait MediaCreationTrait {
     if (!isset($values['oe_media_image']['target_id'])) {
       $image = File::create([
         'uri' => \Drupal::service('file_system')->copy(
-          \Drupal::service('extension.list.theme')->getPath('oe_whitelabel') . '/tests/fixtures/example_1.jpeg',
+          \Drupal::service('extension.list.module')->getPath('oe_oembed') . '/tests/fixtures/example_1.jpeg',
           'public://example_1.jpeg'
         ),
       ]);
