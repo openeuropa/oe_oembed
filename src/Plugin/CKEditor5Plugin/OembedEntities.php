@@ -13,6 +13,8 @@ use Drupal\editor\EditorInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
+ * CKEditor 5 plugin to embed Drupal entities.
+ *
  * @todo use EmbedCKEditor5PluginBase when PR is ready for embed module.
  *
  * @CKEditor5Plugin(

@@ -21,6 +21,8 @@ use Drupal\filter\FilterFormatInterface;
  *   cke5_plugin_elements_subset_configuration = {
  *   }
  * )
+ *
+ * phpcs:disable Drupal.NamingConventions.ValidFunctionName.ScopeNotCamelCaps
  */
 class OeOembed extends PluginBase implements CKEditor4To5UpgradePluginInterface {
 

@@ -10,6 +10,9 @@ use Drupal\Core\Plugin\Discovery\ContainerDeriverInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * Deriver that provides a OembedEntities plugin for each defined button.
+ */
 class OembedEntitiesPluginDeriver extends DeriverBase implements ContainerDeriverInterface {
 
   use StringTranslationTrait;
