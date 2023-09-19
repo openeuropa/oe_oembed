@@ -4,12 +4,24 @@ declare(strict_types = 1);
 
 namespace Drupal\Tests\oe_oembed\Traits;
 
+use Behat\Mink\Element\NodeElement;
+
 /**
  * Contains methods to help interact with CKEditor 5.
  *
  * To be used in addition to \Drupal\Tests\ckeditor5\Traits\CKEditor5TestTrait.
  */
 trait CKEditor5TestTrait {
+
+  /**
+   * Returns the CKEditor 5 editor element that contains the content.
+   *
+   * @return \Behat\Mink\Element\NodeElement
+   *   The editor element.
+   */
+  protected function getEditor(): NodeElement {
+    return $this->assertSession()->elementExists('css', '.ck-editor .ck-content');
+  }
 
   /**
    * Places the cursor at the beginning or end of an element.

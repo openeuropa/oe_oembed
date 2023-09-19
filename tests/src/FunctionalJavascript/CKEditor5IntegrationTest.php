@@ -139,12 +139,10 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
 
     $this->drupalGet($edit_url);
     $this->waitForEditor();
-    $assert_session = $this->assertSession();
-    $editor = $assert_session->elementExists('css', '.ck-editor .ck-content');
-    $link = $assert_session->elementExists('css', sprintf('p.ck-oe-oembed.ck-widget > span > a[href="https://data.ec.europa.eu/ewp/node/%s"]', $embeddable->uuid()), $editor);
-    $this->assertEquals($embeddable->label(), $link->getHtml());
+    $editor = $this->getEditor();
+    $widget = $this->assertBlockEmbedWidget($embeddable, $editor);
     // Make sure that the link is not clickable.
-    $this->attemptLinkClick($link);
+    $this->attemptLinkClick($widget->find('css', 'a'));
     $this->assertEquals($edit_url->toString(), $this->getUrl());
     // Check that the HTML generated on downcast is the same.
     $this->assertEquals($host->get('body')->value, $this->getEditorDataAsHtmlString());
@@ -155,12 +153,10 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
     ])->save();
     $this->drupalGet($edit_url);
     $this->waitForEditor();
-    $assert_session = $this->assertSession();
-    $editor = $assert_session->elementExists('css', '.ck-editor .ck-content');
-    $link = $assert_session->elementExists('css', sprintf('span.ck-oe-oembed.ck-widget > a[href="https://data.ec.europa.eu/ewp/node/%s"]', $embeddable->uuid()), $editor);
-    $this->assertEquals($embeddable->label(), $link->getHtml());
+    $editor = $this->getEditor();
+    $widget = $this->assertInlineEmbedWidget($embeddable, $editor);
     // Make sure that the link is not clickable.
-    $this->attemptLinkClick($link);
+    $this->attemptLinkClick($widget->find('css', 'a'));
     $this->assertEquals($edit_url->toString(), $this->getUrl());
     // Check that the HTML generated on downcast is the same, with an additional
     // <p> wrapper added by the editor itself.
@@ -205,10 +201,8 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
     // Select the <strong> tag.
     $this->selectTextInsideElement('strong');
     $this->embedEntityWithSimpleModal('Node', $node);
-    $assert_session = $this->assertSession();
-    $editor = $assert_session->elementExists('css', '.ck-editor .ck-content');
-    $link = $assert_session->elementExists('css', sprintf('p.ck-oe-oembed.ck-widget > span > a[href="https://data.ec.europa.eu/ewp/node/%s"]', $node->uuid()), $editor);
-    $this->assertEquals($node->label(), $link->getHtml());
+    $editor = $this->getEditor();
+    $widget = $this->assertBlockEmbedWidget($node, $editor);
     // The strong tag has been replaced by the embedded entity markup.
     $this->assertEquals('<p>First paragraph</p><p>Pre text&nbsp;</p>' . $this->getBlockEmbedString('node', 'embed', $node->uuid(), $node->label()) . '<p>&nbsp;after text</p><p>Last paragraph</p>', $this->getEditorDataAsHtmlString());
 
@@ -221,18 +215,17 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
     $another_embeddable->save();
 
     // Edit the previous embedded node and replace it with the new one.
-    $assert_session->elementExists('css', 'p.ck-oe-oembed.ck-widget', $editor)->click();
+    $widget->click();
     $this->editEmbeddedEntityWithSimpleModal($node, $another_embeddable);
-    $editor = $assert_session->elementExists('css', '.ck-editor .ck-content');
-    $link = $assert_session->elementExists('css', sprintf('p.ck-oe-oembed.ck-widget > span > a[href="https://data.ec.europa.eu/ewp/node/%s"]', $another_embeddable->uuid()), $editor);
-    $this->assertEquals($another_embeddable->label(), $link->getHtml());
+    $this->assertBlockEmbedWidget($another_embeddable, $editor);
     $this->assertEquals('<p>First paragraph</p><p>Pre text&nbsp;</p>' . $this->getBlockEmbedString('node', 'embed', $another_embeddable->uuid(), $another_embeddable->label()) . '<p>&nbsp;after text</p><p>Last paragraph</p>', $this->getEditorDataAsHtmlString());
 
     // Check that the correct button gets reassigned to the element on edit.
+    $assert_session = $this->assertSession();
     $assert_session->buttonExists('Save')->press();
     $assert_session->statusMessageContains('Basic page Host page has been updated.');
     $this->drupalGet($host->toUrl('edit-form'));
-    $assert_session->elementExists('css', 'p.ck-oe-oembed.ck-widget', $editor)->click();
+    $this->assertBlockEmbedWidget($another_embeddable, $editor)->click();
     $this->getBalloonButton('Edit')->click();
     $modal = $assert_session->waitForElement('css', '.oe-oembed-entities-select-dialog');
     $this->assertStringContainsString('Selected entity', $modal->getText());
@@ -280,10 +273,8 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
     $this->waitForEditor();
     $this->placeCursorAtBoundaryOfElement('p', FALSE);
     $this->embedEntityWithSimpleModal('Node', $node, 'Inline');
-    $assert_session = $this->assertSession();
-    $editor = $assert_session->elementExists('css', '.ck-editor .ck-content');
-    $link = $assert_session->elementExists('css', sprintf('span.ck-oe-oembed.ck-widget > a[href="https://data.ec.europa.eu/ewp/node/%s"]', $node->uuid()), $editor);
-    $this->assertEquals($node->label(), $link->getHtml());
+    $editor = $this->getEditor();
+    $widget = $this->assertInlineEmbedWidget($node, $editor);
     $this->assertEquals('<p>Some text in the editor' . $this->getInlineEmbedString('node', 'inline', $node->uuid(), $node->label()) . '</p>', $this->getEditorDataAsHtmlString());
 
     // Create a new node to embed.
@@ -295,11 +286,9 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
     $another_embeddable->save();
 
     // Edit the previous embedded node and replace it with the new one.
-    $assert_session->elementExists('css', 'span.ck-oe-oembed.ck-widget', $editor)->click();
+    $widget->click();
     $this->editEmbeddedEntityWithSimpleModal($node, $another_embeddable);
-    $editor = $assert_session->elementExists('css', '.ck-editor .ck-content');
-    $link = $assert_session->elementExists('css', sprintf('span.ck-oe-oembed.ck-widget > a[href="https://data.ec.europa.eu/ewp/node/%s"]', $another_embeddable->uuid()), $editor);
-    $this->assertEquals($another_embeddable->label(), $link->getHtml());
+    $this->assertInlineEmbedWidget($another_embeddable, $editor);
     $this->assertEquals('<p>Some text in the editor' . $this->getInlineEmbedString('node', 'inline', $another_embeddable->uuid(), $another_embeddable->label()) . '</p>', $this->getEditorDataAsHtmlString());
 
     // Test that the inline widget can be put inside block elements, but not
@@ -354,21 +343,18 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
     $this->waitForEditor();
     // Embed the remote video media.
     $this->embedEntityWithSimpleModal('Media', $video);
-    $assert_session = $this->assertSession();
-    $editor = $assert_session->elementExists('css', '.ck-editor .ck-content');
-    $link = $assert_session->elementExists('css', sprintf('p.ck-oe-oembed.ck-widget > span > a[href="https://data.ec.europa.eu/ewp/media/%s"]', $video->uuid()), $editor);
-    $this->assertEquals($video->label(), $link->getHtml());
+    $editor = $this->getEditor();
+    $video_widget = $this->assertBlockEmbedWidget($video, $editor);
     $this->assertEquals($this->getBlockEmbedString('media', 'embed', $video->uuid(), $video->label()), $this->getEditorDataAsHtmlString());
 
     // Block widgets get a newline button to add space before or after the
     // widget itself. Press the button to space after.
-    $video_widget = $assert_session->elementExists('xpath', $this->cssSelectToXpath('p.ck-oe-oembed.ck-widget', TRUE, 'ancestor::'), $link);
+    $assert_session = $this->assertSession();
     $assert_session->elementExists('css', 'div.ck-widget__type-around__button_after', $video_widget)->click();
 
     $this->embedEntityWithSimpleModal('Node', $node);
-    $editor = $assert_session->elementExists('css', '.ck-editor .ck-content');
-    $link = $assert_session->elementExists('css', sprintf('p.ck-oe-oembed.ck-widget > span > a[href="https://data.ec.europa.eu/ewp/node/%s"]', $node->uuid()), $editor);
-    $this->assertEquals($node->label(), $link->getHtml());
+    $editor = $this->getEditor();
+    $node_widget = $this->assertBlockEmbedWidget($node, $editor);
     $this->assertEquals(
       $this->getBlockEmbedString('media', 'embed', $video->uuid(), $video->label()) . $this->getBlockEmbedString('node', 'embed', $node->uuid(), $node->label()),
       $this->getEditorDataAsHtmlString()
@@ -382,7 +368,6 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
       $this->getEditorDataAsHtmlString()
     );
 
-    $node_widget = $assert_session->elementExists('xpath', $this->cssSelectToXpath('p.ck-oe-oembed.ck-widget', TRUE, 'ancestor::'), $link);
     $node_widget->click();
     $this->editEmbeddedEntityWithSimpleModal($node);
     $this->assertEquals(
@@ -517,6 +502,54 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
 
     $assert_session->elementExists('css', 'button.button--primary', $modal)->press();
     $assert_session->assertWaitOnAjaxRequest();
+  }
+
+  /**
+   * Returns the first instance of a block embed widget for a given entity.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   The entity.
+   * @param \Behat\Mink\Element\NodeElement $editor
+   *   The editor element.
+   *
+   * @return \Behat\Mink\Element\NodeElement
+   *   The block widget element wrapper.
+   */
+  protected function assertBlockEmbedWidget(EntityInterface $entity, NodeElement $editor): NodeElement {
+    $assert_session = $this->assertSession();
+    $xpath = sprintf(
+      '%s[%s]',
+      $this->cssSelectToXpath('p.ck-oe-oembed.ck-widget'),
+      $this->cssSelectToXpath(sprintf('span > a[href="https://data.ec.europa.eu/ewp/%s/%s"]', $entity->getEntityTypeId(), $entity->uuid()), TRUE, './')
+    );
+    $widget = $assert_session->elementExists('xpath', $xpath, $editor);
+    $this->assertEquals($entity->label(), $widget->find('css', 'a')->getHtml());
+
+    return $widget;
+  }
+
+  /**
+   * Returns the first instance of an inline embed widget for a given entity.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   The entity.
+   * @param \Behat\Mink\Element\NodeElement $editor
+   *   The editor element.
+   *
+   * @return \Behat\Mink\Element\NodeElement
+   *   The inline widget element wrapper.
+   */
+  protected function assertInlineEmbedWidget(EntityInterface $entity, NodeElement $editor): NodeElement {
+    $assert_session = $this->assertSession();
+    $xpath = sprintf(
+      '%s[%s]',
+      $this->cssSelectToXpath('span.ck-oe-oembed.ck-widget'),
+      $this->cssSelectToXpath(sprintf('a[href="https://data.ec.europa.eu/ewp/%s/%s"]', $entity->getEntityTypeId(), $entity->uuid()), TRUE, './')
+    );
+    $widget = $assert_session->elementExists('xpath', $xpath, $editor);
+    $this->assertEquals($entity->label(), $widget->find('css', 'a')->getHtml());
+
+    return $widget;
   }
 
   /**
