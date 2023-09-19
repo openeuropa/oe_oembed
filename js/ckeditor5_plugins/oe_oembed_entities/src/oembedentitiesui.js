@@ -1,7 +1,3 @@
-/**
- * @file registers the simpleBox toolbar button and binds functionality to it.
- */
-
 import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 import defaultIcon from '../../../../icons/embed.svg';
@@ -9,6 +5,16 @@ import { openDialog } from "./utils";
 
 export default class OembedEntitiesUI extends Plugin {
 
+  /**
+   * @inheritdoc
+   */
+  static get pluginName() {
+    return 'OembedEntitiesUI';
+  }
+
+  /**
+   * @inheritdoc
+   */
   init() {
     const editor = this.editor;
     const command = editor.commands.get('oembedEntities');

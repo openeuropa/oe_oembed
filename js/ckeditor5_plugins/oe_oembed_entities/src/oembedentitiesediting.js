@@ -2,33 +2,23 @@ import { Plugin } from 'ckeditor5/src/core';
 import { Widget, toWidget } from 'ckeditor5/src/widget';
 import OembedEntitiesCommand from "./oembedentitiescommand";
 
-// cSpell:ignore simplebox insertsimpleboxcommand
-
 /**
- * CKEditor 5 plugins do not work directly with the DOM. They are defined as
- * plugin-specific data models that are then converted to markup that
- * is inserted in the DOM.
+ * Handles the transformation from the CKEditor 5 UI to Drupal-specific markup.
  *
- * CKEditor 5 internally interacts with simpleBox as this model:
- * <simpleBox>
- *    <simpleBoxTitle></simpleBoxTitle>
- *    <simpleBoxDescription></simpleBoxDescription>
- * </simpleBox>
- *
- * Which is converted for the browser/user as this markup
- * <section class="simple-box">
- *   <h2 class="simple-box-title"></h1>
- *   <div class="simple-box-description"></div>
- * </section>
- *
- * This file has the logic for defining the simpleBox model, and for how it is
- * converted to standard DOM markup.
+ * @private
  */
 export default class OembedEntitiesEditing extends Plugin {
+
+  /**
+   * @inheritdoc
+   */
   static get requires() {
     return [Widget];
   }
 
+  /**
+   * @inheritdoc
+   */
   static get pluginName() {
     return 'OembedEntitiesEditing';
   }
@@ -48,6 +38,9 @@ export default class OembedEntitiesEditing extends Plugin {
     }, this.viewAttrs);
   }
 
+  /**
+   * @inheritdoc
+   */
   init() {
     this._defineSchema();
     this._defineConverters();
@@ -57,6 +50,11 @@ export default class OembedEntitiesEditing extends Plugin {
     );
   }
 
+  /**
+   * Registers the models schemas.
+   *
+   * @private
+   */
   _defineSchema() {
     // Schemas are registered via the central `editor` object.
     const schema = this.editor.model.schema;
@@ -82,8 +80,9 @@ export default class OembedEntitiesEditing extends Plugin {
   }
 
   /**
-   * Converters determine how CKEditor 5 models are converted into markup and
-   * vice-versa.
+   * Defines handling of oembed models to and from markup.
+   *
+   * @private
    */
   _defineConverters() {
     // Converters are registered via the central editor object.
@@ -222,31 +221,6 @@ export default class OembedEntitiesEditing extends Plugin {
       conversion.for('upcast').attributeToAttribute(attributeMapping);
     });
 
-    conversion
-      .for('dataDowncast')
-      .elementToElement({
-        model: 'oembedEntityInline',
-        view: (modelElement, { writer }) => {
-          return this._generateViewInlineElement(modelElement, writer, true);
-        },
-      });
-
-    conversion
-      .for('editingDowncast')
-      .elementToElement({
-        model: 'oembedEntityInline',
-        view: (modelElement, { writer }) => {
-          const container = this._generateViewInlineElement(modelElement, writer);
-
-          writer.addClass('ck-oe-oembed', container);
-          writer.setCustomProperty('OembedEntity', true, container);
-
-          return toWidget(container, writer, {
-            label: Drupal.t('OpenEuropa Oembed widget'),
-          })
-        },
-      });
-
     // We need to use a structure conversion as we don't only need to process the "a" tag,
     // but also consume the inner text.
     conversion
@@ -315,6 +289,31 @@ export default class OembedEntitiesEditing extends Plugin {
         }, { priority: 'high' });
       });
 
+    conversion
+      .for('dataDowncast')
+      .elementToElement({
+        model: 'oembedEntityInline',
+        view: (modelElement, { writer }) => {
+          return this._generateViewInlineElement(modelElement, writer, true);
+        },
+      });
+
+    conversion
+      .for('editingDowncast')
+      .elementToElement({
+        model: 'oembedEntityInline',
+        view: (modelElement, { writer }) => {
+          const container = this._generateViewInlineElement(modelElement, writer);
+
+          writer.addClass('ck-oe-oembed', container);
+          writer.setCustomProperty('OembedEntity', true, container);
+
+          return toWidget(container, writer, {
+            label: Drupal.t('OpenEuropa Oembed widget'),
+          })
+        },
+      });
+
     Object.keys(this.viewAttrs).forEach((modelKey) => {
       const attributeMapping = {
         model: {
@@ -333,6 +332,20 @@ export default class OembedEntitiesEditing extends Plugin {
     });
   }
 
+  /**
+   * Generates an inline view element.
+   *
+   * @param {module:engine/model/element~Element} modelElement
+   *   The oembedEntityInline model element to be converted.
+   * @param {module:engine/view/downcastwriter~DowncastWriter} writer
+   *   The downcast writer.
+   * @param {bool} forDataDowncast
+   *   If the conversion is for dataDowncast phase or editingDowncast.
+   * @returns {module:engine/view/element~Element}
+   *   The view element.
+   *
+   * @private
+   */
   _generateViewInlineElement(modelElement, writer, forDataDowncast = false) {
     const link = writer.createContainerElement('a', {
       href: modelElement.getAttribute('oembedEntitiesResourceUrl')
@@ -344,6 +357,20 @@ export default class OembedEntitiesEditing extends Plugin {
     return forDataDowncast ? link : writer.createContainerElement('span', {}, [link]);
   }
 
+  /**
+   * Generates a block view element.
+   *
+   * @param {module:engine/model/element~Element} modelElement
+   *   The oembedEntity model element to be converted.
+   * @param {module:engine/view/downcastwriter~DowncastWriter} writer
+   *   The downcast writer.
+   * @param {bool} forDataDowncast
+   *   If the conversion is for dataDowncast phase or editingDowncast.
+   * @returns {module:engine/view/element~Element}
+   *   The view element.
+   *
+   * @private
+   */
   _generateViewBlockElement(modelElement, writer, forDataDowncast = false) {
     const link = this._generateViewInlineElement(modelElement, writer, forDataDowncast);
 

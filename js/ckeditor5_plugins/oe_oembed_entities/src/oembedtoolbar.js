@@ -19,6 +19,9 @@ export default class OembedToolbar extends Plugin {
     return 'OembedToolbar';
   }
 
+  /**
+   * @inheritdoc
+   */
   init() {
     const editor = this.editor;
     const options = editor.config.get('oembedEntities');
@@ -92,7 +95,7 @@ export default class OembedToolbar extends Plugin {
   /**
    * Returns the button ID related to a specific element.
    *
-   * @param {object} element
+   * @param {module:engine/model/element~Element} element
    *   The selected element.
    * @param {object} buttons
    *   The default buttons.
