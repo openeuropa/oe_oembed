@@ -7,6 +7,10 @@
 import { Command } from 'ckeditor5/src/core';
 
 export default class OembedEntitiesCommand extends Command {
+
+  /**
+   * @inheritdoc
+   */
   execute(attributes) {
     const { model } = this.editor;
     const oembedEntitiesEditing = this.editor.plugins.get('OembedEntitiesEditing');
@@ -45,6 +49,29 @@ export default class OembedEntitiesCommand extends Command {
 
     model.change((writer) => {
       model.insertContent(insertOembedEntity(writer, modelAttributes));
+    });
+  }
+
+  /**
+   * @inheritdoc
+   */
+  refresh() {
+    const { model } = this.editor;
+    const { selection } = model.document;
+
+    // Determine if the cursor (selection) is in a position where adding
+    // our models is permitted. This is based on the schema of the model(s)
+    // currently containing the cursor.
+    // This is technically not correct. The models have different allowed
+    // parents, but since they share the same button it's not really
+    // possible to discern which embed type will be used.
+    // We loop and stop as soon as one is allowed.
+    this.isEnabled = ['oembedEntity', 'oembedEntityInline'].some(type => {
+      const allowedIn = model.schema.findAllowedParent(
+        selection.getFirstPosition(),
+        type
+      );
+      return allowedIn !== null;
     });
   }
 
