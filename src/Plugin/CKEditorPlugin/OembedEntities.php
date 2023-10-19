@@ -4,8 +4,8 @@ declare(strict_types = 1);
 
 namespace Drupal\oe_oembed\Plugin\CKEditorPlugin;
 
+use Drupal\Core\Access\CsrfTokenGenerator;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\editor\Entity\Editor;
@@ -53,25 +53,31 @@ class OembedEntities extends EmbedCKEditorPluginBase {
    *   The plugin_id for the plugin instance.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
-   * @param \Drupal\Core\Entity\Query\QueryInterface $embed_button_query
-   *   The entity query object for embed button.
    * @param \Drupal\Core\Routing\RouteMatchInterface $current_route_match
    *   The current route match.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   The entity type manager.
    * @param \Drupal\Core\Extension\ModuleExtensionList|null $moduleExtensionList
    *   The module extension list.
+   * @param \Drupal\Core\Access\CsrfTokenGenerator|null $csrf_token_generator
+   *   The CSRF token generator.
    */
   public function __construct(
     array $configuration,
     $plugin_id,
     $plugin_definition,
-    QueryInterface $embed_button_query,
     RouteMatchInterface $current_route_match,
     EntityTypeManagerInterface $entityTypeManager,
-    ModuleExtensionList $moduleExtensionList = NULL
+    ModuleExtensionList $moduleExtensionList = NULL,
+    CsrfTokenGenerator $csrf_token_generator = NULL,
   ) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition, $embed_button_query);
+    if (!$csrf_token_generator) {
+      // @codingStandardsIgnoreStart
+      @trigger_error('Calling ' . __METHOD__ . ' without the $csrf_token_generator argument is deprecated in 0.7.0 and will be required in 1.0.0.', E_USER_DEPRECATED);
+      // @codingStandardsIgnoreEnd
+      $csrf_token_generator = \Drupal::service('csrf_token');
+    }
+    parent::__construct($configuration, $plugin_id, $plugin_definition, $entityTypeManager, $csrf_token_generator);
     $this->currentRouteMatch = $current_route_match;
     $this->entityTypeManager = $entityTypeManager;
     if (!$moduleExtensionList) {
@@ -80,6 +86,7 @@ class OembedEntities extends EmbedCKEditorPluginBase {
       // @codingStandardsIgnoreEnd
       $moduleExtensionList = \Drupal::service('extension.list.module');
     }
+
     $this->moduleExtensionList = $moduleExtensionList;
   }
 
@@ -91,7 +98,6 @@ class OembedEntities extends EmbedCKEditorPluginBase {
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('entity_type.manager')->getStorage('embed_button')->getQuery(),
       $container->get('current_route_match'),
       $container->get('entity_type.manager'),
       $container->get('extension.list.module')

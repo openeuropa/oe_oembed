@@ -173,7 +173,7 @@ class FilterOembed extends FilterBase implements ContainerFactoryPluginInterface
 
     $result->addCacheableDependency($cache);
 
-    $this->replaceNodeContent($node, $output);
+    $this->replaceNodeContent($node, (string) $output);
   }
 
   /**
