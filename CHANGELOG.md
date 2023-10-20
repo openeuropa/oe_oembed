@@ -1,10 +1,19 @@
 # Change Log
 
-## [0.7.0](https://github.com/openeuropa/oe_oembed/tree/0.7.0) (2023-04-06)
+## [0.8.0](https://github.com/openeuropa/oe_oembed/tree/0.8.0) (2023-10-20)
+[Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.7.0...0.8.0)
+
+**Merged pull requests:**
+
+- EWPP-3249: Bump minimum version of embed. [\#46](https://github.com/openeuropa/oe_oembed/pull/46) ([brummbar](https://github.com/brummbar))
+- EWPP-3706: Fixing drupal/embed BC breaks. [\#45](https://github.com/openeuropa/oe_oembed/pull/45) ([upchuk](https://github.com/upchuk))
+
+## [0.7.0](https://github.com/openeuropa/oe_oembed/tree/0.7.0) (2023-04-11)
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.6.0...0.7.0)
 
 **Merged pull requests:**
 
+- Prepare changelog for release 0.7.0 [\#42](https://github.com/openeuropa/oe_oembed/pull/42) ([brummbar](https://github.com/brummbar))
 - EWPP-2996: Drupal 10 compatibility. [\#41](https://github.com/openeuropa/oe_oembed/pull/41) ([brummbar](https://github.com/brummbar))
 
 ## [0.6.0](https://github.com/openeuropa/oe_oembed/tree/0.6.0) (2023-03-06)
