@@ -86,8 +86,6 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
       'settings' => [
         'toolbar' => [
           'items' => [
-            // @todo remove
-            'sourceEditing',
             'bold',
           ],
         ],

@@ -8,13 +8,6 @@ export default class OembedEntitiesUI extends Plugin {
   /**
    * @inheritdoc
    */
-  static get pluginName() {
-    return 'OembedEntitiesUI';
-  }
-
-  /**
-   * @inheritdoc
-   */
   init() {
     const editor = this.editor;
     const command = editor.commands.get('oembedEntities');

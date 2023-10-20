@@ -15,13 +15,6 @@ export default class OembedToolbar extends Plugin {
   /**
    * @inheritdoc
    */
-  static get pluginName() {
-    return 'OembedToolbar';
-  }
-
-  /**
-   * @inheritdoc
-   */
   init() {
     const editor = this.editor;
     const options = editor.config.get('oembedEntities');

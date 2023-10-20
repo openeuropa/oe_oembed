@@ -12,10 +12,4 @@ export default class OembedEntities extends Plugin {
     return [OembedEntitiesEditing, OembedEntitiesUI, OembedToolbar];
   }
 
-  /**
-   * @inheritdoc
-   */
-  static get pluginName() {
-    return 'OembedEntities';
-  }
 }
