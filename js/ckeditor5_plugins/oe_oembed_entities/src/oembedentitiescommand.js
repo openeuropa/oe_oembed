@@ -1,11 +1,10 @@
-/**
- * @file defines InsertSimpleBoxCommand, which is executed when the simpleBox
- * toolbar button is pressed.
- */
-// cSpell:ignore simpleboxediting
-
 import { Command } from 'ckeditor5/src/core';
 
+/**
+ * The Oembed Entities command.
+ *
+ * Creates the correct element based on the attributes passed.
+ */
 export default class OembedEntitiesCommand extends Command {
 
   /**
@@ -22,7 +21,7 @@ export default class OembedEntitiesCommand extends Command {
       Object.entries(oembedEntitiesEditing.modelAttrs).map(([key, value]) => [value, key])
     );
 
-    // \Drupal\entity_embed\Form\EntityEmbedDialog returns data in keyed by
+    // \Drupal\oe_oembed\Form\OembedDialog returns data in keyed by
     // data-attributes used in view data. This converts data-attribute keys to
     // keys used in model.
     const modelAttributes = Object.fromEntries(
@@ -61,6 +60,18 @@ export default class OembedEntitiesCommand extends Command {
 
 }
 
+
+/**
+ * Inserts an oEmbed entity into the document.
+ *
+ * @param {module:engine/model/writer~Writer} writer
+ *   The model writer.
+ * @param {Object} attributes
+ *   The attributes of the element.
+ *
+ * @returns {module:engine/model/element~Element}
+ *   The created element.
+ */
 function insertOembedEntity(writer, attributes) {
   const { oembedEntitiesEmbedInline } = attributes;
   const isInline = Boolean(oembedEntitiesEmbedInline);

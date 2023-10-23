@@ -3,6 +3,9 @@ import { ButtonView } from "ckeditor5/src/ui";
 import { WidgetToolbarRepository, isWidget } from 'ckeditor5/src/widget';
 import { openDialog } from "./utils";
 
+/**
+ * Adds a toolbar that allows to edit embedded entities.
+ */
 export default class OembedToolbar extends Plugin {
 
   /**
