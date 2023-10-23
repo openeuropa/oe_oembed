@@ -1,6 +1,6 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
-import defaultIcon from '../../../../icons/embed.svg';
+import defaultIcon from '../theme/icons/embed.svg';
 import { openDialog } from "./utils";
 
 export default class OembedEntitiesUI extends Plugin {
