@@ -24,7 +24,7 @@ services:
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
   selenium:
-    image: registry.fpfis.eu/fpfis/selenium:standalone-chrome-3.141.5
+    image: registry.fpfis.eu/fpfis/selenium:standalone-chrome-4.1.3-20220405
     shm_size: 2g
     environment:
       - DISPLAY=:99
