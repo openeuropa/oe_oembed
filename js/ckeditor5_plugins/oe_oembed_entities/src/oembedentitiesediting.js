@@ -23,25 +23,22 @@ export default class OembedEntitiesEditing extends Plugin {
     return 'OembedEntitiesEditing';
   }
 
-  constructor(editor) {
-    super(editor);
-
-    this.viewAttrs = {
-      oembedEntitiesDisplayAs: 'data-display-as',
-      oembedEntitiesOembed: 'data-oembed',
-    };
-    this.modelAttrs = Object.assign({
-      oembedEntitiesEmbedInline: 'data-embed-inline',
-      oembedEntitiesResourceLabel: 'data-resource-label',
-      oembedEntitiesResourceUrl: 'data-resource-url',
-      oembedEntitiesButtonId: 'data-button-id',
-    }, this.viewAttrs);
-  }
-
   /**
    * @inheritdoc
    */
   init() {
+    this.viewAttrs = {
+      oembedEntitiesDisplayAs: 'data-display-as',
+      oembedEntitiesOembed: 'data-oembed',
+    };
+    this.modelAttrs = {
+      ...this.viewAttrs,
+      oembedEntitiesEmbedInline: 'data-embed-inline',
+      oembedEntitiesResourceLabel: 'data-resource-label',
+      oembedEntitiesResourceUrl: 'data-resource-url',
+      oembedEntitiesButtonId: 'data-button-id',
+    };
+
     this._defineSchema();
     this._defineConverters();
     this.editor.commands.add(
@@ -349,7 +346,7 @@ export default class OembedEntitiesEditing extends Plugin {
   _generateViewInlineElement(modelElement, writer, forDataDowncast = false) {
     const link = writer.createContainerElement('a', {
       href: modelElement.getAttribute('oembedEntitiesResourceUrl')
-    }, { priority: 5 });
+    });
 
     const text = writer.createText(modelElement.getAttribute('oembedEntitiesResourceLabel'));
     writer.insert(writer.createPositionAt(link, 0), text);
