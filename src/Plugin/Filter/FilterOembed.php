@@ -162,7 +162,7 @@ class FilterOembed extends FilterBase implements ContainerFactoryPluginInterface
     $cache->addCacheableDependency($access);
     if ($access instanceof AccessResultAllowed) {
       $context = new RenderContext();
-      $output = $this->renderer->executeInRenderContext($context, function () use (&$build) {
+      $output = (string) $this->renderer->executeInRenderContext($context, function () use (&$build) {
         return $this->renderer->render($build);
       });
 

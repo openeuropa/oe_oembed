@@ -1,8 +1,14 @@
-p[data-oembed] {
+p[data-oembed],
+.ck p.ck-widget.ck-oe-oembed {
     height: 8em;
     width: 100%;
     background-color: #E0E0E0;
     text-align: center;
     padding-bottom: 1.2em;
     line-height: 8em;
+}
+
+.ck p.ck-widget.ck-oe-oembed span > a,
+.ck span.ck-widget.ck-oe-oembed > a {
+  pointer-events: none;
 }

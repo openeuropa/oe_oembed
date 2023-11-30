@@ -9,3 +9,12 @@ oe_oembed.dialog:
     - core/drupal
     - core/jquery
     - core/once
+
+oe_oembed_entities_ck5:
+  js:
+    js/build/oe_oembed_entities.js: { preprocess: false, minified: true }
+  css:
+    theme:
+      css/ckeditor_embed.css: {}
+  dependencies:
+    - core/ckeditor5
