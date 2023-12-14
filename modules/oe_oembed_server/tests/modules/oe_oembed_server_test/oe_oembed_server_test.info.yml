@@ -1,5 +1,9 @@
-name: OpenEuropa oEmbed Test
-description: Test module for the oEmbed functionality
+name: OpenEuropa oEmbed Server Test
+description: Test module for the oEmbed server functionality
 core_version_requirement: ^9.4 || ^10
 type: module
 package: Testing
+
+dependencies:
+  - drupal:http_request_mock
+  - oe_oembed:oe_oembed_server
