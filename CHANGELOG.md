@@ -1,10 +1,19 @@
 # Change Log
 
+## [0.9.0](https://github.com/openeuropa/oe_oembed/tree/0.9.0) (2023-12-18)
+[Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.8.0...0.9.0)
+
+**Merged pull requests:**
+
+- OEL-2774: Mock oEmbed resources. [\#48](https://github.com/openeuropa/oe_oembed/pull/48) ([brummbar](https://github.com/brummbar))
+- EWPP-3249: Add CKEditor 5 support [\#44](https://github.com/openeuropa/oe_oembed/pull/44) ([brummbar](https://github.com/brummbar))
+
 ## [0.8.0](https://github.com/openeuropa/oe_oembed/tree/0.8.0) (2023-10-20)
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.7.0...0.8.0)
 
 **Merged pull requests:**
 
+- Prepare changelog for release 0.8.0. [\#47](https://github.com/openeuropa/oe_oembed/pull/47) ([brummbar](https://github.com/brummbar))
 - EWPP-3249: Bump minimum version of embed. [\#46](https://github.com/openeuropa/oe_oembed/pull/46) ([brummbar](https://github.com/brummbar))
 - EWPP-3706: Fixing drupal/embed BC breaks. [\#45](https://github.com/openeuropa/oe_oembed/pull/45) ([upchuk](https://github.com/upchuk))
 
