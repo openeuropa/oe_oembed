@@ -46,6 +46,7 @@ class OembedResolverTest extends KernelTestBase {
     'system',
     'oe_oembed_server',
     'oe_oembed_server_test',
+    'http_request_mock',
     'media_test_source',
   ];
 
