@@ -32,8 +32,6 @@ class OembedResource extends PluginBase implements ServiceMockPluginInterface, C
    */
   protected const ALLOWED_PROVIDERS = [
     'youtube' => 'www.youtube.com',
-    'vimeo' => 'vimeo.com',
-    'dailymotion' => 'www.dailymotion.com',
   ];
 
   /**
@@ -108,22 +106,6 @@ class OembedResource extends PluginBase implements ServiceMockPluginInterface, C
         parse_str(parse_url($uri->__toString(), PHP_URL_QUERY), $parsed);
         parse_str(parse_url($parsed['url'] ?? '', PHP_URL_QUERY), $url);
         $video_id = $url['v'] ?? NULL;
-
-        break;
-
-      case 'vimeo':
-        // For example:
-        // https://vimeo.com/api/oembed.json?url=https%3A//vimeo.com/76979871
-        parse_str(parse_url($uri->__toString(), PHP_URL_QUERY), $parsed);
-        $video_id = substr(parse_url($parsed['url'] ?? '', PHP_URL_PATH), 1);
-
-        break;
-
-      case 'dailymotion':
-        // For example:
-        // https://www.dailymotion.com/services/oembed?url=https://www.dailymotion.com/video/x6pa0tr
-        parse_str(parse_url($uri->__toString(), PHP_URL_QUERY), $parsed);
-        $video_id = substr(parse_url($parsed['url'] ?? '', PHP_URL_PATH), 7);
 
         break;
     }
