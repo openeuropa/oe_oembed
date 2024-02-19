@@ -1,14 +1,30 @@
-# Change Log
+# Changelog
+
+## [0.10.0](https://github.com/openeuropa/oe_oembed/tree/0.10.0) (2024-02-19)
+
+[Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.9.0...0.10.0)
+
+**Closed issues:**
+
+- CKEditor4 dependency not needed [\#50](https://github.com/openeuropa/oe_oembed/issues/50)
+
+**Merged pull requests:**
+
+- EWPP-4110: Drop D9 and add D10.2 and php8.2 to matrix. [\#55](https://github.com/openeuropa/oe_oembed/pull/55) ([nagyad](https://github.com/nagyad))
+- EWPP-3846: Remove CKEditor4 dependency. [\#53](https://github.com/openeuropa/oe_oembed/pull/53) ([nagyad](https://github.com/nagyad))
 
 ## [0.9.0](https://github.com/openeuropa/oe_oembed/tree/0.9.0) (2023-12-18)
+
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.8.0...0.9.0)
 
 **Merged pull requests:**
 
+- Prepare changelog for release 0.9.0. [\#49](https://github.com/openeuropa/oe_oembed/pull/49) ([brummbar](https://github.com/brummbar))
 - OEL-2774: Mock oEmbed resources. [\#48](https://github.com/openeuropa/oe_oembed/pull/48) ([brummbar](https://github.com/brummbar))
 - EWPP-3249: Add CKEditor 5 support [\#44](https://github.com/openeuropa/oe_oembed/pull/44) ([brummbar](https://github.com/brummbar))
 
 ## [0.8.0](https://github.com/openeuropa/oe_oembed/tree/0.8.0) (2023-10-20)
+
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.7.0...0.8.0)
 
 **Merged pull requests:**
@@ -18,6 +34,7 @@
 - EWPP-3706: Fixing drupal/embed BC breaks. [\#45](https://github.com/openeuropa/oe_oembed/pull/45) ([upchuk](https://github.com/upchuk))
 
 ## [0.7.0](https://github.com/openeuropa/oe_oembed/tree/0.7.0) (2023-04-11)
+
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.6.0...0.7.0)
 
 **Merged pull requests:**
@@ -26,6 +43,7 @@
 - EWPP-2996: Drupal 10 compatibility. [\#41](https://github.com/openeuropa/oe_oembed/pull/41) ([brummbar](https://github.com/brummbar))
 
 ## [0.6.0](https://github.com/openeuropa/oe_oembed/tree/0.6.0) (2023-03-06)
+
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.5.0...0.6.0)
 
 **Merged pull requests:**
@@ -34,6 +52,7 @@
 - OEL-2115: Update to PHP 8.1 [\#38](https://github.com/openeuropa/oe_oembed/pull/38) ([brummbar](https://github.com/brummbar))
 
 ## [0.5.0](https://github.com/openeuropa/oe_oembed/tree/0.5.0) (2023-01-03)
+
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.4.0...0.5.0)
 
 **Merged pull requests:**
