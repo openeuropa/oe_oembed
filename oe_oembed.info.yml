@@ -3,7 +3,7 @@ description: The OpenEuropa oEmbed component provides an API to expose entity it
 package: OpenEuropa
 
 type: module
-core_version_requirement: ^9.4 || ^10
+core_version_requirement: ^10
 
 dependencies:
   - embed:embed
