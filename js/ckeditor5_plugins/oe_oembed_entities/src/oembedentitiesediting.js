@@ -351,7 +351,9 @@ export default class OembedEntitiesEditing extends Plugin {
     const text = writer.createText(modelElement.getAttribute('oembedEntitiesResourceLabel'));
     writer.insert(writer.createPositionAt(link, 0), text);
 
-    return forDataDowncast ? link : writer.createContainerElement('span', {}, [link]);
+    return forDataDowncast ? link : writer.createContainerElement('span', {
+      'data-display-as': modelElement.getAttribute('oembedEntitiesDisplayAs')
+    }, [link]);
   }
 
   /**
