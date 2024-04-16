@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.11.0](https://github.com/openeuropa/oe_oembed/tree/0.11.0) (2024-04-16)
+
+[Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.10.0...0.11.0)
+
+**Merged pull requests:**
+
+- EWPP-2900: Add attribute for 'display as' value. [\#57](https://github.com/openeuropa/oe_oembed/pull/57) ([sergepavle](https://github.com/sergepavle))
+
 ## [0.10.0](https://github.com/openeuropa/oe_oembed/tree/0.10.0) (2024-02-19)
 
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.9.0...0.10.0)
@@ -10,6 +18,7 @@
 
 **Merged pull requests:**
 
+- Release-0.10.0: Update changelog. [\#56](https://github.com/openeuropa/oe_oembed/pull/56) ([nagyad](https://github.com/nagyad))
 - EWPP-4110: Drop D9 and add D10.2 and php8.2 to matrix. [\#55](https://github.com/openeuropa/oe_oembed/pull/55) ([nagyad](https://github.com/nagyad))
 - EWPP-3846: Remove CKEditor4 dependency. [\#53](https://github.com/openeuropa/oe_oembed/pull/53) ([nagyad](https://github.com/nagyad))
 
