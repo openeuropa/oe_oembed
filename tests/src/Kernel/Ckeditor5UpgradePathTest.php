@@ -24,6 +24,7 @@ class Ckeditor5UpgradePathTest extends SmartDefaultSettingsTest {
     'node',
     'oe_oembed',
     'ckeditor',
+    'codesnippet',
   ];
 
   /**
