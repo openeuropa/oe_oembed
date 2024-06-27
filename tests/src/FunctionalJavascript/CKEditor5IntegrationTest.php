@@ -59,6 +59,13 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
   protected EditorInterface $editor;
 
   /**
+   * The test administrative user.
+   *
+   * @var \Drupal\user\UserInterface
+   */
+  protected $user;
+
+  /**
    * {@inheritdoc}
    */
   protected function setUp(): void {
