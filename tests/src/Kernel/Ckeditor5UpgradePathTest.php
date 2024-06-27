@@ -68,17 +68,17 @@ class Ckeditor5UpgradePathTest extends SmartDefaultSettingsTest {
       'format' => 'oe_oembed_filter_disabled',
       'name' => 'Oembed disabled',
       'filters' => $filter_config_bad_filter_html + $filter_config_oe_oembed_filter_off,
-    ])->setSyncing(TRUE)->save();
+    ])->save();
     FilterFormat::create([
       'format' => 'oe_oembed_filter_enabled_misconfigured_format_filter_html',
       'name' => 'Oembed enabled on a misconfigured format (filter_html wrong)',
       'filters' => $filter_config_bad_filter_html + $filter_config_oe_oembed_filter_on,
-    ])->setSyncing(TRUE)->save();
+    ])->save();
     FilterFormat::create([
       'format' => 'oe_oembed_filter_enabled_misconfigured_format_missing_oe_oembed_filter',
       'name' => 'Oembed enabled on a misconfigured format (oe_oembed_filter missing)',
       'filters' => $filter_config_bad_filter_html + $filter_config_oe_oembed_filter_off,
-    ])->setSyncing(TRUE)->save();
+    ])->save();
     FilterFormat::create([
       'format' => 'oe_oembed_filter_enabled',
       'name' => 'Oembed enabled on a well-configured format',
@@ -90,7 +90,7 @@ class Ckeditor5UpgradePathTest extends SmartDefaultSettingsTest {
           ],
         ],
       ] + $filter_config_oe_oembed_filter_on,
-    ])->setSyncing(TRUE)->save();
+    ])->save();
 
     $generate_editor_settings = function (bool $node_embed_button_in_toolbar) {
       return [
@@ -123,22 +123,22 @@ class Ckeditor5UpgradePathTest extends SmartDefaultSettingsTest {
       'format' => 'oe_oembed_filter_disabled',
       'editor' => 'ckeditor',
       'settings' => $generate_editor_settings(FALSE),
-    ])->setSyncing(TRUE)->save();
+    ])->save();
     Editor::create([
       'format' => 'oe_oembed_filter_enabled_misconfigured_format_filter_html',
       'editor' => 'ckeditor',
       'settings' => $generate_editor_settings(TRUE),
-    ])->setSyncing(TRUE)->save();
+    ])->save();
     Editor::create([
       'format' => 'oe_oembed_filter_enabled_misconfigured_format_missing_oe_oembed_filter',
       'editor' => 'ckeditor',
       'settings' => $generate_editor_settings(TRUE),
-    ])->setSyncing(TRUE)->save();
+    ])->save();
     Editor::create([
       'format' => 'oe_oembed_filter_enabled',
       'editor' => 'ckeditor',
       'settings' => $generate_editor_settings(TRUE),
-    ])->setSyncing(TRUE)->save();
+    ])->save();
   }
 
   /**
