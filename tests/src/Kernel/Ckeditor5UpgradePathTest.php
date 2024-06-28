@@ -143,9 +143,46 @@ class Ckeditor5UpgradePathTest extends SmartDefaultSettingsTest {
   }
 
   /**
-   * {@inheritdoc}
+   * Tests the CKEditor 5 default settings conversion for oe_oembed.
+   *
+   * @param string $format_id
+   *   The existing text format/editor pair to switch to CKEditor 5.
+   * @param array $filters_to_drop
+   *   An array of filter IDs to drop as the keys and either TRUE (fundamental
+   *   compatibility error from CKEditor 5 expected) or FALSE (if optional to
+   *   drop).
+   * @param array $expected_ckeditor5_settings
+   *   The CKEditor 5 settings to test.
+   * @param string $expected_superset
+   *   The default settings conversion may generate a superset of the original
+   *   HTML restrictions. This lists the additional elements and attributes.
+   * @param array $expected_fundamental_compatibility_violations
+   *   All expected fundamental compatibility violations for the given text
+   *   format.
+   * @param string[] $expected_db_logs
+   *   The expected database logs associated with the computed settings.
+   * @param string[] $expected_messages
+   *   The expected messages associated with the computed settings.
+   * @param array|null $expected_post_filter_drop_fundamental_compatibility_violations
+   *   All expected fundamental compatibility violations for the given text
+   *   format, after dropping filters specified in $filters_to_drop.
+   * @param array|null $expected_post_update_text_editor_violations
+   *   All expected media and filter settings violations for the given text
+   *   format.
+   *
+   * @dataProvider oembedProvider
    */
-  public static function provider() {
+  public function testOembed(string $format_id, array $filters_to_drop, array $expected_ckeditor5_settings, string $expected_superset, array $expected_fundamental_compatibility_violations, array $expected_db_logs, array $expected_messages, ?array $expected_post_filter_drop_fundamental_compatibility_violations = NULL, ?array $expected_post_update_text_editor_violations = NULL): void {
+    parent::test($format_id, $filters_to_drop, $expected_ckeditor5_settings, $expected_superset, $expected_fundamental_compatibility_violations, $expected_db_logs, $expected_messages, $expected_post_filter_drop_fundamental_compatibility_violations, $expected_post_update_text_editor_violations);
+  }
+
+  /**
+   * The oe_oembed data provider.
+   *
+   * @return \Generator
+   *   Test scenarios.
+   */
+  public static function oembedProvider() {
     $expected_ckeditor5_toolbar = [
       'items' => [
         'bold',
@@ -217,12 +254,6 @@ class Ckeditor5UpgradePathTest extends SmartDefaultSettingsTest {
       'expected_db_logs' => [],
       'expected_messages' => [],
     ];
-
-    // Verify that none of the core test cases are broken; especially important
-    // for Linkit since it extends the behavior of Drupal core.
-    foreach (parent::provider() as $label => $case) {
-      yield $label => $case;
-    }
   }
 
 }
