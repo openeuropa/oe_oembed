@@ -174,8 +174,20 @@ class OembedResolverTest extends KernelTestBase {
     $this->assertStringContainsString(UrlHelper::encodePath('https://www.youtube.com/watch?v=1-g73ty9v04'), $iframe->attr('src'));
     $this->assertEquals('video', $data['type']);
     $this->assertEquals('en', $data['lang']);
-    $this->assertEquals(400, $iframe->attr('width'));
-    $this->assertEquals(250, $iframe->attr('height'));
+
+    // Drupal\media\Plugin\Field\FieldFormatter\OEmbedFormatter handles
+    // assets max width/height with a different strategy from Drupal core 10.3.
+    // Drupal will set the dimensions returned by the provider.
+    // @todo Remove when support for 10.2.x is dropped.
+    if (version_compare(\Drupal::VERSION, '10.3', '>')) {
+      $this->assertEquals(459, $iframe->attr('width'));
+      $this->assertEquals(344, $iframe->attr('height'));
+    }
+    else {
+      $this->assertEquals(400, $iframe->attr('width'));
+      $this->assertEquals(250, $iframe->attr('height'));
+    }
+
     $this->assertEquals($media->id(), $result->getMedia()->id());
   }
 

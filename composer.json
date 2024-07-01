@@ -13,6 +13,7 @@
     "require-dev": {
         "composer/installers": "^1.5",
         "drupal/ckeditor": "^1.0",
+        "drupal/codesnippet": "^1.9",
         "drupal/config_devel": "^1.8",
         "drupal/core-composer-scaffold": "^10",
         "drupal/core-dev": "^10",

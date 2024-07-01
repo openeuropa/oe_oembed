@@ -155,7 +155,6 @@ class CKEditorIntegrationTest extends EmbedTestBase {
     $this->assertEquals('image_teaser', $select->find('css', 'option[selected]')->getValue());
     $select->selectOption('Demo');
     $this->assertSession()->elementExists('css', 'button.button--primary')->press();
-    $this->assertSession()->assertWaitOnAjaxRequest();
     $this->assertSession()->buttonExists('Save')->press();
 
     // Assert that the image media embed view mode was changed and the other
