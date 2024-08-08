@@ -1,11 +1,21 @@
 # Changelog
 
+## [0.11.1](https://github.com/openeuropa/oe_oembed/tree/0.11.1) (2024-08-07)
+
+[Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.11.0...0.11.1)
+
+**Merged pull requests:**
+
+- EWPP-0000: Lock drupal/embed to 1.7.x to keep BC for CKEditor 4. [\#60](https://github.com/openeuropa/oe_oembed/pull/60) ([22Alexandra](https://github.com/22Alexandra))
+- OEL-3035: Update to Drupal 10.3 [\#59](https://github.com/openeuropa/oe_oembed/pull/59) ([AaronGilMartinez](https://github.com/AaronGilMartinez))
+
 ## [0.11.0](https://github.com/openeuropa/oe_oembed/tree/0.11.0) (2024-04-16)
 
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.10.0...0.11.0)
 
 **Merged pull requests:**
 
+- Release-0.11.0: Update changelog. [\#58](https://github.com/openeuropa/oe_oembed/pull/58) ([nagyad](https://github.com/nagyad))
 - EWPP-2900: Add attribute for 'display as' value. [\#57](https://github.com/openeuropa/oe_oembed/pull/57) ([sergepavle](https://github.com/sergepavle))
 
 ## [0.10.0](https://github.com/openeuropa/oe_oembed/tree/0.10.0) (2024-02-19)
