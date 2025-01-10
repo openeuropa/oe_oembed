@@ -21,7 +21,7 @@
         "drush/drush": "^12",
         "openeuropa/code-review": "^2.0.0-alpha6",
         "openeuropa/oe_media": "^1.23",
-        "openeuropa/task-runner-drupal-project-symlink": "^1.0-beta6",
+        "openeuropa/task-runner-drupal-project-symlink": "^1.0",
         "phpspec/prophecy-phpunit": "^2",
         "nikic/php-parser": "^4"
     },
@@ -68,12 +68,13 @@
         "sort-packages": true,
         "allow-plugins": {
             "composer/installers": true,
-            "drupal/core-composer-scaffold": true,
             "cweagans/composer-patches": true,
             "dealerdirect/phpcodesniffer-composer-installer": true,
+            "drupal/core-composer-scaffold": true,
+            "php-http/discovery": true,
             "phpro/grumphp": true,
             "phpstan/extension-installer": true,
-            "php-http/discovery": true
+            "tbachert/spi": true
         }
     }
 }

@@ -79,7 +79,7 @@ class OembedResolver implements OembedResolverInterface {
     Renderer $renderer,
     EntityTypeManagerInterface $entity_type_manager,
     EventDispatcherInterface $event_dispatcher,
-    FileUrlGeneratorInterface $file_url_generator = NULL,
+    ?FileUrlGeneratorInterface $file_url_generator = NULL,
   ) {
     $this->entityRepository = $entity_repository;
     $this->renderer = $renderer;
