@@ -19,7 +19,7 @@
         "drupal/core-dev": "^10",
         "drupal/http_request_mock": "^1.1",
         "drush/drush": "^12",
-        "openeuropa/code-review": "^2.0.0-alpha6",
+        "openeuropa/code-review-drupal": "^1.0.0-alpha",
         "openeuropa/oe_media": "^1.23",
         "openeuropa/task-runner-drupal-project-symlink": "^1.0",
         "phpspec/prophecy-phpunit": "^2",
@@ -33,6 +33,14 @@
         {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/openeuropa/DrupalDriver.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/openeuropa/code-review-drupal.git"
         }
     ],
     "autoload": {
@@ -73,8 +81,9 @@
             "drupal/core-composer-scaffold": true,
             "php-http/discovery": true,
             "phpro/grumphp": true,
+            "phpro/grumphp-shim": true,
             "phpstan/extension-installer": true,
-            "tbachert/spi": true
+            "tbachert/spi": false
         }
     }
 }

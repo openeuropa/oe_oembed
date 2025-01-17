@@ -457,6 +457,16 @@ class OembedResolver implements OembedResolverInterface {
         'cache' => $cache,
       ];
     }
+
+    // Otherwise we return the information about the original image.
+    return [
+      'type' => 'photo',
+      'url' => $original_image_url,
+      'width' => $source->getMetadata($media, 'width'),
+      'height' => $source->getMetadata($media, 'height'),
+      'lang' => $media->language()->getId(),
+      'cache' => $cache,
+    ];
   }
 
   /**

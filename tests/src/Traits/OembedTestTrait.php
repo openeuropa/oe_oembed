@@ -274,6 +274,7 @@ trait OembedTestTrait {
     $editor->save();
 
     // Create a user with required permissions.
+    // @phpstan-ignore-next-line
     $this->user = $this->drupalCreateUser([
       'access content',
       'create page content',
@@ -281,7 +282,7 @@ trait OembedTestTrait {
       'create image media',
       'create remote_video media',
     ]);
-
+    // @phpstan-ignore-next-line
     $this->drupalLogin($this->user);
   }
 
@@ -304,6 +305,7 @@ trait OembedTestTrait {
         $url .= '/' . $embed_button_id;
       }
     }
+    // @phpstan-ignore-next-line
     return $this->drupalGet($url);
   }
 
