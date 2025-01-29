@@ -146,7 +146,7 @@ class OembedDialog extends FormBase {
    * @SuppressWarnings(PHPMD.CyclomaticComplexity)
    * @SuppressWarnings(PHPMD.NPathComplexity)
    */
-  public function buildForm(array $form, FormStateInterface $form_state, EditorInterface $editor = NULL, EmbedButtonInterface $embed_button = NULL): array {
+  public function buildForm(array $form, FormStateInterface $form_state, ?EditorInterface $editor = NULL, ?EmbedButtonInterface $embed_button = NULL): array {
     $values = $form_state->getValues();
     $input = $form_state->getUserInput();
     // Set embed button element in form state, so that it can be used later in

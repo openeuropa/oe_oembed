@@ -518,7 +518,7 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
    *   The display mode to use. If left empty, it will assert that no display
    *   mode field is shown.
    */
-  protected function embedEntityWithSimpleModal(string $button_label, EntityInterface $entity, string $display_mode = NULL): void {
+  protected function embedEntityWithSimpleModal(string $button_label, EntityInterface $entity, ?string $display_mode = NULL): void {
     $this->pressEditorButton($button_label);
     $assert_session = $this->assertSession();
     $modal = $assert_session->waitForElement('css', '.oe-oembed-entities-select-dialog');
@@ -549,7 +549,7 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
    * @param string|null $display_mode
    *   The display mode to use. If left empty, no changes are done.
    */
-  protected function editEmbeddedEntityWithSimpleModal(EntityInterface $current_entity, ?EntityInterface $new_entity = NULL, string $display_mode = NULL): void {
+  protected function editEmbeddedEntityWithSimpleModal(EntityInterface $current_entity, ?EntityInterface $new_entity = NULL, ?string $display_mode = NULL): void {
     $this->getBalloonButton('Edit')->click();
     $assert_session = $this->assertSession();
     $modal = $assert_session->waitForElement('css', '.oe-oembed-entities-select-dialog');

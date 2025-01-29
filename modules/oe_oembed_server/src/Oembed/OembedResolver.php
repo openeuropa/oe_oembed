@@ -79,7 +79,7 @@ class OembedResolver implements OembedResolverInterface {
     Renderer $renderer,
     EntityTypeManagerInterface $entity_type_manager,
     EventDispatcherInterface $event_dispatcher,
-    FileUrlGeneratorInterface $file_url_generator = NULL,
+    ?FileUrlGeneratorInterface $file_url_generator = NULL,
   ) {
     $this->entityRepository = $entity_repository;
     $this->renderer = $renderer;
@@ -457,6 +457,16 @@ class OembedResolver implements OembedResolverInterface {
         'cache' => $cache,
       ];
     }
+
+    // Otherwise we return the information about the original image.
+    return [
+      'type' => 'photo',
+      'url' => $original_image_url,
+      'width' => $source->getMetadata($media, 'width'),
+      'height' => $source->getMetadata($media, 'height'),
+      'lang' => $media->language()->getId(),
+      'cache' => $cache,
+    ];
   }
 
   /**

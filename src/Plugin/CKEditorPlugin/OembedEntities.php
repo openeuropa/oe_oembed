@@ -61,8 +61,8 @@ class OembedEntities extends EmbedCKEditorPluginBase {
     $plugin_definition,
     RouteMatchInterface $current_route_match,
     EntityTypeManagerInterface $entityTypeManager,
-    ModuleExtensionList $moduleExtensionList = NULL,
-    CsrfTokenGenerator $csrf_token_generator = NULL,
+    ?ModuleExtensionList $moduleExtensionList = NULL,
+    ?CsrfTokenGenerator $csrf_token_generator = NULL,
   ) {
     if (!$csrf_token_generator) {
       // @codingStandardsIgnoreStart

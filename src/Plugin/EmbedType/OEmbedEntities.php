@@ -92,8 +92,8 @@ class OEmbedEntities extends EmbedTypeBase implements ContainerFactoryPluginInte
     EntityTypeManagerInterface $entityTypeManager,
     EntityTypeRepositoryInterface $entityTypeRepository,
     EntityTypeBundleInfoInterface $entityTypeBundleInfo,
-    ModuleExtensionList $moduleExtensionList = NULL,
-    FileUrlGeneratorInterface $file_url_generator = NULL,
+    ?ModuleExtensionList $moduleExtensionList = NULL,
+    ?FileUrlGeneratorInterface $file_url_generator = NULL,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->entityTypeManager = $entityTypeManager;
