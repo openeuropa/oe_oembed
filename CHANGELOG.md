@@ -1,16 +1,22 @@
-# Changelog
+# Change Log
 
-## [0.11.1](https://github.com/openeuropa/oe_oembed/tree/0.11.1) (2024-08-07)
+## [0.12.0](https://github.com/openeuropa/oe_oembed/tree/0.12.0) (2025-01-29)
+[Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.11.1...0.12.0)
 
+**Merged pull requests:**
+
+- EWPP-4991: Ensure PHP8.3 compatibility. [\#62](https://github.com/openeuropa/oe_oembed/pull/62) ([nagyad](https://github.com/nagyad))
+
+## [0.11.1](https://github.com/openeuropa/oe_oembed/tree/0.11.1) (2024-08-08)
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.11.0...0.11.1)
 
 **Merged pull requests:**
 
+- Release-0.11.1: Update changelog. [\#61](https://github.com/openeuropa/oe_oembed/pull/61) ([nagyad](https://github.com/nagyad))
 - EWPP-0000: Lock drupal/embed to 1.7.x to keep BC for CKEditor 4. [\#60](https://github.com/openeuropa/oe_oembed/pull/60) ([22Alexandra](https://github.com/22Alexandra))
 - OEL-3035: Update to Drupal 10.3 [\#59](https://github.com/openeuropa/oe_oembed/pull/59) ([AaronGilMartinez](https://github.com/AaronGilMartinez))
 
 ## [0.11.0](https://github.com/openeuropa/oe_oembed/tree/0.11.0) (2024-04-16)
-
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.10.0...0.11.0)
 
 **Merged pull requests:**
@@ -19,7 +25,6 @@
 - EWPP-2900: Add attribute for 'display as' value. [\#57](https://github.com/openeuropa/oe_oembed/pull/57) ([sergepavle](https://github.com/sergepavle))
 
 ## [0.10.0](https://github.com/openeuropa/oe_oembed/tree/0.10.0) (2024-02-19)
-
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.9.0...0.10.0)
 
 **Closed issues:**
@@ -33,7 +38,6 @@
 - EWPP-3846: Remove CKEditor4 dependency. [\#53](https://github.com/openeuropa/oe_oembed/pull/53) ([nagyad](https://github.com/nagyad))
 
 ## [0.9.0](https://github.com/openeuropa/oe_oembed/tree/0.9.0) (2023-12-18)
-
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.8.0...0.9.0)
 
 **Merged pull requests:**
@@ -43,7 +47,6 @@
 - EWPP-3249: Add CKEditor 5 support [\#44](https://github.com/openeuropa/oe_oembed/pull/44) ([brummbar](https://github.com/brummbar))
 
 ## [0.8.0](https://github.com/openeuropa/oe_oembed/tree/0.8.0) (2023-10-20)
-
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.7.0...0.8.0)
 
 **Merged pull requests:**
@@ -53,7 +56,6 @@
 - EWPP-3706: Fixing drupal/embed BC breaks. [\#45](https://github.com/openeuropa/oe_oembed/pull/45) ([upchuk](https://github.com/upchuk))
 
 ## [0.7.0](https://github.com/openeuropa/oe_oembed/tree/0.7.0) (2023-04-11)
-
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.6.0...0.7.0)
 
 **Merged pull requests:**
@@ -62,7 +64,6 @@
 - EWPP-2996: Drupal 10 compatibility. [\#41](https://github.com/openeuropa/oe_oembed/pull/41) ([brummbar](https://github.com/brummbar))
 
 ## [0.6.0](https://github.com/openeuropa/oe_oembed/tree/0.6.0) (2023-03-06)
-
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.5.0...0.6.0)
 
 **Merged pull requests:**
@@ -71,7 +72,6 @@
 - OEL-2115: Update to PHP 8.1 [\#38](https://github.com/openeuropa/oe_oembed/pull/38) ([brummbar](https://github.com/brummbar))
 
 ## [0.5.0](https://github.com/openeuropa/oe_oembed/tree/0.5.0) (2023-01-03)
-
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.4.0...0.5.0)
 
 **Merged pull requests:**
@@ -80,7 +80,6 @@
 - EWPP-2766: Allow to edit embedded widgets. [\#37](https://github.com/openeuropa/oe_oembed/pull/37) ([upchuk](https://github.com/upchuk))
 
 ## [0.4.0](https://github.com/openeuropa/oe_oembed/tree/0.4.0) (2022-09-16)
-
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.3.0...0.4.0)
 
 **Merged pull requests:**
@@ -90,7 +89,6 @@
 - EWPP-2170: Passing the current route and parameters to the oembed modal request. [\#32](https://github.com/openeuropa/oe_oembed/pull/32) ([upchuk](https://github.com/upchuk))
 
 ## [0.3.0](https://github.com/openeuropa/oe_oembed/tree/0.3.0) (2022-08-02)
-
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.2.0...0.3.0)
 
 **Merged pull requests:**
@@ -99,7 +97,6 @@
 - EWPP-2358: Drupal 9.4 support. [\#33](https://github.com/openeuropa/oe_oembed/pull/33) ([yenyasinn](https://github.com/yenyasinn))
 
 ## [0.2.0](https://github.com/openeuropa/oe_oembed/tree/0.2.0) (2022-02-17)
-
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.1.1...0.2.0)
 
 **Merged pull requests:**
@@ -109,7 +106,6 @@
 - EWPP-1880: oEmbed filter doesn't crash on missing entity type. [\#29](https://github.com/openeuropa/oe_oembed/pull/29) ([upchuk](https://github.com/upchuk))
 
 ## [0.1.1](https://github.com/openeuropa/oe_oembed/tree/0.1.1) (2021-12-06)
-
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.1.0...0.1.1)
 
 **Merged pull requests:**
@@ -119,9 +115,6 @@
 - EWPP-913: Fixing non-set notice. [\#25](https://github.com/openeuropa/oe_oembed/pull/25) ([upchuk](https://github.com/upchuk))
 
 ## [0.1.0](https://github.com/openeuropa/oe_oembed/tree/0.1.0) (2021-09-27)
-
-[Full Changelog](https://github.com/openeuropa/oe_oembed/compare/86074b81ad37bcea887df2441a93e356fecb6550...0.1.0)
-
 **Closed issues:**
 
 - Changelog is missing [\#12](https://github.com/openeuropa/oe_oembed/issues/12)
@@ -152,4 +145,4 @@
 
 
 
-\* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator)*
+\* *This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*
