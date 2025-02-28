@@ -24,7 +24,7 @@ abstract class EmbedTestBase extends WebDriverTestBase {
     'oe_oembed_test',
     'oe_media_oembed_mock',
     'node',
-    'ckeditor',
+    'ckeditor5',
     'options',
   ];
 

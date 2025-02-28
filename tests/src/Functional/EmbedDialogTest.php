@@ -36,7 +36,7 @@ class EmbedDialogTest extends EmbedTestBase {
     // Add an empty configuration for the plain_text editor configuration.
     $editor = Editor::create([
       'format' => 'plain_text',
-      'editor' => 'ckeditor',
+      'editor' => 'ckeditor5',
     ]);
     $editor->save();
     foreach (['media', 'node'] as $button_id) {

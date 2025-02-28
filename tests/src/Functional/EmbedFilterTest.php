@@ -39,20 +39,15 @@ class EmbedFilterTest extends EmbedTestBase {
     ]);
     $format->save();
 
-    $editor_group = [
-      'name' => 'Entity Embed',
-      'items' => [
-        'media',
-        'node',
-      ],
-    ];
-
     $editor = Editor::create([
       'format' => 'format_with_embed',
-      'editor' => 'ckeditor',
+      'editor' => 'ckeditor5',
       'settings' => [
         'toolbar' => [
-          'rows' => [[$editor_group]],
+          'items' => [
+            'media',
+            'node',
+          ],
         ],
       ],
     ]);
