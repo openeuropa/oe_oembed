@@ -255,19 +255,15 @@ trait OembedTestTrait {
     ]);
     $format->save();
 
-    $editor_group = [
-      'name' => 'Embeds',
-      'items' => [
-        'media',
-        'node',
-      ],
-    ];
     $editor = Editor::create([
       'format' => 'html',
-      'editor' => 'ckeditor',
+      'editor' => 'ckeditor5',
       'settings' => [
         'toolbar' => [
-          'rows' => [[$editor_group]],
+          'items' => [
+            'media',
+            'node',
+          ],
         ],
       ],
     ]);
@@ -289,9 +285,9 @@ trait OembedTestTrait {
   /**
    * Retrieves an embed dialog based on given parameters.
    *
-   * @param string $filter_format_id
+   * @param string|null $filter_format_id
    *   ID of the filter format.
-   * @param string $embed_button_id
+   * @param string|null $embed_button_id
    *   ID of the embed button.
    *
    * @return string
