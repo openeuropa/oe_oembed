@@ -1,11 +1,21 @@
 # Changelog
 
+## [0.13.1](https://github.com/openeuropa/oe_oembed/tree/0.13.1) (2025-09-09)
+
+[Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.13.0...0.13.1)
+
+**Merged pull requests:**
+
+- EWPP-5768: Update Drupal to 10.5. [\#67](https://github.com/openeuropa/oe_oembed/pull/67) ([intelektron](https://github.com/intelektron))
+- EWPP-5699: Update docker PHP image. [\#66](https://github.com/openeuropa/oe_oembed/pull/66) ([nagyad](https://github.com/nagyad))
+
 ## [0.13.0](https://github.com/openeuropa/oe_oembed/tree/0.13.0) (2025-05-21)
 
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.12.0...0.13.0)
 
 **Merged pull requests:**
 
+- Release-0.13.0: Update changelog. [\#65](https://github.com/openeuropa/oe_oembed/pull/65) ([nagyad](https://github.com/nagyad))
 - EWPP-4603: Update to Drupal 11. [\#64](https://github.com/openeuropa/oe_oembed/pull/64) ([gorsky87](https://github.com/gorsky87))
 
 ## [0.12.0](https://github.com/openeuropa/oe_oembed/tree/0.12.0) (2025-01-29)
