@@ -56,14 +56,19 @@ class EmbedButtonAdminTest extends WebDriverTestBase {
     $select = $this->assertSession()->selectExists('Entity type');
     $this->assertEquals('', $select->getValue());
     $expected = [
-      '- Select -' => '- Select -',
+      '' => '- Select -',
       'file' => 'File',
       'media' => 'Media',
       'node' => 'Content',
       'path_alias' => 'URL alias',
       'user' => 'User',
     ];
-    $this->assertEquals($expected, $this->getOptions($select));
+
+    $options = [];
+    foreach ($select->findAll('css', 'option') as $option) {
+      $options[$option->getValue()] = $option->getText();
+    }
+    $this->assertEquals($expected, $options);
 
     // The entity type select is required.
     $this->disableNativeBrowserRequiredFieldValidation();
