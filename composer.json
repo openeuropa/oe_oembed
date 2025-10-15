@@ -12,6 +12,7 @@
     },
     "require-dev": {
         "composer/installers": "^1.5 || ^2.3",
+        "cweagans/composer-patches": "^1.7 || ^2.0",
         "drupal/config_devel": "^1.10",
         "drupal/core-composer-scaffold": "^10 || ^11",
         "drupal/core-dev": "^10 || ^11",
@@ -46,6 +47,11 @@
         }
     },
     "extra": {
+        "patches": {
+          "drupal/embed": {
+            "https://www.drupal.org/project/embed/issues/3517882": "https://www.drupal.org/files/issues/2025-06-30/embed--2025-06-30--3517882--mr-26.patch"
+          }
+        },
         "composer-exit-on-patch-failure": true,
         "enable-patching": true,
         "installer-paths": {
