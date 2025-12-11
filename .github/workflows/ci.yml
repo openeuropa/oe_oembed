@@ -6,18 +6,73 @@ on:
     branches:
       - master
 
+env:
+  PHP_VERSIONS: '["8.2"], ["8.3"]'
+
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      cache-key: ${{ steps.cache-key.outputs.key }}
+      php-versions: ${{ env.PHP_VERSIONS }}
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Generate cache key
+        id: cache-key
+        # Add the week number to the cache key to force weekly refreshes.
+        run: echo "key=docker-${{ runner.os }}-${{ hashFiles('docker-compose.yml') }}-$(date +%Y-%U)" >> $GITHUB_OUTPUT
+
+      - name: Cache Docker images
+        uses: actions/cache@v4
+        id: docker-cache
+        with:
+          path: ~/docker-images.tar
+          key: ${{ steps.cache-key.outputs.key }}
+
+      - name: Pull and save Docker images
+        if: steps.docker-cache.outputs.cache-hit != 'true'
+        run: |
+          # Pull PHP images for all versions in the matrix
+          for version in $(echo '${{ env.PHP_VERSIONS }}' | jq -r '.[]'); do
+            sed -i "s/httpd-php:8\.3-dev/httpd-php:${version}-ci/g" docker-compose.yml
+            docker compose pull web
+            git checkout docker-compose.yml
+          done
+          # Pull other images from docker-compose.yml (all services except web)
+          docker compose pull $(docker compose config --services | grep -v web)
+          # Save all images
+          docker save -o ~/docker-images.tar $(docker image ls --format '{{.Repository}}:{{.Tag}}' | grep -v '<none>')
+
+      - name: Load Docker images from cache
+        if: steps.docker-cache.outputs.cache-hit == 'true'
+        run: docker load -i ~/docker-images.tar
+
   automated-tests:
+    needs: prepare
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php_version: ["8.3"]
+        php_version: ${{ fromJSON(needs.prepare.outputs.php-versions) }}
         core_version: ["10.4.0", "10.5.0", "11.1.0", "11.2.0"]
     env:
       PHP_VERSION: ${{ matrix.php_version }}
     steps:
       - name: Clone repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+
+      - name: Restore Docker images from cache
+        uses: actions/cache@v4
+        with:
+          path: ~/docker-images.tar
+          key: ${{ needs.prepare.outputs.cache-key }}
+
+      - name: Load Docker images from cache
+        run: |
+          if [ -f ~/docker-images.tar ]; then
+            docker load -i ~/docker-images.tar
+          fi
 
       - name: Modify web container version
         run: |
