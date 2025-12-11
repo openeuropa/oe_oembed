@@ -7,7 +7,40 @@ on:
       - master
 
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      cache-key: ${{ steps.cache-key.outputs.key }}
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Generate cache key
+        id: cache-key
+        # Add the week number to the cache key to force weekly refreshes.
+        run: echo "key=docker-${{ runner.os }}-${{ hashFiles('docker-compose.yml') }}-$(date +%Y-%U)" >> $GITHUB_OUTPUT
+
+      - name: Cache Docker images
+        uses: actions/cache@v4
+        id: docker-cache
+        with:
+          path: ~/docker-images.tar
+          key: ${{ steps.cache-key.outputs.key }}
+
+      - name: Pull and save Docker images
+        if: steps.docker-cache.outputs.cache-hit != 'true'
+        run: |
+          # Use the -ci image variant for caching
+          sed -i 's/httpd-php:8\.3-dev/httpd-php:8.3-ci/g' docker-compose.yml
+          docker compose pull
+          docker save -o ~/docker-images.tar $(docker compose config --images)
+
+      - name: Load Docker images from cache
+        if: steps.docker-cache.outputs.cache-hit == 'true'
+        run: docker load -i ~/docker-images.tar
+
   automated-tests:
+    needs: prepare
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -17,7 +50,19 @@ jobs:
       PHP_VERSION: ${{ matrix.php_version }}
     steps:
       - name: Clone repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+
+      - name: Restore Docker images from cache
+        uses: actions/cache@v4
+        with:
+          path: ~/docker-images.tar
+          key: ${{ needs.prepare.outputs.cache-key }}
+
+      - name: Load Docker images from cache
+        run: |
+          if [ -f ~/docker-images.tar ]; then
+            docker load -i ~/docker-images.tar
+          fi
 
       - name: Modify web container version
         run: |
