@@ -7,5 +7,5 @@ on:
       - master
 
 jobs:
-  ci:
+  automated-tests:
     uses: openeuropa/github-ci/.github/workflows/drupal-ci.yml@main
