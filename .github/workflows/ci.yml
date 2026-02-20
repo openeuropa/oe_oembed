@@ -8,4 +8,4 @@ on:
 
 jobs:
   automated-tests:
-    uses: openeuropa/github-ci/.github/workflows/drupal-ci.yml@main
+    uses: openeuropa/github-ci/.github/workflows/drupal-ci.yml@EWPP-6514

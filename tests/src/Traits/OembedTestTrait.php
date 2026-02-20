@@ -7,12 +7,13 @@ namespace Drupal\Tests\oe_oembed\Traits;
 use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\Core\Entity\Entity\EntityViewMode;
 use Drupal\editor\Entity\Editor;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\file\Entity\File;
 use Drupal\filter\Entity\FilterFormat;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\media\Entity\Media;
 use Drupal\media\MediaTypeInterface;
-use Drupal\node\Entity\NodeType;
 use Drupal\responsive_image\Entity\ResponsiveImageStyle;
 use Drupal\Tests\media\Traits\MediaTypeCreationTrait;
 
@@ -236,7 +237,41 @@ trait OembedTestTrait {
    * Performs the basic setup of the test.
    */
   protected function basicSetup(): void {
-    node_add_body_field(NodeType::load('page'));
+    if (!FieldStorageConfig::loadByName('node', 'body')) {
+      FieldStorageConfig::create([
+        'field_name' => 'body',
+        'entity_type' => 'node',
+        'type' => 'text_with_summary',
+      ])->save();
+    }
+    if (!FieldConfig::loadByName('node', 'page', 'body')) {
+      FieldConfig::create([
+        'field_name' => 'body',
+        'entity_type' => 'node',
+        'bundle' => 'page',
+        'label' => 'Body',
+      ])->save();
+    }
+
+    // Always configure the display, regardless of whether the field config
+    // was just created or already existed. Configurable fields default to
+    // the 'hidden' region in EntityDisplayBase::init(), so they must be
+    // explicitly added to the display components.
+    /** @var \Drupal\Core\Entity\EntityDisplayRepositoryInterface $display_repository */
+    $display_repository = \Drupal::service('entity_display.repository');
+
+    $display_repository->getFormDisplay('node', 'page')
+      ->setComponent('body', [
+        'type' => 'text_textarea_with_summary',
+      ])
+      ->save();
+
+    $display_repository->getViewDisplay('node', 'page')
+      ->setComponent('body', [
+        'label' => 'hidden',
+        'type' => 'text_default',
+      ])
+      ->save();
 
     $format = FilterFormat::create([
       'format' => 'html',
