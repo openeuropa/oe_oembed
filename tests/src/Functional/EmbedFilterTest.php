@@ -251,6 +251,7 @@ class EmbedFilterTest extends EmbedTestBase {
     $this->drupalCreateNode([
       'type' => 'page',
       'title' => 'Embedded node',
+      'promote' => 1,
     ]);
   }
 

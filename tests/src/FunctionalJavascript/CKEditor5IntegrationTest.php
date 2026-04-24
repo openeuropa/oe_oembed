@@ -14,7 +14,8 @@ use Drupal\filter\Entity\FilterFormat;
 use Drupal\FunctionalJavascriptTests\JSWebAssert;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 use Drupal\node\Entity\Node;
-use Drupal\node\Entity\NodeType;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\Tests\ckeditor5\Traits\CKEditor5TestTrait;
 use Drupal\Tests\oe_oembed\Traits\CKEditor5TestTrait as ExtraCKEditor5TestTrait;
 use Drupal\Tests\oe_oembed\Traits\MediaCreationTrait;
@@ -110,7 +111,35 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
     // Checks correct configuration.
     $this->validateEditorFormatPair();
 
-    node_add_body_field(NodeType::load('page'));
+    if (!FieldStorageConfig::loadByName('node', 'body')) {
+      FieldStorageConfig::create([
+        'field_name' => 'body',
+        'entity_type' => 'node',
+        'type' => 'text_with_summary',
+      ])->save();
+    }
+    FieldConfig::create([
+      'field_name' => 'body',
+      'entity_type' => 'node',
+      'bundle' => 'page',
+      'label' => 'Body',
+    ])->save();
+
+    /** @var \Drupal\Core\Entity\EntityDisplayRepositoryInterface $display_repository */
+    $display_repository = \Drupal::service('entity_display.repository');
+
+    $display_repository->getFormDisplay('node', 'page')
+      ->setComponent('body', [
+        'type' => 'text_textarea_with_summary',
+      ])
+      ->save();
+
+    $display_repository->getViewDisplay('node', 'page')
+      ->setComponent('body', [
+        'label' => 'hidden',
+        'type' => 'text_default',
+      ])
+      ->save();
 
     $this->user = $this->drupalCreateUser([
       'access content',
