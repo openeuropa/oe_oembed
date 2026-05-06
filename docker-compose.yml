@@ -22,13 +22,6 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
 #    ports:
 #      - 3306:3306
-  node:
-    image: node:18
-    user: "node"
-    working_dir: /home/node/app
-    volumes:
-      - ./:/home/node/app
-    command: "sleep infinity"
 
   selenium:
     image: selenium/standalone-chromium:127.0
