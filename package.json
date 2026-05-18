@@ -7,16 +7,14 @@
   "scripts": {
     "watch": "webpack --mode development --watch",
     "build": "webpack",
-    "clean-up-svg-icons": "svgo --config=./svgo.config.js -i ./icons"
+    "clean-up-svg-icons": "svgo --config=./svgo.config.js -i ./js/ckeditor5_plugins/oe_oembed_entities/theme/icons"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-utils": "^30.0.0",
-    "@ckeditor/ckeditor5-icons": "^46.0.0",
-    "ckeditor5": "~34.1.0",
+    "ckeditor5": "~47.3.0",
     "raw-loader": "^4.0.2",
-    "svgo": "^3.0.2",
-    "terser-webpack-plugin": "^5.2.0",
-    "webpack": "^5.51.1",
-    "webpack-cli": "^4.4.0"
+    "svgo": "^4.0.1",
+    "terser-webpack-plugin": "^5.3.9",
+    "webpack": "^5.85.1",
+    "webpack-cli": "^7.0.2"
   }
 }

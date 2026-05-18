@@ -188,6 +188,27 @@ tests.
 To initiate step debugging from the browser, set the correct cookie using a browser extension or a bookmarklet
 like the ones generated at https://www.jetbrains.com/phpstorm/marklets/.
 
+#### Compiling assets
+
+To compile the oembed CKEditor script, please run the following commands:
+
+```bash
+docker-compose exec web npm install
+docker-compose exec web npm run build
+```
+
+Alternatively, you can watch for changes:
+
+```bash
+docker-compose exec web npm run watch
+```
+
+To optimize the svg icon, please run the following commands:
+
+```bash
+docker-compose exec web npm run clean-up-svg-icons
+```
+
 ## Contributing
 
 Please read [the full documentation](https://github.com/openeuropa/openeuropa) for details on our code of conduct, and the process for submitting pull requests to us.
