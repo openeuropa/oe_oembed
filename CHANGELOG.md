@@ -1,11 +1,22 @@
 # Changelog
 
+## [0.14.0](https://github.com/openeuropa/oe_oembed/tree/0.14.0) (2026-06-02)
+
+[Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.13.2...0.14.0)
+
+**Merged pull requests:**
+
+- EWPP-6785: Bump nodejs version from 18.x. [\#75](https://github.com/openeuropa/oe_oembed/pull/75) ([intelektron](https://github.com/intelektron))
+- EWPP-6514: Support D11.3. [\#74](https://github.com/openeuropa/oe_oembed/pull/74) ([nagyad](https://github.com/nagyad))
+- EWPP-6339: Cache docker images for GitHub actions. [\#72](https://github.com/openeuropa/oe_oembed/pull/72) ([nagyad](https://github.com/nagyad))
+
 ## [0.13.2](https://github.com/openeuropa/oe_oembed/tree/0.13.2) (2025-11-17)
 
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.13.1...0.13.2)
 
 **Merged pull requests:**
 
+- Release-0.13.2: Update changelog. [\#71](https://github.com/openeuropa/oe_oembed/pull/71) ([nagyad](https://github.com/nagyad))
 - EWPP-6062: Add Drupal 11.2 support. [\#70](https://github.com/openeuropa/oe_oembed/pull/70) ([gorsky87](https://github.com/gorsky87))
 - EWPP-6005: Move CI to github actions. [\#69](https://github.com/openeuropa/oe_oembed/pull/69) ([hernani](https://github.com/hernani))
 
