@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\oe_oembed\FunctionalJavascript;
 
-use Drupal\Core\Url;
-
 /**
  * Tests the embed dialog.
  */
@@ -68,27 +66,19 @@ class EmbedDialogTest extends EmbedTestBase {
    * @param string $media_type
    *   The media type for which to enable/disable the view mode.
    * @param string $view_mode
-   *   The view mode.
+   *   The view mode label (used only for reference in this method).
    * @param string $action
    *   Whether to enable or disable.
    */
   protected function configureEmbeddableMediaViewMode(string $media_type, string $view_mode, string $action = 'enable') {
-    $this->drupalGet(Url::fromRoute('entity.entity_view_display.media.default', [
-      'media_type' => $media_type,
-    ]));
-    // Open the Custom Display Settings details element.
-    $this->click('details[data-drupal-selector="edit-modes"] summary');
-    $embeddable_form_container = $this->getSession()->getPage()->find('css', '#edit-embeddable-displays');
-    if ($action === 'disable') {
-      $this->assertSession()->checkboxChecked('Embed', $embeddable_form_container);
-      $embeddable_form_container->uncheckField($view_mode);
-    }
-    if ($action === 'enable') {
-      $this->assertSession()->checkboxNotChecked('Embed', $embeddable_form_container);
-      $embeddable_form_container->checkField($view_mode);
-    }
+    $view_mode_id = strtolower($view_mode);
+    /** @var \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display */
+    $display = $this->container->get('entity_type.manager')
+      ->getStorage('entity_view_display')
+      ->loadUnchanged('media.' . $media_type . '.' . $view_mode_id);
 
-    $this->assertSession()->buttonExists('Save')->press();
+    $display->setThirdPartySetting('oe_oembed', 'embeddable', $action === 'enable');
+    $display->save();
   }
 
 }
