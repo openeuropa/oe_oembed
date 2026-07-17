@@ -77,7 +77,7 @@ class EmbedDialogTest extends EmbedTestBase {
       'media_type' => $media_type,
     ]));
     // Open the Custom Display Settings details element.
-    $this->click('#edit-modes summary');
+    $this->click('details[data-drupal-selector="edit-modes"] summary');
     $embeddable_form_container = $this->getSession()->getPage()->find('css', '#edit-embeddable-displays');
     if ($action === 'disable') {
       $this->assertSession()->checkboxChecked('Embed', $embeddable_form_container);
