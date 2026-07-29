@@ -77,7 +77,12 @@ class EmbedDialogTest extends EmbedTestBase {
       ->getStorage('entity_view_display')
       ->loadUnchanged('media.' . $media_type . '.' . $view_mode_id);
 
-    $display->setThirdPartySetting('oe_oembed', 'embeddable', $action === 'enable');
+    // Assert the current embeddable state before toggling it, as the previous
+    // form-based version did by checking the checkbox state.
+    $enable = $action === 'enable';
+    $this->assertSame(!$enable, (bool) $display->getThirdPartySetting('oe_oembed', 'embeddable', FALSE));
+
+    $display->setThirdPartySetting('oe_oembed', 'embeddable', $enable);
     $display->save();
   }
 
