@@ -178,6 +178,9 @@ class OembedDialog extends FormBase {
     $entity_type = $entity_element['data-entity-type'];
     $entity = $uuid && $entity_type ? [$this->entityRepository->loadEntityByUuid($entity_type, $uuid)] : [];
     $form_state->set('entity', current($entity) ?: NULL);
+    if ($form_state->get('entity') && $editor && $embed_button) {
+      $form_state->set('embed_button', $this->getEmbedButtonForEntity($embed_button, $editor, $form_state->get('entity')));
+    }
 
     if (!$form_state->get('step')) {
       // If an entity has been selected, then always skip to the embed options.
@@ -231,6 +234,7 @@ class OembedDialog extends FormBase {
     /** @var \Drupal\embed\EmbedButtonInterface $embed_button */
     $embed_button = $form_state->get('embed_button');
     $entity_type = $embed_button->getTypeSetting('entity_type');
+    $bundles = $embed_button->getTypeSetting('bundles');
 
     $form['#title'] = $this->t('Select an entity to embed');
 
@@ -246,10 +250,16 @@ class OembedDialog extends FormBase {
         '#entity_browser_validators' => [
           'entity_type' => ['type' => $entity_type],
         ],
+        '#widget_context' => [
+          'embed_button_id' => $embed_button->id(),
+          'target_entity_type' => $entity_type,
+        ],
       ];
+      if ($bundles) {
+        $form['entity_browser']['#widget_context']['target_bundles'] = $bundles;
+      }
     }
     else {
-      $bundles = $embed_button->getTypeSetting('bundles');
       $form['entity_id'] = [
         '#type' => 'entity_autocomplete',
         '#target_type' => $entity_type,
@@ -480,6 +490,18 @@ class OembedDialog extends FormBase {
     }
 
     $entity = $this->entityRepository->getTranslationFromContext($entity);
+
+    /** @var \Drupal\embed\EmbedButtonInterface $embed_button */
+    $embed_button = $form_state->get('embed_button');
+    $bundles = $embed_button->getTypeSetting('bundles');
+    if ($bundles && !in_array($entity->bundle(), $bundles, TRUE)) {
+      $form_state->setError($element, $this->t('%label cannot be embedded with the %button button.', [
+        '%label' => $entity->label(),
+        '%button' => $embed_button->label(),
+      ]));
+      return;
+    }
+
     $uuid = $entity->uuid();
     if ($uuid) {
       $form_state->setValueForElement($form['attributes']['data-entity-uuid'], $uuid);
@@ -666,6 +688,47 @@ class OembedDialog extends FormBase {
     if ($event->getBrowserID() == $this->entityBrowser->id()) {
       $event->registerCallback('Drupal.oEmbedDialog.selectionCompleted');
     }
+  }
+
+  /**
+   * Returns the editor's embed button that allows embedding the given entity.
+   *
+   * @param \Drupal\embed\EmbedButtonInterface $embed_button
+   *   The embed button used to open the dialog.
+   * @param \Drupal\editor\EditorInterface $editor
+   *   The editor.
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   The embedded entity.
+   *
+   * @return \Drupal\embed\EmbedButtonInterface
+   *   The embed button.
+   */
+  protected function getEmbedButtonForEntity(EmbedButtonInterface $embed_button, EditorInterface $editor, EntityInterface $entity): EmbedButtonInterface {
+    // Use the current button if it allows the entity bundle (empty means all).
+    $bundles = $embed_button->getTypeSetting('bundles');
+    if (empty($bundles) || in_array($entity->bundle(), $bundles, TRUE)) {
+      return $embed_button;
+    }
+
+    // Otherwise, look for another button of the editor allowing the bundle.
+    $toolbar_items = $editor->getSettings()['toolbar']['items'] ?? [];
+    /** @var \Drupal\embed\EmbedButtonInterface[] $embed_buttons */
+    $embed_buttons = $this->entityTypeManager->getStorage('embed_button')->loadByProperties([
+      'type_id' => 'oe_oembed_entities',
+      'type_settings.entity_type' => $entity->getEntityTypeId(),
+    ]);
+    foreach ($embed_buttons as $candidate) {
+      if (!in_array($candidate->id(), $toolbar_items, TRUE)) {
+        continue;
+      }
+      $bundles = $candidate->getTypeSetting('bundles');
+      if (empty($bundles) || in_array($entity->bundle(), $bundles, TRUE)) {
+        return $candidate;
+      }
+    }
+
+    // Finally, fall back to the original button.
+    return $embed_button;
   }
 
   /**
