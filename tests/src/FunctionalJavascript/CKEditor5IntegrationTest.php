@@ -10,6 +10,7 @@ use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\editor\EditorInterface;
 use Drupal\editor\Entity\Editor;
+use Drupal\embed\Entity\EmbedButton;
 use Drupal\filter\Entity\FilterFormat;
 use Drupal\FunctionalJavascriptTests\JSWebAssert;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
@@ -434,6 +435,59 @@ class CKEditor5IntegrationTest extends WebDriverTestBase {
     $this->assertNotEmpty($modal->findLink($node->label()));
     $modal->find('css', 'button.ui-dialog-titlebar-close')->press();
     $assert_session->waitForElementRemoved('css', 'oe-oembed-entities-select-dialog');
+
+    // Test that existing embeds are edited with the button allowing the bundle.
+    $media_button = EmbedButton::load('media');
+    $type_settings = $media_button->get('type_settings');
+    $type_settings['bundles'] = ['image'];
+    $media_button->set('type_settings', $type_settings)->save();
+    EmbedButton::create([
+      'id' => 'remote_video',
+      'label' => 'Remote video',
+      'type_id' => 'oe_oembed_entities',
+      'type_settings' => [
+        'entity_type' => 'media',
+        'bundles' => ['remote_video'],
+        'entity_browser' => '',
+        'entity_browser_settings' => [
+          'display_review' => FALSE,
+        ],
+      ],
+    ])->save();
+    // The "media" button comes first by ID, so it's the default one for media.
+    $this->editor->setSettings(array_merge_recursive($this->editor->getSettings(), [
+      'toolbar' => [
+        'items' => [
+          'remote_video',
+        ],
+      ],
+    ]))->save();
+    $this->validateEditorFormatPair();
+
+    $this->drupalGet($host->toUrl('edit-form'));
+    $this->waitForEditor();
+    $this->assertBlockEmbedWidget($video, $this->getEditor())->click();
+    // The "remote_video" button is used, otherwise the select step would fail.
+    $this->editEmbeddedEntityWithSimpleModal($video);
+    $this->assertEquals(
+      $this->getBlockEmbedMarkup('media', 'embed', $video->uuid(), $video->label()) . $this->getBlockEmbedMarkup('node', 'embed', $node->uuid(), $node->label()),
+      $this->getEditorDataAsHtmlString()
+    );
+
+    // Buttons missing in the toolbar are skipped, so "media" is used and fails.
+    $settings = $this->editor->getSettings();
+    $settings['toolbar']['items'] = array_values(array_diff($settings['toolbar']['items'], ['remote_video']));
+    $this->editor->setSettings($settings)->save();
+    $this->drupalGet($host->toUrl('edit-form'));
+    $this->waitForEditor();
+    $this->assertBlockEmbedWidget($video, $this->getEditor())->click();
+    $this->getBalloonButton('Edit')->click();
+    $modal = $assert_session->waitForElement('css', '.oe-oembed-entities-select-dialog');
+    $assert_session->elementExists('xpath', '//button[text()="Back"]', $modal)->click();
+    $assert_session->assertWaitOnAjaxRequest();
+    $assert_session->elementExists('css', 'button.js-button-next', $modal)->click();
+    $assert_session->assertWaitOnAjaxRequest();
+    $this->assertStringContainsString(sprintf('The referenced entity (media: %s) does not exist.', $video->id()), $modal->getText());
   }
 
   /**
