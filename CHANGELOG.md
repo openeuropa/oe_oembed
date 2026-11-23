@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.15.0](https://github.com/openeuropa/oe_oembed/tree/0.15.0) (2026-11-23)
+
+[Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.14.0...0.15.0)
+
+**Merged pull requests:**
+
+- EWPP-0000: Drop the embed patch fixed upstream in 1.11. [\#82](https://github.com/openeuropa/oe_oembed/pull/82) ([nagyad](https://github.com/nagyad))
+- EWPP-7336: Edit embeds with the button allowing the entity bundle. [\#80](https://github.com/openeuropa/oe_oembed/pull/80) ([intelektron](https://github.com/intelektron))
+- EWPP-6988: Trigger pipeline. [\#77](https://github.com/openeuropa/oe_oembed/pull/77) ([nagyad](https://github.com/nagyad))
+
 ## [0.14.0](https://github.com/openeuropa/oe_oembed/tree/0.14.0) (2026-06-02)
 
 [Full Changelog](https://github.com/openeuropa/oe_oembed/compare/0.13.2...0.14.0)
